@@ -11,6 +11,7 @@ import 'package:flutter_riverpod_base/src/feature/booking/presentation/views/tou
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
@@ -182,8 +183,6 @@ class _BookingViewState extends State<BookingView>
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text(state.message)));
-                } else if (state is PaymentSuccessState) {
-                  context.push(TourRequestView.routePath, extra: {});
                 }
               },
               builder: (context, state) {

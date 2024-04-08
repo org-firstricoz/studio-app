@@ -31,11 +31,9 @@ class LocationAccessPage extends StatelessWidget {
             child: BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is LocationFailure) {
-
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text(state.message)));
                 } else if (state is LocationSuccess) {
-                  
                   userDetails.addAll({'location': state.city});
                   context.go(CompleteYourProfileInfoView.routePath);
                 }
@@ -43,7 +41,13 @@ class LocationAccessPage extends StatelessWidget {
               builder: (context, state) {
                 if (state is LoadingState) {
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                        Text('Fetching Your Location'),
+                      ],
+                    ),
                   );
                 } else {
                   return Column(

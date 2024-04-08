@@ -20,7 +20,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
   @override
   void initState() {
     print(widget.searchTerm);
-    
+
     super.initState();
   }
 
@@ -51,28 +51,55 @@ class _SearchResultsViewState extends State<SearchResultsView> {
               ),
             );
           }
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            shrinkWrap: true,
-            itemCount: AppData.searchResult.length,
-            itemBuilder: (context, index) {
-              if (AppData.searchResult.isNotEmpty) {
-                final data = AppData.searchResult[index];
-                print(data);
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: ItemListTileView(
-                    studioModel: data,
-                    onTap: () {
-                      context
-                          .push(BookingView.routePath, extra: {'id': data.id});
-                    },
-                  ),
-                );
-              }
-              return null;
-            },
-          );
+          if (state is SearchSuccessState) {
+            return ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                shrinkWrap: true,
+                itemCount: AppData.searchResult.length,
+                itemBuilder: (context, index) {
+                  if (AppData.searchResult.isNotEmpty) {
+                    final data = AppData.searchResult[index];
+                    print(data);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: ItemListTileView(
+                        studioModel: data,
+                        onTap: () {
+                          context.push(BookingView.routePath,
+                              extra: {'id': data.id});
+                        },
+                      ),
+                    );
+                  }
+                });
+          } else if (state is FilterSuccessState) {
+            return ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                shrinkWrap: true,
+                itemCount: state.models.length,
+                itemBuilder: (context, index) {
+                  if (AppData.filterResult.isNotEmpty) {
+                    final data = AppData.filterResult[index];
+                    print(data);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: ItemListTileView(
+                        studioModel: data,
+                        onTap: () {
+                          context.push(BookingView.routePath,
+                              extra: {'id': data.id});
+                        },
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: Text('No Studio Available'),
+                    );
+                  }
+                });
+          } else {
+            return const SizedBox.shrink();
+          }
         },
       ),
     );

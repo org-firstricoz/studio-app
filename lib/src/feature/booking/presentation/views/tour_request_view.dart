@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
+import 'package:flutter_riverpod_base/src/res/data.dart';
 
 import 'package:flutter_riverpod_base/src/utils/custom_text_button.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/custon_dash_separated_divider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class TourRequestView extends StatefulWidget {
   static String routePath = '/tour-request';
-
-  const TourRequestView({super.key});
+  final DateTime date;
+  const TourRequestView({
+    super.key, required this.date,
+  });
 
   @override
   State<TourRequestView> createState() => _TourRequestViewState();
@@ -72,7 +77,7 @@ class _TourRequestViewState extends State<TourRequestView> {
                       height: 14,
                     ),
                     Text(
-                      "Mon, September 11, 7:00 PM",
+                      DateFormat('dd-MM-yyyy').format(widget.date),
                       style: TextStyle(
                           fontSize: 14,
                           color: ColorAssets.blackFaded,
@@ -133,10 +138,10 @@ class _TourRequestViewState extends State<TourRequestView> {
           leading: CircleAvatar(
             backgroundColor: color.secondary,
             radius: 20,
-            backgroundImage: AssetImage(ImageAssets.profileImageJpeg),
+            backgroundImage: NetworkImage(AppData.agentDetails.first.imageUrl),
           ),
           title: Text(
-            "Emily Johnson",
+            AppData.agentDetails.first.name,
             style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 14,

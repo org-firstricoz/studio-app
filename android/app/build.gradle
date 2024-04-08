@@ -66,7 +66,11 @@ android {
 flutter {
     source '../..'
 }
+repositories {
+    mavenCentral()
+}
 
 dependencies {
+    implementation 'com.razorpay:checkout:1.6.33'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

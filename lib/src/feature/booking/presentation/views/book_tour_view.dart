@@ -5,6 +5,7 @@ import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_details.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
+import 'package:flutter_riverpod_base/src/feature/booking/domain/usecase/requesting_schedule.dart';
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/bloc/booking_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/views/tour_request_view.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
@@ -35,56 +36,93 @@ class BookingTourView extends StatefulWidget {
 }
 
 class _BookingTourViewState extends State<BookingTourView> {
+  final Razorpay _razorpay = Razorpay();
+
+  _handlePaymentSuccess(PaymentSuccessResponse response) {
+    context.read<BookingBloc>().add(PaymentEvent(data: {
+          'userId': user.uuid,
+          'studioId': widget.studioDetails.id,
+          'orderId': response.orderId,
+          'paymentId': response.paymentId,
+          'time': widget.time.toString(),
+          'date': widget.date.toIso8601String()
+        }));
+    context.go(TourRequestView.routePath, extra: {'date':widget.date});
+  }
+
+  _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response.message ?? 'Unable to Make payment'),
+      duration: const Duration(seconds: 5),
+    ));
+  }
+
+  _handleExternalWallet(ExternalWalletResponse response) {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorAssets.white,
       appBar: SimpleAppBar(
         title: "Book Tour",
-        leadingCallback: () => Navigator.pop(context),
+        leadingCallback: () => context.go(HomeView.routePath),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Your Information Details',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 22,
-                            color: ColorAssets.blackFaded),
+      body: BlocListener<BookingBloc, BookingState>(
+        listener: (context, state) {
+          // TODO: implement listener
+          if (state is OrderSuccessState) {
+            _razorpay.open(state.options);
+            _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+            _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+            _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+          } else if (state is BookingFailure) {
+            print(state.message);
+            context.go(HomeView.routePath);
+          }
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Your Information Details',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22,
+                              color: ColorAssets.blackFaded),
+                        ),
                       ),
-                    ),
-                    _buildFormFields(context),
-                  ],
+                      _buildFormFields(context),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
 
-          CustomElevatedContainer(
-            buttonText: "Continue",
-            onTap: () {
-              context.read<BookingBloc>().add(RequestScheduleEvent(
-                  requestParams: RequestParams(
-                      description: widget.studioDetails.description,
-                      name: widget.studioDetails.name,
-                      amount: widget.studioDetails.rent,
-                      time: widget.time,
-                      date: widget.date,
-                      userId: user.uuid,
-                      studioId: widget.studioDetails.id)));
-            },
-          )
-          // button
-        ],
+            CustomElevatedContainer(
+              buttonText: "Continue",
+              onTap: () {
+                context.read<BookingBloc>().add(RequestScheduleEvent(
+                    requestParams: RequestParams(
+                        description: widget.studioDetails.description,
+                        name: widget.studioDetails.name,
+                        amount: widget.studioDetails.rent,
+                        time: widget.time,
+                        date: widget.date,
+                        userId: user.uuid,
+                        studioId: widget.studioDetails.id)));
+              },
+            )
+            // button
+          ],
+        ),
       ),
     );
   }

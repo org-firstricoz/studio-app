@@ -44,6 +44,7 @@ class GetLocation implements UseCase<String, NoParams> {
 
   @override
   FutureEither<String> call(NoParams params) async {
+    print('object');
     return await _authRepository.getUserLocation(params);
   }
 }
@@ -66,12 +67,11 @@ class LoginWithOtp implements UseCase<User, String> {
   LoginWithOtp({required AuthRepository authRepository})
       : _authRepository = authRepository;
   @override
-  FutureEither<User> call(String params)async {
+  FutureEither<User> call(String params) async {
     // TODO: implement call
     return await _authRepository.loginUsingOtp(params);
   }
 }
-
 
 class SendOtp implements UseCase<String, String> {
   final AuthRepository _authRepository;

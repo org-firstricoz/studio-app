@@ -164,7 +164,8 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
                         userDetails.addAll({
                           'createdAt': DateTime.now(),
                           'gender': selectedGender,
-                          'phoneNumber': numberEditingController.text.trim()
+                          'phoneNumber':
+                              '+91${numberEditingController.text.trim()}'
                         });
                         log(userDetails.toString());
                         context.read<AuthBloc>().add(SignUpEvent(

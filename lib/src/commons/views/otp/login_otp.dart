@@ -82,6 +82,13 @@ class _LoginOtpState extends State<LoginOtp> {
                           margin: const EdgeInsets.only(top: 30),
                           height: 60,
                           width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [
+                                Color.fromARGB(255, 70, 155, 225),
+                                Color.fromARGB(255, 38, 127, 201),
+                                Colors.blue
+                              ]),
+                              borderRadius: BorderRadius.circular(20)),
                           child: TextButton(
                               onPressed: () {
                                 final value = _controller.text.trim();
@@ -100,13 +107,6 @@ class _LoginOtpState extends State<LoginOtp> {
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
                               )),
-                          decoration: BoxDecoration(
-                              gradient: const LinearGradient(colors: [
-                                Color.fromARGB(255, 70, 155, 225),
-                                Color.fromARGB(255, 38, 127, 201),
-                                Colors.blue
-                              ]),
-                              borderRadius: BorderRadius.circular(20)),
                         )
                       : const SizedBox(
                           height: 30,
@@ -131,17 +131,6 @@ class _LoginOtpState extends State<LoginOtp> {
                           margin: const EdgeInsets.only(top: 30),
                           height: 60,
                           width: MediaQuery.of(context).size.width,
-                          child: TextButton(
-                              onPressed: () {},
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'Resend OTP',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15),
-                                  ),
-                                ],
-                              )),
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               gradient: !requestedOtp
@@ -152,6 +141,17 @@ class _LoginOtpState extends State<LoginOtp> {
                                       Colors.blue
                                     ]),
                               borderRadius: BorderRadius.circular(20)),
+                          child: TextButton(
+                              onPressed: () {},
+                              child: const Row(
+                                children: [
+                                  Text(
+                                    'Resend OTP',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 15),
+                                  ),
+                                ],
+                              )),
                         )
                       : const SizedBox.shrink()
                 ],

@@ -17,8 +17,13 @@ abstract interface class ScheduleRemoteDataSource {
   final http.Client _client;
 
   ScheduleRemoteDataSource({required http.Client client}) : _client = client;
-  FutureEither<Result> requestSchedule(RequestParams params);
+  FutureEither<Map<String, dynamic>> requestSchedule(RequestParams params);
+
+  FutureEither<Map<String, dynamic>> paymentSuccess(
+      Map<String, dynamic> params);
 }
+
+int? SuccessStatus;
 
 class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
   final http.Client client;
@@ -26,7 +31,8 @@ class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
   ScheduleRemoteDataSourceImpl({required this.client});
 
   @override
-  FutureEither<Result> requestSchedule(RequestParams params) async {
+  FutureEither<Map<String, dynamic>> requestSchedule(
+      RequestParams params) async {
     // TODO: implement requestSchedule
     try {
       final response = await client.post(
@@ -35,29 +41,25 @@ class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
             params.toMap(),
           ),
           headers: {'content-type': 'application/json'});
-
+      print(response.statusCode);
       if (response.statusCode == 200) {
-        final orderId = response.body.toString();
+        final orderId = jsonDecode(response.body);
         print(orderId);
         var options = {
           'key': AppSecrets.keyId,
           'amount': params.amount * 100,
           'name': params.name,
           'time_out': 240,
-          "order_id": orderId,
+          "order_id": orderId['id'],
           'prefill': {'contact': user.phoneNumber, 'email': user.email}
         };
-        _razorpay.open(options);
 
-        _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-        _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-        _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+        return Right(options);
       } else {
         throw ApiException(message: response.body);
       }
-      return Left(ApiFailure(message: 'unable to make payment'));
     } on ApiException catch (e) {
-      print('Error: $e');
+      print('$e');
       return Left(ApiFailure(message: e.message));
     }
   }
@@ -66,29 +68,46 @@ class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
   // TODO: implement _razorpay
   http.Client get _client => client;
 
-  _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    // Do something when payment succeeds
-    final httpResponse = await _client.post(
+  @override
+  FutureEither<Map<String, dynamic>> paymentSuccess(
+      Map<String, dynamic> params) async {
+    try {
+      print(params);
+      final response = await _client.post(
         Uri.parse(
           '${AppRequestUrl.baseUrl}${AppRequestUrl.payment}',
         ),
-        body: jsonEncode({
-          'order_id': response.orderId,
-          'payment_id': response.paymentId,
-          'signature': response.signature,
-          'data': response.data,
-        }),
-        headers: {'content-type': 'application/json'});
-    return Right(SuccessClass(successId: response.paymentId));
+        headers: {'content-type': 'application/json'},
+        body: jsonEncode(params),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return Right(data);
+      } else {
+        throw ApiException(message: response.body);
+      }
+    } on ApiException catch (e) {
+      print(e);
+      return Left(ApiFailure(message: e.message));
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
   }
 
-  _handlePaymentError(PaymentFailureResponse response) {
-    // Do something when payment fails
-    return Left(
-        ApiFailure(message: response.message ?? 'Unable to make payment'));
-  }
-
-  _handleExternalWallet(ExternalWalletResponse response) {
-    // Do something when an external wallet was selected
-  }
+  // _handlePaymentSuccess(PaymentSuccessResponse response) async {
+  //   // Do something when payment succeeds
+  //   await _client.post(
+  //       Uri.parse(
+  //         '${AppRequestUrl.baseUrl}${AppRequestUrl.payment}',
+  //       ),
+  //       body: jsonEncode({
+  //         'order_id': response.orderId,
+  //         'payment_id': response.paymentId,
+  //         'signature': response.signature,
+  //         'data': response.data,
+  //       }),
+  //       headers: {'content-type': 'application/json'});
+  //   SuccessStatus = 200;
+  //   return Right(SuccessClass(successId: response.paymentId));
+  // }
 }

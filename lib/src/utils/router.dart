@@ -23,10 +23,10 @@ import 'package:flutter_riverpod_base/src/feature/profile/views/complete_profile
 import 'package:flutter_riverpod_base/src/feature/profile/views/edit_profile_info.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/presentation/pages/search_results_view.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/presentation/pages/studio_search_view.dart';
-import 'package:flutter_riverpod_base/src/feature/settings/view/language_view.dart';
-import 'package:flutter_riverpod_base/src/feature/settings/view/notification_settings_view.dart';
-import 'package:flutter_riverpod_base/src/feature/settings/view/password_manager_view.dart';
-import 'package:flutter_riverpod_base/src/feature/settings/view/settings_view.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/language_view.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/notification_settings_view.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/password_manager_view.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/settings_view.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -108,7 +108,10 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: TourRequestView.routePath,
       builder: (BuildContext context, GoRouterState state) {
-        return const TourRequestView();
+        final extra = state.extra as Map<String, dynamic>;
+        return TourRequestView(
+          date: extra['date'],
+        );
       },
     ),
     GoRoute(

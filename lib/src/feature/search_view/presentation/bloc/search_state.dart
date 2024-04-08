@@ -18,3 +18,9 @@ class SearchFailureState extends SearchState {
 
   SearchFailureState({required this.message});
 }
+
+class FilterSuccessState extends SearchState {
+  final List<StudioModel> models;
+
+  FilterSuccessState({required this.models});
+}

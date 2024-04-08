@@ -20,3 +20,10 @@ class RequestScheduleEvent extends BookingEvent {
 
   RequestScheduleEvent({required this.requestParams});
 }
+
+class PaymentEvent extends BookingEvent {
+  final Map<String, dynamic> data;
+
+  PaymentEvent({required this.data});
+}
+

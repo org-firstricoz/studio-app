@@ -7,8 +7,8 @@ import 'package:flutter_riverpod_base/src/commons/views/privacy-policy/privacy_p
 import 'package:flutter_riverpod_base/src/commons/widgets/custom_list_tile.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/views/edit_profile_info.dart';
-import 'package:flutter_riverpod_base/src/feature/settings/view/language_view.dart';
-import 'package:flutter_riverpod_base/src/feature/settings/view/settings_view.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/language_view.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/settings_view.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/basic_sliver_appbar.dart';
 

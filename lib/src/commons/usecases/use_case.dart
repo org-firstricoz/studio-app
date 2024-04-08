@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -17,8 +18,73 @@ abstract interface class ChatUseCase<SuccessType, Params> {
 // parameters
 
 class FilterParams {
+  String category;
+  num? rating;
+  num price;
+  List<String> amenities;
+  FilterParams({
+    required this.category,
+    required this.rating,
+    required this.price,
+    required this.amenities,
+  });
+
   Map<String, dynamic> toMap() {
-    return {};
+    return <String, dynamic>{
+      'category': category,
+      'rating': rating,
+      'price': price,
+      'amenities': amenities,
+    };
+  }
+
+  copyWith({
+    String? category,
+    num? rating,
+    num? price,
+    List<String>? amenities,
+  }) {
+    this.amenities = amenities ?? this.amenities;
+    this.rating = rating ?? this.rating;
+    this.price = price ?? this.price;
+    this.amenities = amenities ?? this.amenities;
+  }
+
+  factory FilterParams.fromMap(Map<String, dynamic> map) {
+    return FilterParams(
+      category: map['category'] as String,
+      rating: map['rating'] as num,
+      price: map['price'] as num,
+      amenities: List<String>.from((map['amenities'] as List<String>)),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory FilterParams.fromJson(String source) =>
+      FilterParams.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'FilterParams(category: $category, rating: $rating, price: $price, amenities: $amenities)';
+  }
+
+  @override
+  bool operator ==(covariant FilterParams other) {
+    if (identical(this, other)) return true;
+
+    return other.category == category &&
+        other.rating == rating &&
+        other.price == price &&
+        listEquals(other.amenities, amenities);
+  }
+
+  @override
+  int get hashCode {
+    return category.hashCode ^
+        rating.hashCode ^
+        price.hashCode ^
+        amenities.hashCode;
   }
 }
 
@@ -27,6 +93,79 @@ class ChatParams {
   final String agentId;
 
   ChatParams({required this.userId, required this.agentId});
+}
+
+class UpdateParams {
+  final String? password;
+  final String? name;
+  final String? phoneNumber;
+  final String? email;
+  UpdateParams({
+    this.password,
+    this.name,
+    this.phoneNumber,
+    this.email,
+  });
+
+  UpdateParams copyWith({
+    String? password,
+    String? name,
+    String? phoneNumber,
+    String? email,
+  }) {
+    return UpdateParams(
+      password: password ?? this.password,
+      name: name ?? this.name,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      email: email ?? this.email,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'password': password,
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'email': email,
+    };
+  }
+
+  factory UpdateParams.fromMap(Map<String, dynamic> map) {
+    return UpdateParams(
+      password: map['password'] != null ? map['password'] as String : null,
+      name: map['name'] != null ? map['name'] as String : null,
+      phoneNumber: map['phoneNumber'] as String,
+      email: map['email'] != null ? map['email'] as String : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory UpdateParams.fromJson(String source) =>
+      UpdateParams.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'UpdateParams(password: $password, name: $name, phoneNumber: $phoneNumber, email: $email)';
+  }
+
+  @override
+  bool operator ==(covariant UpdateParams other) {
+    if (identical(this, other)) return true;
+
+    return other.password == password &&
+        other.name == name &&
+        other.phoneNumber == phoneNumber &&
+        other.email == email;
+  }
+
+  @override
+  int get hashCode {
+    return password.hashCode ^
+        name.hashCode ^
+        phoneNumber.hashCode ^
+        email.hashCode;
+  }
 }
 
 class RequestParams {

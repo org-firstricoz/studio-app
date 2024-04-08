@@ -25,7 +25,13 @@ class ReviewSuccessState extends BookingState {
   ReviewSuccessState({required this.reviewModel});
 }
 
+class OrderSuccessState extends BookingState {
+  final Map<String, dynamic> options;
+  OrderSuccessState({required this.options});
+}
+
 class PaymentSuccessState extends BookingState {
-  final dynamic data;
+  final Map<String, dynamic> data;
+
   PaymentSuccessState({required this.data});
 }

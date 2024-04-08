@@ -61,13 +61,14 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                   Container(
                     margin: const EdgeInsets.only(top: 20),
                     width: double.maxFinite,
-                    child: const Column(
+                    child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomTagBuilder(tag: 'Photography'),
+                              CustomTagBuilder(
+                                  tag: widget.studioDetails.category),
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -78,7 +79,7 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                                   ),
                                   SizedBox(width: 5),
                                   Text(
-                                    '4.8 (300 reviews)',
+                                    '${widget.studioDetails.rating} (${widget.studioDetails.numberOfReviews} reviews)',
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600,
@@ -91,7 +92,7 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                           ),
                           SizedBox(height: 15),
                           Text(
-                            "CaptureVision Studios",
+                            widget.studioDetails.name,
                             style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,
@@ -99,7 +100,7 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                           ),
                           SizedBox(height: 12),
                           Text(
-                            "Aram Cottage,Pune, Maharashtra",
+                            widget.studioDetails.address,
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -153,7 +154,7 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                           },
                           icon: Icon(Icons.calendar_month)),
                       selectedDate != null
-                          ? Text(DateFormat('dd-mm-yyy').format(selectedDate!))
+                          ? Text(DateFormat('dd-MM-yyyy').format(selectedDate!))
                           : SizedBox.fromSize(),
                       selectedTime != null
                           ? Text(selectedTime!.format(context))
@@ -219,8 +220,11 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
             buttonText: "Schedule Tour",
             onTap: () {
               if (selectedDate != null && selectedTime != null) {
-                context.push(BookingTourView.routePath,
-                    extra: {'studio_details': widget.studioDetails,'date':selectedDate,'time':selectedTime,});
+                context.go(BookingTourView.routePath, extra: {
+                  'studio_details': widget.studioDetails,
+                  'date': selectedDate,
+                  'time': selectedTime,
+                });
               }
             },
           )

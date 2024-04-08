@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/search_view/presentation/bloc/search_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/presentation/pages/search_results_view.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
@@ -34,7 +36,7 @@ class _CategoriesHorizontalListViewState
                   width: 60,
                 ),
                 // const SizedBox(height: 10),
-              const  Spacer(),
+                const Spacer(),
                 Text(
                   AppData.categories[index].title,
                   style: const TextStyle(
@@ -45,6 +47,8 @@ class _CategoriesHorizontalListViewState
               ],
             ),
           ).onTap(() {
+            context.read<SearchBloc>().add(
+                GetSearchResultsEvent(query: AppData.categories[index].title));
             context.push(SearchResultsView.routePath,
                 extra: {"query": AppData.categories[index].title});
           });

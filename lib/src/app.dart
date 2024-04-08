@@ -21,10 +21,18 @@ import 'package:flutter_riverpod_base/src/feature/home/data/datasource/remote_da
 import 'package:flutter_riverpod_base/src/feature/home/data/repository/home_view_repository_impl.dart';
 import 'package:flutter_riverpod_base/src/feature/home/domain/usecase/get_home_view_details.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_view_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/search_view/data/datasource/filter_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/data/datasource/remote_data_source.dart';
+import 'package:flutter_riverpod_base/src/feature/search_view/data/repository/filter_repository_impl.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/data/repository/search_view_repository_impl.dart';
+import 'package:flutter_riverpod_base/src/feature/search_view/domain/usecase/filter_use_case.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/domain/usecase/search_view.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/presentation/bloc/search_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/data/datasource/update_data_data_source.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/data/repository/update_data_repository_impl.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/domain/repository/update_data_repository.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/domain/usecase/update_data.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/provider/theme_provider.dart';
 import 'package:flutter_riverpod_base/src/utils/router.dart';
 import 'package:http/http.dart' as http;
@@ -73,6 +81,10 @@ class App extends ConsumerWidget {
                 )),
         BlocProvider(
             create: (context) => BookingBloc(
+                sendingData: SendingData(
+                    scheduleRepository: ScheduleRepositoryImpl(
+                        scheduleRemoteDataSource: ScheduleRemoteDataSourceImpl(
+                            client: http.Client()))),
                 requestingSchedule: RequestingSchedule(
                     scheduleRepository: ScheduleRepositoryImpl(
                         scheduleRemoteDataSource: ScheduleRemoteDataSourceImpl(
@@ -87,6 +99,10 @@ class App extends ConsumerWidget {
                             RemoteDataSourceImpl(client: http.Client()))))),
         BlocProvider(
           create: (context) => SearchBloc(
+              filterUseCase: FilterUseCase(
+                  filterRepository: FilterRepositoryImpl(
+                      filterDataSource:
+                          FilterDataSourceImpl(client: http.Client()))),
               searchView: SearchView(
                   searchViewRepository: SearchViewRepositoryImpl(
                       SearchViewRemoteDataSourceImpl(client: http.Client())))),
@@ -104,7 +120,13 @@ class App extends ConsumerWidget {
                 chatService: ChatService(
                     chatRepository: ChatRepositoryImpl(
                         chatRemoteDataSource:
-                            ChatRemoteDataSourceImpl(client: http.Client())))))
+                            ChatRemoteDataSourceImpl(client: http.Client()))))),
+        BlocProvider(
+            create: (context) => SettingsBloc(
+                updateData: UpdateData(
+                    updateDataRepository: UpdateDataRepositoryImpl(
+                        dataSource:
+                            UpdateDataDataSourceImpl(client: http.Client()))))),
       ],
       child: MaterialApp.router(
         // theme: Themes.lightTheme(context),

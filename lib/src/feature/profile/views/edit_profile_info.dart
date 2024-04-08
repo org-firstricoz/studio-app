@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
@@ -22,37 +25,62 @@ class EditProfileInfoView extends StatefulWidget {
 }
 
 class _EditProfileInfoViewState extends State<EditProfileInfoView> {
+  UpdateParams updateParams = UpdateParams();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // backgroundColor: ColorAssets.white,
-      body: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      _profilePickBuilder(context),
-                      _buildFormFields(context),
-                    ],
+    return BlocListener<SettingsBloc, SettingsState>(
+      listener: (context, state) {
+        if (state is UpdateSuccessState) {
+          user = state.user;
+          context.go(HomeView.routePath);
+        } else if (state is UpdateFailureState) {
+          ScaffoldMessenger.of(context).clearMaterialBanners();
+          ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
+              content: Text('Unable to Update Data ${state.message}'),
+              actions: [CloseButton()]));
+        }
+        // TODO: implement listener
+      },
+      child: Scaffold(
+        // backgroundColor: ColorAssets.white,
+        body: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _profilePickBuilder(context),
+                        _buildFormFields(context),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              //
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0),
-                child: CustomTextButton(
-                    text: "Update Profile",
-                    ontap: () {
-                      context.push(HomeView.routePath);
-                    }),
-              )
-            ],
+                //
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 0),
+                  child: CustomTextButton(
+                      text: "Update Profile",
+                      ontap: () {
+                        updateParams.copyWith(
+                            name: nameController.text.trim(),
+                            email: emailController.text.trim(),
+                            phoneNumber: phoneController.text.trim());
+                        context
+                            .read<SettingsBloc>()
+                            .add(UpdateEvent(updateParams: updateParams));
+                      }),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -68,11 +96,13 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FormTextField(
+            controller: nameController,
             labelText: "Name",
             hintText: "Tara Choudhary",
             initialValue: user.name,
           ),
           FormTextField(
+            controller: phoneController,
             labelText: "Phone Number",
             suffixIcon: TextButton(
                 onPressed: () {},
@@ -88,6 +118,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
           ),
           // email
           FormTextField(
+            controller: emailController,
             labelText: "Email",
             hintText: "example@gmail.com",
             initialValue: user.email,
@@ -124,6 +155,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                   ),
                 ],
                 onChanged: (data) {
+                  ;
                   user = user.copyWith(gender: data);
                   setState(() {});
                 },

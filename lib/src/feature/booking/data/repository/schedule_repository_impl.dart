@@ -11,7 +11,14 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       {required ScheduleRemoteDataSource scheduleRemoteDataSource})
       : _scheduleRemoteDataSource = scheduleRemoteDataSource;
   @override
-  FutureEither<Result> requestSchedule(RequestParams params) async{
+  FutureEither<Map<String, dynamic>> requestSchedule(
+      RequestParams params) async {
     return await _scheduleRemoteDataSource.requestSchedule(params);
+  }
+
+  @override
+  FutureEither<Map<String, dynamic>> paymentSuccess(Map<String, dynamic> params) {
+   
+    return _scheduleRemoteDataSource.paymentSuccess(params);
   }
 }

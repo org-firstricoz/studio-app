@@ -14,10 +14,21 @@ class ItemCardView extends StatefulWidget {
 }
 
 class _ItemCardViewState extends State<ItemCardView> {
-  bool isLiked = false;
+  late bool isLiked;
+  @override
+  void initState() {
+    super.initState();
+    isLiked = AppData.favouriteModel.contains(widget.studioModel);
+  }
+
   toggleLike() {
     setState(() {
       isLiked = !isLiked;
+      if (AppData.favouriteModel.contains(widget.studioModel)) {
+        AppData.favouriteModel.remove(widget.studioModel);
+      } else {
+        AppData.favouriteModel.add(widget.studioModel);
+      }
     });
   }
 
@@ -136,14 +147,14 @@ class _ItemCardViewState extends State<ItemCardView> {
             ),
             RichText(
                 text: TextSpan(
-                    text: "\$${widget.studioModel.rent}",
+                    text: "Rs. ${widget.studioModel.rent}",
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: ColorAssets.primaryBlue),
                     children: [
                   TextSpan(
-                    text: " /month",
+                    text: " /day",
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,

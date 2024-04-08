@@ -40,7 +40,8 @@ class LogLabel {
 }
 
 class AppRequestUrl {
-  static const baseUrl = 'https://a7c7-103-24-84-183.ngrok-free.app';
+  static const baseUrl = 'https://11c4-103-24-84-183.ngrok-free.app';
+  // name@gmail.com name123
   static const locationEndPoint = '/city';
   static const loginEndPoint = '/login';
   static const signupEndPoint = '/signup';
@@ -54,5 +55,6 @@ class AppRequestUrl {
   static const otpEndPoint = '/otp';
   static const loginOtpEndPoint = '/otp/login';
   static const payment = '/payment';
-  static const filter='/filter';
+  static const filter = '/filter';
+  static const update = '/update';
 }

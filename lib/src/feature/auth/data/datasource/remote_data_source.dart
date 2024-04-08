@@ -83,20 +83,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         final placeMarks = await GeocodingPlatform.instance!
             .placemarkFromCoordinates(result.latitude, result.longitude);
         final postalCode = placeMarks.first.postalCode;
-
-        final resp = await _client
-            .get(Uri.parse('http://postalpincode.in/api/pincode/$postalCode'));
-
-        final postOfficeResponseBody = jsonDecode(resp.body);
-        if (postOfficeResponseBody['Status'] == 'Success') {
-          final city = (jsonDecode(resp.body)['PostOffice'] as List)
-              .first['District']
-              .toString();
-
-          return Right(city);
+        print(postalCode);
+        final resp = await Future.any([
+          _client.get(
+              Uri.parse('http://www.postalpincode.in/api/pincode/$postalCode')),
+          Future.delayed(Duration(seconds: 5), () {
+            return null;
+          })
+        ]);
+        if (resp == null) {
+          return Left(
+              LocationFailure(message: 'Unable to Locate, try manually'));
         } else {
-          throw LocationException(
-              message: 'Unable to Fetch Location Try Manually');
+          final postOfficeResponseBody = jsonDecode(resp.body);
+          if (postOfficeResponseBody['Status'] == 'Success') {
+            final city = (jsonDecode(resp.body)['PostOffice'] as List)
+                .first['District']
+                .toString();
+            print(city);
+            return Right(city);
+          } else {
+            throw LocationException(
+                message: 'Unable to Fetch Location Try Manually');
+          }
         }
       } else {
         throw LocationException(message: 'Need Location Access');

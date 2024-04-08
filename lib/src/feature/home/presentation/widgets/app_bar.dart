@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod_base/src/commons/views/location_access/location_access_page.dart';
 import 'package:flutter_riverpod_base/src/commons/views/notification/notification_view.dart';
+import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:go_router/go_router.dart';
@@ -13,15 +14,15 @@ class HomeViewAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
     return ListTile(
-      leading:   CircleAvatar(
+      leading: CircleAvatar(
         radius: 20,
         backgroundColor: color.secondary,
-        backgroundImage: AssetImage(
-          ImageAssets.profileImageJpeg,
+        backgroundImage: NetworkImage(
+          user.photoUrl,
         ),
       ),
       title: Text(
-        'Tara Choudhary',
+        user.name,
         style: TextStyle(
             fontSize: 18,
             // color: ColorAssets.blackFaded,
@@ -35,16 +36,16 @@ class HomeViewAppBar extends StatelessWidget {
               context.push(LocationAccessPage.routePath);
             },
             child: Text(
-              'Pune',
+              user.location,
               style: TextStyle(
                   fontSize: 14,
-                  color: color.onBackground,
+                  color: color.onSurface,
                   fontWeight: FontWeight.w400),
             ),
           ),
           Icon(
             Icons.keyboard_arrow_down,
-            color: color.onBackground,
+            color: color.onSurface,
           )
         ],
       ),

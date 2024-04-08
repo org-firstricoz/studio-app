@@ -21,12 +21,12 @@ class FilterDataSourceImpl implements FilterDataSource {
   FutureEither<List<StudioModel>> getFilteredResults(
       FilterParams params) async {
     try {
-      final response = await _client
-          .post(Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.filter}'),
-          headers: {'content-type':'application/json'},
-          body: params.toMap());
-        if(response.statusCode==200){
-           final List data = jsonDecode(response.body);
+      final response = await _client.post(
+          Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.filter}'),
+          headers: {'content-type': 'application/json'},
+          body: jsonEncode(params.toMap()));
+      if (response.statusCode == 200) {
+        final List data = jsonDecode(response.body);
         final List<StudioModel> filterResult =
             data.map<StudioModel>((e) => StudioModel.fromMap(e)).toList();
 

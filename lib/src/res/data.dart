@@ -11,6 +11,8 @@ import 'package:flutter_riverpod_base/src/core/models/chat_model.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 
 class AppData {
+ 
+
   static List<NotificationModel> notifications = [
     NotificationModel(
       title: 'Tour Booked Successfully',

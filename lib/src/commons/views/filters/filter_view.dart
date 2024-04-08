@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
+import 'package:flutter_riverpod_base/src/feature/search_view/presentation/bloc/search_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/search_view/presentation/pages/search_results_view.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../utils/custom_text_button.dart';
+
+final List<String> amenities = [
+  'Backdrop',
+  'Props',
+  'Lighting Equipment',
+  'Camera',
+  'Art Supplies',
+  'Sound System',
+  'Changing Rooms',
+];
+List<int> selectedamenitiesIndices = [];
 
 class FilterView extends StatefulWidget {
   static String routePath = '/filter-view';
@@ -15,7 +32,12 @@ class FilterView extends StatefulWidget {
 
 class _FilterViewState extends State<FilterView> {
   int selectedCategoryIndex = 0;
-
+  int? selectedRating;
+  late FilterParams filterParams = FilterParams(
+      category: AppData.categories[selectedCategoryIndex].title,
+      rating: null,
+      price: 20000,
+      amenities: amenities);
   Color? bgColor;
   Color? textColor;
   String text = '';
@@ -25,57 +47,81 @@ class _FilterViewState extends State<FilterView> {
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      appBar: SimpleAppBar(
-        title: "Filter",
-        leadingCallback: () => Navigator.pop(context),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return BlocListener<SearchBloc, SearchState>(
+      listener: (context, state) {
+        if (state is FilterSuccessState) {
+          context.push(SearchResultsView.routePath, extra: {'query': 'filter'});
+        }
+      },
+      child: Scaffold(
+        appBar: SimpleAppBar(
+          title: "Filter",
+          leadingCallback: () => context.push(HomeView.routePath),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildCategorySection(),
+                    RatingCheckBoxBuilder(
+                      filterParams: filterParams,
+                    ),
+                    PricesWrapWidget(
+                      filterParams: filterParams,
+                    ),
+                    AmenitiesWrapWidget(
+                      filterParams: filterParams,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: 82,
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(horizontal: 37, vertical: 20),
+              decoration: BoxDecoration(
+                color: color.surface,
+                boxShadow: [
+                  BoxShadow(
+                      color: color.tertiary, blurRadius: 1, spreadRadius: 0)
+                ],
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Row(
+                // mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  buildCategorySection(),
-                  const RatingCheckBoxBuilder(),
-                  const PricesWrapWidget(),
-                  const AmenitiesWrapWidget(),
+                  CustomTextButton(
+                    bgColor: color.primary,
+                    text: 'Reset Filter',
+                    textColor: color.onPrimary,
+                    ontap: () {
+                      filterParams = FilterParams(
+                          category:
+                              AppData.categories[selectedCategoryIndex].title,
+                          rating: null,
+                          price: 2000,
+                          amenities: amenities);
+                    },
+                  ),
+                  CustomTextButton(
+                    bgColor: color.primary,
+                    text: 'Apply',
+                    textColor: color.onPrimary,
+                    ontap: () {
+                      context.read<SearchBloc>().add(
+                          GetFilterResultsEvent(filterParams: filterParams));
+                    },
+                  )
                 ],
               ),
             ),
-          ),
-          Container(
-            height: 82,
-            width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 37, vertical: 20),
-            decoration: BoxDecoration(
-              color: color.surface,
-              boxShadow: [
-                BoxShadow(color: color.tertiary, blurRadius: 1, spreadRadius: 0)
-              ],
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Row(
-              // mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomTextButton(
-                  bgColor: color.primary,
-                  text: 'Reset Filter',
-                  textColor: color.onPrimary,
-                  ontap: () {},
-                ),
-                CustomTextButton(
-                  bgColor: color.primary,
-                  text: 'Apply',
-                  textColor: color.onPrimary,
-                  ontap: () {},
-                )
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -141,25 +187,13 @@ class _FilterViewState extends State<FilterView> {
 }
 
 class AmenitiesWrapWidget extends StatefulWidget {
-  const AmenitiesWrapWidget({super.key});
-
+  const AmenitiesWrapWidget({super.key, required this.filterParams});
+  final FilterParams filterParams;
   @override
   State<AmenitiesWrapWidget> createState() => _AmenitiesWrapWidgetState();
 }
 
 class _AmenitiesWrapWidgetState extends State<AmenitiesWrapWidget> {
-  final List<String> prices = [
-    'Backdrop',
-    'Props',
-    'Lighting Equipment',
-    'Camera',
-    'Art Supplies',
-    'Sound System',
-    'Changing Rooms',
-  ];
-
-  List<int> selectedPriceIndices = [];
-
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
@@ -184,14 +218,22 @@ class _AmenitiesWrapWidgetState extends State<AmenitiesWrapWidget> {
           Wrap(
             spacing: 6.0,
             runSpacing: 15.0,
-            children: List.generate(prices.length, (index) {
+            children: List.generate(amenities.length, (index) {
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    if (selectedPriceIndices.contains(index)) {
-                      selectedPriceIndices.remove(index);
+                    if (selectedamenitiesIndices.contains(index)) {
+                      selectedamenitiesIndices.remove(index);
+                      final lists = selectedamenitiesIndices
+                          .map((e) => amenities[e])
+                          .toList();
+                      widget.filterParams.copyWith(amenities: lists);
                     } else {
-                      selectedPriceIndices.add(index);
+                      selectedamenitiesIndices.add(index);
+                      final lists = selectedamenitiesIndices
+                          .map((e) => amenities[e])
+                          .toList();
+                      widget.filterParams.copyWith(amenities: lists);
                     }
                   });
                 },
@@ -201,17 +243,17 @@ class _AmenitiesWrapWidgetState extends State<AmenitiesWrapWidget> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: selectedPriceIndices.contains(index)
+                    color: selectedamenitiesIndices.contains(index)
                         ? color.primary
                         : color.secondary,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    prices[index],
+                    amenities[index],
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
-                      color: selectedPriceIndices.contains(index)
+                      color: selectedamenitiesIndices.contains(index)
                           ? color.surface
                           : color.tertiary,
                     ),
@@ -229,20 +271,15 @@ class _AmenitiesWrapWidgetState extends State<AmenitiesWrapWidget> {
 class PricesWrapWidget extends StatefulWidget {
   const PricesWrapWidget({
     Key? key,
+    required this.filterParams,
   }) : super(key: key);
-
+  final FilterParams filterParams;
   @override
   State<PricesWrapWidget> createState() => _PricesWrapWidgetState();
 }
 
 class _PricesWrapWidgetState extends State<PricesWrapWidget> {
-  final List<String> prices = [
-    "Under \$100",
-    "Under \$500",
-    "\$5000",
-    "\$1500-\$3000",
-    "\$1000-\$1500",
-  ];
+  final List<num> prices = [100, 500, 2000, 5000, 10000, 20000];
 
   int? selectedPriceIndex;
 
@@ -275,6 +312,8 @@ class _PricesWrapWidgetState extends State<PricesWrapWidget> {
                 onTap: () {
                   setState(() {
                     selectedPriceIndex = index;
+                    widget.filterParams.copyWith(
+                        price: prices[selectedPriceIndex ?? prices.length - 1]);
                   });
                 },
                 child: Container(
@@ -282,6 +321,7 @@ class _PricesWrapWidgetState extends State<PricesWrapWidget> {
                     horizontal: 17,
                     vertical: 6,
                   ),
+                  // name@gmail.com name123
                   decoration: BoxDecoration(
                     color: selectedPriceIndex == index
                         ? color.primary
@@ -289,7 +329,7 @@ class _PricesWrapWidgetState extends State<PricesWrapWidget> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    prices[index],
+                    '< Rs. ${prices[index]}',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -309,15 +349,14 @@ class _PricesWrapWidgetState extends State<PricesWrapWidget> {
 }
 
 class RatingCheckBoxBuilder extends StatefulWidget {
-  const RatingCheckBoxBuilder({Key? key}) : super(key: key);
-
+  const RatingCheckBoxBuilder({Key? key, required this.filterParams})
+      : super(key: key);
+  final FilterParams filterParams;
   @override
   _RatingCheckBoxBuilderState createState() => _RatingCheckBoxBuilderState();
 }
 
 class _RatingCheckBoxBuilderState extends State<RatingCheckBoxBuilder> {
-  int? selectedRating = 5;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -356,10 +395,10 @@ class _RatingCheckBoxBuilderState extends State<RatingCheckBoxBuilder> {
             width: 24,
             child: Checkbox(
               activeColor: color.primary,
-              value: selectedRating == rating,
+              value: widget.filterParams.rating == rating,
               onChanged: (value) {
                 setState(() {
-                  selectedRating = value! ? rating : null;
+                  widget.filterParams.copyWith(rating: value! ? rating : null);
                 });
               },
             ),

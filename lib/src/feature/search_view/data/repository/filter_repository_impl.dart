@@ -7,10 +7,12 @@ import 'package:flutter_riverpod_base/src/feature/search_view/domain/repository/
 class FilterRepositoryImpl implements FilterRepository {
   final FilterDataSource _filterDataSource;
 
-  FilterRepositoryImpl({required FilterDataSource filterDataSource}):_filterDataSource=filterDataSource;
+  FilterRepositoryImpl({required FilterDataSource filterDataSource})
+      : _filterDataSource = filterDataSource;
   @override
-  FutureEither<List<StudioModel>> getFilteredResults(FilterParams params) {
+  FutureEither<List<StudioModel>> getFilteredResults(
+      FilterParams params) async {
     // TODO: implement getFilteredResults
-    throw UnimplementedError();
+    return await _filterDataSource.getFilteredResults(params);  
   }
 }

@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_riverpod_base/src/core/models/studio_model.dart';
@@ -21,10 +22,21 @@ class ItemListTileView extends StatefulWidget {
 }
 
 class _ItemListTileViewState extends State<ItemListTileView> {
-  bool isLiked = false;
+  late bool isLiked;
+  @override
+  void initState() {
+    super.initState();
+    isLiked = AppData.favouriteModel.contains(widget.studioModel);
+  }
+
   toggleLike() {
     setState(() {
       isLiked = !isLiked;
+      if (AppData.favouriteModel.contains(widget.studioModel)) {
+        AppData.favouriteModel.remove(widget.studioModel);
+      } else {
+        AppData.favouriteModel.add(widget.studioModel);
+      }
     });
   }
 
@@ -150,14 +162,14 @@ class _ItemListTileViewState extends State<ItemListTileView> {
                 ),
                 RichText(
                     text: TextSpan(
-                        text: "\$${widget.studioModel.rent}",
+                        text: "Rs. ${widget.studioModel.rent}",
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: color.primary),
                         children: [
                       TextSpan(
-                        text: " /month",
+                        text: " /day",
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

@@ -48,7 +48,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           AppData.reviewModels = reviewDetails;
           AppData.studioDetails = studioDetails;
           AppData.agentDetails = agentDetails;
-
           return Right({
             'studio_details': studioDetails,
             'agent_details': agentDetails,
