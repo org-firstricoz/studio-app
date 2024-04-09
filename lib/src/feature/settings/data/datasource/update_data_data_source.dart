@@ -19,10 +19,11 @@ class UpdateDataDataSourceImpl implements UpdateDataDataSource {
   UpdateDataDataSourceImpl({required this.client});
   @override
   FutureEither<User> updateData(UpdateParams params) async {
-    
+    print(params.toMap());
     try {
-      final response = await client
-          .post(Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.update}'),headers: {'content-type':'application/json'},
+      final response = await client.post(
+          Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.update}'),
+          headers: {'content-type': 'application/json'},
           body: jsonEncode(params.toMap()));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

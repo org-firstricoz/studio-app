@@ -9,6 +9,12 @@ import 'package:go_router/go_router.dart';
 
 class HomeViewAppBar extends StatelessWidget {
   const HomeViewAppBar({super.key});
+  photoBuilder() {
+    if (photoUrl != null)
+      return AssetImage(photoUrl!);
+    else
+      return NetworkImage(user.photoUrl);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +23,7 @@ class HomeViewAppBar extends StatelessWidget {
       leading: CircleAvatar(
         radius: 20,
         backgroundColor: color.secondary,
-        backgroundImage: NetworkImage(
-          user.photoUrl,
-        ),
+        backgroundImage: photoBuilder(),
       ),
       title: Text(
         user.name,

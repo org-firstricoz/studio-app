@@ -15,7 +15,8 @@ class TourRequestView extends StatefulWidget {
   static String routePath = '/tour-request';
   final DateTime date;
   const TourRequestView({
-    super.key, required this.date,
+    super.key,
+    required this.date,
   });
 
   @override
@@ -106,7 +107,11 @@ class _TourRequestViewState extends State<TourRequestView> {
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(20))),
             child: Center(
-              child: CustomTextButton(text: "Done", ontap: () {}),
+              child: CustomTextButton(
+                  text: "Done",
+                  ontap: () {
+                    context.go(HomeView.routePath);
+                  }),
             ),
           ),
 

@@ -4,3 +4,4 @@ Map<String, dynamic> userDetails = {};
 User user = User.empty();
 late double latitude;
 late double longitude;
+String? photoUrl = null;

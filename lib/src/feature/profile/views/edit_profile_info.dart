@@ -26,9 +26,12 @@ class EditProfileInfoView extends StatefulWidget {
 
 class _EditProfileInfoViewState extends State<EditProfileInfoView> {
   UpdateParams updateParams = UpdateParams();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController nameController =
+      TextEditingController(text: user.name);
+  final TextEditingController phoneController =
+      TextEditingController(text: user.phoneNumber);
+  final TextEditingController emailController =
+      TextEditingController(text: user.email);
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +42,17 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
           context.go(HomeView.routePath);
         } else if (state is UpdateFailureState) {
           ScaffoldMessenger.of(context).clearMaterialBanners();
-          ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-              content: Text('Unable to Update Data ${state.message}'),
-              actions: [CloseButton()]));
+          ScaffoldMessenger.of(context).showMaterialBanner(
+            MaterialBanner(
+                content: Text('Unable to Update Data ${state.message}'),
+                actions: [
+                  CloseButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).clearMaterialBanners();
+                    },
+                  )
+                ]),
+          );
         }
         // TODO: implement listener
       },
@@ -70,7 +81,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                   child: CustomTextButton(
                       text: "Update Profile",
                       ontap: () {
-                        updateParams.copyWith(
+                        final updateParams = UpdateParams(
                             name: nameController.text.trim(),
                             email: emailController.text.trim(),
                             phoneNumber: phoneController.text.trim());
@@ -99,7 +110,6 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
             controller: nameController,
             labelText: "Name",
             hintText: "Tara Choudhary",
-            initialValue: user.name,
           ),
           FormTextField(
             controller: phoneController,
@@ -114,14 +124,12 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                       color: color.primary),
                 )),
             hintText: "1235468790",
-            initialValue: user.phoneNumber,
           ),
           // email
           FormTextField(
             controller: emailController,
             labelText: "Email",
             hintText: "example@gmail.com",
-            initialValue: user.email,
           ),
           // gender
           FormTextField(
