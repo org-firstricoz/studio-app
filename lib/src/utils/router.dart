@@ -38,7 +38,8 @@ import '../feature/home/presentation/near_by_studios_view.dart';
 import '../feature/home/presentation/recomended_studios_view.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: _cachedUser(),
+  initialLocation: LoginPage.routePath,
+  // _cachedUser(),
   routes: [
     // name123
     // GoRoute(
