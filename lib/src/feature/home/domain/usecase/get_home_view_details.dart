@@ -8,9 +8,21 @@ class GetHomeViewDetails
     implements UseCase<Map<String, List<StudioModel>>, AllParams> {
   final HomeViewRepository _homeViewRepository;
 
-  GetHomeViewDetails({required HomeViewRepository homeViewRepository}) : _homeViewRepository = homeViewRepository;
+  GetHomeViewDetails({required HomeViewRepository homeViewRepository})
+      : _homeViewRepository = homeViewRepository;
   @override
   FutureEither<Map<String, List<StudioModel>>> call(AllParams params) {
     return _homeViewRepository.getHomeViewDetails(params);
+  }
+}
+
+class SaveFavourites implements UseCase<void, List<StudioModel>> {
+  final HomeViewRepository _homeViewRepository;
+
+  SaveFavourites({required HomeViewRepository homeViewRepository})
+      : _homeViewRepository = homeViewRepository;
+  @override
+  FutureEither<void> call(List<StudioModel> params) {
+    return _homeViewRepository.saveFavourites(params);
   }
 }

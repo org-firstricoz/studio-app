@@ -155,11 +155,11 @@ class _FavoritesTabState extends State<FavoritesTab> {
                     itemCount: allModels.length,
                     itemBuilder: (context, index) {
                       final data = allModels[index];
-                      final isTagMatch = data.tag.toLowerCase() ==
+                      final isTagMatch = data.category.toLowerCase() ==
                           categories[sealectedCategoryIndex]
                               .title
                               .toLowerCase();
-                      final isTitleMatch = data.title
+                      final isTitleMatch = data.name
                           .toLowerCase()
                           .contains(searchTerm.toLowerCase());
                       final isLocationMatch = data.location

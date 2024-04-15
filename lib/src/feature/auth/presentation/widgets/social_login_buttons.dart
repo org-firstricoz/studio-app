@@ -14,67 +14,67 @@ class SocialAuthenticationButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        TextTheme textTheme = Theme.of(context).textTheme;
+    TextTheme textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                  child: Divider(
-                thickness: 1,
-                color: ColorAssets.lightGray,
-              )),
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Text(
-                  "or Sign in with",
-                  style: textTheme.bodyMedium!.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                     ),
-                ),
-              ),
-              Expanded(
-                  child: Divider(
-                thickness: 1,
-                color: ColorAssets.lightGray,
-              )),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     Expanded(
+          //         child: Divider(
+          //       thickness: 2,
+          //       color: ColorAssets.lightGray,
+          //     )),
+          //     Padding(
+          //       padding: const EdgeInsets.all(6.0),
+          //       child: Text(
+          //         "or Sign in with",
+          //         style: textTheme.bodyMedium!.copyWith(
+          //           fontSize: 14,
+          //           fontWeight: FontWeight.w600,
+          //         ),
+          //       ),
+          //     ),
+          //     Expanded(
+          //         child: Divider(
+          //       thickness: 2,
+          //       color: ColorAssets.lightGray,
+          //     )),
+          //   ],
+          // ),
 
-          // social buttons
-          const SizedBox(height: 30),
+          // // social buttons
+          // const SizedBox(height: 30),
 
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                  onPressed: () {},
-                  icon: Image.asset(
-                    ImageAssets.google,
-                    width: 40,
-                    height: 40,
-                  )),
-              IconButton(
-                  onPressed: () {},
-                  icon: Image.asset(
-                    ImageAssets.facebook,
-                    width: 40,
-                    height: 40,
-                  )),
-              IconButton(
-                  onPressed: () {},
-                  icon: Image.asset(
-                    ImageAssets.apple,
-                    width: 40,
-                    height: 40,
-                  )),
-            ],
-          ),
+          // Row(
+          //   mainAxisSize: MainAxisSize.max,
+          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //   children: [
+          //     IconButton(
+          //         onPressed: () {},
+          //         icon: Image.asset(
+          //           ImageAssets.google,
+          //           width: 40,
+          //           height: 40,
+          //         )),
+          //     IconButton(
+          //         onPressed: () {},
+          //         icon: Image.asset(
+          //           ImageAssets.facebook,
+          //           width: 40,
+          //           height: 40,
+          //         )),
+          //     IconButton(
+          //         onPressed: () {},
+          //         icon: Image.asset(
+          //           ImageAssets.apple,
+          //           width: 40,
+          //           height: 40,
+          //         )),
+          //   ],
+          // ),
           if (widget != null)
             Column(
               children: [

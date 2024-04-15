@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_model.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_view_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 
@@ -94,7 +96,7 @@ class _ItemCardViewState extends State<ItemCardView> {
                       color: color.secondary,
                       borderRadius: BorderRadius.circular(10)),
                   child: Text(
-                    widget.studioModel.tag,
+                    widget.studioModel.category,
                     style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
@@ -122,7 +124,7 @@ class _ItemCardViewState extends State<ItemCardView> {
               ],
             ),
             Text(
-              widget.studioModel.title,
+              widget.studioModel.name,
               style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,

@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 class StudioModel {
   final String id;
   final String image;
-  final String title;
-  final String tag;
+  final String name;
+  final String category;
   final String rating;
   final String location;
   final String address;
@@ -17,8 +17,8 @@ class StudioModel {
   StudioModel({
     required this.id,
     required this.image,
-    required this.title,
-    required this.tag,
+    required this.name,
+    required this.category,
     required this.rating,
     required this.location,
     required this.address,
@@ -31,8 +31,8 @@ class StudioModel {
     return <String, dynamic>{
       'id': id,
       'image': image,
-      'title': title,
-      'tag': tag,
+      'name': name,
+      'category': category,
       'rating': rating,
       'location': location,
       'address': address,
@@ -46,8 +46,8 @@ class StudioModel {
     return StudioModel(
       id: map['id'] as String,
       image: map['image'] as String,
-      title: map['title'] as String,
-      tag: map['tag'] as String,
+      name: map['name'] as String,
+      category: map['category'] as String,
       rating: map['rating'].toString(),
       location: map['location'] as String,
       address: map['address'] as String,
@@ -65,8 +65,8 @@ class StudioModel {
   StudioModel copyWith({
     String? id,
     String? image,
-    String? title,
-    String? tag,
+    String? name,
+    String? category,
     String? rating,
     String? location,
     String? address,
@@ -77,8 +77,8 @@ class StudioModel {
     return StudioModel(
       id: id ?? this.id,
       image: image ?? this.image,
-      title: title ?? this.title,
-      tag: tag ?? this.tag,
+      name: name ?? this.name,
+      category: category ?? this.category,
       rating: rating ?? this.rating,
       location: location ?? this.location,
       address: address ?? this.address,
@@ -90,7 +90,7 @@ class StudioModel {
 
   @override
   String toString() {
-    return 'StudioModel(id: $id, image: $image, title: $title, tag: $tag, rating: $rating, location: $location, address: $address, rent: $rent, latitude: $latitude, longitude: $longitude)';
+    return 'StudioModel(id: $id, image: $image, name: $name, category: $category, rating: $rating, location: $location, address: $address, rent: $rent, latitude: $latitude, longitude: $longitude)';
   }
 
   @override
@@ -99,8 +99,8 @@ class StudioModel {
 
     return other.id == id &&
         other.image == image &&
-        other.title == title &&
-        other.tag == tag &&
+        other.name == name &&
+        other.category == category &&
         other.rating == rating &&
         other.location == location &&
         other.address == address &&
@@ -113,8 +113,8 @@ class StudioModel {
   int get hashCode {
     return id.hashCode ^
         image.hashCode ^
-        title.hashCode ^
-        tag.hashCode ^
+        name.hashCode ^
+        category.hashCode ^
         rating.hashCode ^
         location.hashCode ^
         address.hashCode ^

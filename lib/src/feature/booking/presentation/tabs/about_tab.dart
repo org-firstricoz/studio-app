@@ -107,19 +107,19 @@ class _AboutTabState extends State<AboutTab> {
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
                 backgroundColor: color.secondary,
-                backgroundImage: AssetImage(ImageAssets.profileImageJpeg),
+                backgroundImage: NetworkImage(i.photoUrl),
                 radius: 20,
               ),
               title: Text(
                 i.name,
-                style: TextStyle(
+                style:const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color: ColorAssets.blackFaded),
               ),
               subtitle: Text(
                 i.status,
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color: ColorAssets.lightGray),

@@ -106,7 +106,7 @@ class _ItemListTileViewState extends State<ItemListTileView> {
                           color: color.secondary,
                           borderRadius: BorderRadius.circular(10)),
                       child: Text(
-                        widget.studioModel.tag,
+                        widget.studioModel.category,
                         style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w500,
@@ -135,7 +135,7 @@ class _ItemListTileViewState extends State<ItemListTileView> {
                   ],
                 ),
                 Text(
-                  widget.studioModel.title,
+                  widget.studioModel.name,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,

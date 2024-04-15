@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_lifecycle_detector/flutter_lifecycle_detector.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
-import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -28,9 +28,22 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
+    FlutterLifecycleDetector().onBackgroundChange.listen((isBackground) {
+      /// `isBackground` is true => background
+      /// `isBackground` is false => foreground
+      print('Status background $isBackground');
+      context
+          .read<HomeViewBloc>()
+          .add(SavingFavouritesEvent(params: AppData.favouriteModel));
+    });
     context.read<HomeViewBloc>().add(
         FetchingStudioDataEvent(params: AllParams(location: user.location)));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   int _currentIndex = 0;
@@ -76,8 +89,8 @@ class _HomeViewState extends State<HomeView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(state.message,
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 174, 174, 174))),
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 174, 174, 174))),
                       TextButton(
                           onPressed: () {
                             context.read<HomeViewBloc>().add(

@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod_base/src/commons/views/otp/login_otp.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/presentation/pages/login_page.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/presentation/pages/sign_up_page.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
@@ -75,27 +76,27 @@ class Page3 extends StatelessWidget {
                       CustomTextButton(
                           text: "Let’s Get Started",
                           ontap: () {
-                            context.push(SignUpPage.routePath);
+                            context.push(LoginOtp.routePath);
                           }),
                       const SizedBox(height: 30),
-                      RichText(
-                        text: TextSpan(
-                          text: "Already have an account? ",
-                          style: textTheme.titleLarge!.copyWith(
-                              fontWeight: FontWeight.w600, fontSize: 20),
-                          children: [
-                            TextSpan(
-                              text: "Sign In",
-                              style: textTheme.titleLarge!
-                                  .copyWith(color: color.primary, fontSize: 20),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  context.push(LoginPage.routePath);
-                                },
-                            )
-                          ],
-                        ),
-                      ),
+                      // RichText(
+                      //   text: TextSpan(
+                      //     text: "Already have an account? ",
+                      //     style: textTheme.titleLarge!.copyWith(
+                      //         fontWeight: FontWeight.w600, fontSize: 20),
+                      //     children: [
+                      //       TextSpan(
+                      //         text: "Sign In",
+                      //         style: textTheme.titleLarge!
+                      //             .copyWith(color: color.primary, fontSize: 20),
+                      //         recognizer: TapGestureRecognizer()
+                      //           ..onTap = () {
+                      //             context.push(LoginOtp.routePath);
+                      //           },
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

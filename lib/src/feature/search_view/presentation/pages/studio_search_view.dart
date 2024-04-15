@@ -47,8 +47,8 @@ class _StudioSearchViewState extends State<StudioSearchView> {
               onFieldSubmitted: (value) {
                 if (value.isNotEmpty) {
                   context
-        .read<SearchBloc>()
-        .add(GetSearchResultsEvent(query: value.toString()));
+                      .read<SearchBloc>()
+                      .add(GetSearchResultsEvent(query: value.toString()));
                   context.push(SearchResultsView.routePath,
                       extra: {'query': value});
                 }
@@ -111,7 +111,7 @@ class _StudioSearchViewState extends State<StudioSearchView> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'NearBy',
+                  'Recomended',
                   textAlign: TextAlign.left,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
@@ -123,7 +123,7 @@ class _StudioSearchViewState extends State<StudioSearchView> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final data = AppData.nearByStudios[index];
+                  final data = AppData.recomendedStudios[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: ItemListTileView(
@@ -135,7 +135,7 @@ class _StudioSearchViewState extends State<StudioSearchView> {
                     ),
                   );
                 },
-                itemCount: AppData.nearByStudios.length,
+                itemCount: AppData.recomendedStudios.length,
               ),
             )
           ],

@@ -38,8 +38,9 @@ import '../feature/home/presentation/near_by_studios_view.dart';
 import '../feature/home/presentation/recomended_studios_view.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: LoginPage.routePath,
-  // _cachedUser(),
+  initialLocation:
+      //  LoginOtp.routePath,
+      _cachedUser(),
   routes: [
     // name123
     // GoRoute(
@@ -176,18 +177,18 @@ final GoRouter router = GoRouter(
         return const OnBoardingPage();
       },
     ),
-    GoRoute(
-      path: LoginPage.routePath,
-      builder: (context, state) {
-        return const LoginPage();
-      },
-    ),
-    GoRoute(
-      path: SignUpPage.routePath,
-      builder: (context, state) {
-        return const SignUpPage();
-      },
-    ),
+    // GoRoute(
+    //   path: LoginPage.routePath,
+    //   builder: (context, state) {
+    //     return const LoginPage();
+    //   },
+    // ),
+    // GoRoute(
+    //   path: SignUpPage.routePath,
+    //   builder: (context, state) {
+    //     return const SignUpPage();
+    //   },
+    // ),
     GoRoute(
       path: CompleteYourProfileInfoView.routePath,
       builder: (context, state) {

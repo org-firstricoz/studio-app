@@ -27,7 +27,7 @@ int? SuccessStatus;
 
 class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
   final http.Client client;
-  final _razorpay = Razorpay();
+
   ScheduleRemoteDataSourceImpl({required this.client});
 
   @override
@@ -50,7 +50,7 @@ class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
           'amount': params.amount * 100,
           'name': params.name,
           'time_out': 240,
-          "order_id": orderId['id'],
+          "id": orderId['id'],
           'prefill': {'contact': user.phoneNumber, 'email': user.email}
         };
 
@@ -59,7 +59,7 @@ class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
         throw ApiException(message: response.body);
       }
     } on ApiException catch (e) {
-      print('$e');
+      print(e.message);
       return Left(ApiFailure(message: e.message));
     }
   }

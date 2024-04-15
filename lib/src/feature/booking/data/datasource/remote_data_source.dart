@@ -28,13 +28,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-
         final studioDetailsRemote = data['studio_details'];
         final agentDetailsRemote = data['agent_details'];
         final reviewDetailsRemote = data['review_details'];
 
         // print(studioDetailsRemote);
-        // print(agentDetailsRemote);
+        print(agentDetailsRemote);
         // print(reviewDetailsRemote);
         final studioDetails = StudioDetails.fromMap(studioDetailsRemote);
         final agentDetails = agentDetailsRemote
@@ -70,7 +69,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       print(e);
       return Left(ApiFailure(message: e.message));
     } catch (e) {
-      print(e.runtimeType);
+      print(e);
       return Left(ApiFailure(message: e.toString()));
     }
   }
@@ -85,10 +84,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           body: jsonEncode(params.toMap()));
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
 
         final ReviewModel reviewModel = ReviewModel.fromMap(data);
-        AppData.reviewModels.add(reviewModel);
+        AppData.reviewModels.insert(0, reviewModel);
+
         return Right({'review_model': reviewModel});
       } else {
         throw ApiException(message: 'Unable to add review');

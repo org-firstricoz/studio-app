@@ -11,6 +11,8 @@ import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/customElevatedContainer.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/custom_tab_builder.dart';
 
+GlobalKey scaffold = GlobalKey<ScaffoldState>();
+
 class TourBookingModelSheet extends StatefulWidget {
   const TourBookingModelSheet({
     Key? key,
@@ -27,11 +29,7 @@ class TourBookingModelSheet extends StatefulWidget {
 class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  double rating = 0;
 
   bool isLiked = false;
 
@@ -41,11 +39,10 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
     });
   }
 
-  double rating = 0;
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
-
+    final studioDetails = widget.studioDetails;
     return Container(
       decoration: const BoxDecoration(
           color: ColorAssets.white,
@@ -72,36 +69,36 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
                                     size: 12,
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     '${widget.studioDetails.rating} (${widget.studioDetails.numberOfReviews} reviews)',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w600,
                                         color: ColorAssets.lightGray),
                                   ),
-                                  SizedBox(width: 18),
+                                  const SizedBox(width: 18),
                                 ],
                               )
                             ],
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           Text(
                             widget.studioDetails.name,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w600,
                                 color: ColorAssets.blackFaded),
                           ),
-                          SizedBox(height: 12),
+                          const SizedBox(height: 12),
                           Text(
                             widget.studioDetails.address,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: ColorAssets.blackFaded),
@@ -145,14 +142,14 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                             final DateTime? date = await showDatePicker(
                                 context: context,
                                 firstDate: DateTime.now(),
-                                lastDate:
-                                    DateTime.now().add(Duration(days: 50)));
+                                lastDate: DateTime.now()
+                                    .add(const Duration(days: 50)));
                             if (date != null) {
                               selectedDate = date;
                               setState(() {});
                             }
                           },
-                          icon: Icon(Icons.calendar_month)),
+                          icon: const Icon(Icons.calendar_month)),
                       selectedDate != null
                           ? Text(DateFormat('dd-MM-yyyy').format(selectedDate!))
                           : SizedBox.fromSize(),
@@ -164,7 +161,8 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                             final TimeOfDay? time = await showTimePicker(
                                 context: context,
                                 initialTime: TimeOfDay.fromDateTime(
-                                    DateTime.now().add(Duration(hours: 10))));
+                                    DateTime.now()
+                                        .add(const Duration(hours: 10))));
                             if (time != null) {
                               selectedTime = time;
                               setState(() {});
@@ -220,8 +218,8 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
             buttonText: "Schedule Tour",
             onTap: () {
               if (selectedDate != null && selectedTime != null) {
-                context.go(BookingTourView.routePath, extra: {
-                  'studio_details': widget.studioDetails,
+                context.push(BookingTourView.routePath, extra: {
+                  'studio_details': studioDetails,
                   'date': selectedDate,
                   'time': selectedTime,
                 });
@@ -231,13 +229,5 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
         ],
       ),
     );
-  }
-
-  String _formatHour(int hour) {
-    return hour > 12 ? (hour - 12).toString() : hour.toString();
-  }
-
-  String _getAmPm(TimeOfDay time) {
-    return time.hour >= 12 ? 'PM' : 'AM';
   }
 }

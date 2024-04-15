@@ -2,61 +2,61 @@
 import 'dart:convert';
 
 class AgentModel {
-  final String id;
+  final String agentId;
   final String number;
   final String name;
-  final String imageUrl;
+  final String photoUrl;
   final String status;
   AgentModel({
-    required this.id,
+    required this.agentId,
     required this.number,
     required this.name,
-    required this.imageUrl,
+    required this.photoUrl,
     required this.status,
   });
 
   static AgentModel empty() {
     return AgentModel(
         status: 'owner',
-        id: 'id',
+        agentId: 'agentId',
         number: 'number',
         name: 'name',
-        imageUrl: 'imageUrl');
+        photoUrl: 'photoUrl');
   }
 
   AgentModel copyWith({
-    String? id,
+    String? agentId,
     String? number,
     String? name,
-    String? imageUrl,
+    String? photoUrl,
     String? status,
   }) {
     return AgentModel(
-      id: id ?? this.id,
+      agentId: agentId ?? this.agentId,
       number: number ?? this.number,
       name: name ?? this.name,
-      imageUrl: imageUrl ?? this.imageUrl,
+      photoUrl: photoUrl ?? this.photoUrl,
       status: status ?? this.status,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'agentId': agentId,
       'number': number,
       'name': name,
-      'imageUrl': imageUrl,
+      'photoUrl': photoUrl,
       'status': status,
     };
   }
 
   factory AgentModel.fromMap(Map<String, dynamic> map) {
     return AgentModel(
-      id: map['id'] as String,
-      number: map['number'] as String,
-      name: map['name'] as String,
-      imageUrl: map['imageUrl'] as String,
-      status: map['status'] as String,
+      agentId: map['agentId'].toString(),
+      number: map['number'].toString(),
+      name: map['name'].toString(),
+      photoUrl: map['photoUrl'].toString(),
+      status: map['status'].toString(),
     );
   }
 
@@ -67,26 +67,26 @@ class AgentModel {
 
   @override
   String toString() {
-    return 'AgentModel(id: $id, number: $number, name: $name, imageUrl: $imageUrl, status: $status)';
+    return 'AgentModel(agentId: $agentId, number: $number, name: $name, photoUrl: $photoUrl, status: $status)';
   }
 
   @override
   bool operator ==(covariant AgentModel other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
+    return other.agentId == agentId &&
         other.number == number &&
         other.name == name &&
-        other.imageUrl == imageUrl &&
+        other.photoUrl == photoUrl &&
         other.status == status;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
+    return agentId.hashCode ^
         number.hashCode ^
         name.hashCode ^
-        imageUrl.hashCode ^
+        photoUrl.hashCode ^
         status.hashCode;
   }
 }

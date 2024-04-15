@@ -33,12 +33,13 @@ class FilterDataSourceImpl implements FilterDataSource {
         AppData.filterResult = filterResult;
         return Right(AppData.filterResult);
       } else {
-        throw ApiException(message: 'No Studio Found');
+        throw ApiException(message: response.body);
       }
     } on ApiException catch (e) {
-      print(e);
+      print(e.message);
       return Left(ApiFailure(message: e.message));
     } catch (e) {
+      print(e);
       return Left(ApiFailure(message: e.toString()));
     }
   }

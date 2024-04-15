@@ -16,6 +16,7 @@ import 'package:http/http.dart' as http;
 abstract class HomeViewRemoteDataSource {
   FutureEither<Map<String, List<StudioModel>>> getHomeViewDetails(
       AllParams params);
+  FutureEitherVoid saveFavourites(List<StudioModel> params);
 }
 
 class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
@@ -30,7 +31,7 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
 
       var data = jsonDecode(jsonEncode(response.body));
       data = jsonDecode(data);
-
+      print(data);
       final recomendedStudio = data['recommended'];
       final nearbystudio = data['nearby'];
       final category = data['categories'];
@@ -43,34 +44,48 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
       // print(recomendedStudio);
       // print(favorites);
       // print(recentSearch);
-      print(notification);
+      // print(notification);
 
-      final List<NotificationModel> notificationList = notification
-          .map<NotificationModel>((e) => NotificationModel.fromMap(e))
-          .toList();
+      final List<StudioModel> recomendedStudioModels =
+          (recomendedStudio as List).isNotEmpty
+              ? recomendedStudio
+                  .map<StudioModel>((e) => StudioModel.fromMap(e))
+                  .toList()
+              : [];
+      final List<StudioModel> nearbyStudios = (nearbystudio as List).isNotEmpty
+          ? nearbystudio
+              .map<StudioModel>((e) => StudioModel.fromMap(e))
+              .toList()
+          : [];
+      final List<CategoryModel> categories = (category as List).isNotEmpty
+          ? category
+              .map<CategoryModel>((e) => CategoryModel.fromMap(e))
+              .toList()
+          : [];
+      final List<StudioModel> favouriteStudio = (favorites as List).isNotEmpty
+          ? favorites.map<StudioModel>((e) => StudioModel.fromMap(e)).toList()
+          : [];
+      final List<ChatDetails> chatDetails = (chatData as List).isNotEmpty
+          ? chatData.map<ChatDetails>((e) => ChatDetails.fromMap(e)).toList()
+          : [];
+      final List<String> recentSearches = (recentSearch as List).isNotEmpty
+          ? recentSearch.map<String>((e) => e.toString()).toList()
+          : [];
+      final List<NotificationModel> notificationList =
+          (notification as List).isNotEmpty
+              ? notification
+                  .map<NotificationModel>((e) => NotificationModel.fromMap(e))
+                  .toList()
+              : [];
 
-      final List<StudioModel> recomendedStudioModels = recomendedStudio
-          .map<StudioModel>((e) => StudioModel.fromMap(e))
-          .toList();
-      final List<StudioModel> nearbyStudios =
-          nearbystudio.map<StudioModel>((e) => StudioModel.fromMap(e)).toList();
-      final List<CategoryModel> categories =
-          category.map<CategoryModel>((e) => CategoryModel.fromMap(e)).toList();
-      final List<StudioModel> favouriteStudio =
-          favorites.map<StudioModel>((e) => StudioModel.fromMap(e)).toList();
-      final chatDetails =
-          chatData.map<ChatDetails>((e) => ChatDetails.fromMap(e)).toList();
-      final List<String> recentSearches =
-          recentSearch.map<String>((e) => e.toString()).toList();
-
-      AppData.categories = categories;
       AppData.nearByStudios = nearbyStudios;
       AppData.recomendedStudios = recomendedStudioModels;
+      AppData.categories = categories;
       AppData.favouriteModel = favouriteStudio;
       AppData.chatData = chatDetails;
       AppData.recentSearches = recentSearches;
       AppData.notifications = notificationList;
-
+      print(AppData.nearByStudios);
       return Right({
         'recomendedStudioModels': recomendedStudioModels,
         'nearbyStudios': nearbyStudios,
@@ -80,6 +95,31 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
       return Left(ApiFailure(message: e.message));
     } catch (e) {
       print(e.toString());
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  FutureEitherVoid saveFavourites(List<StudioModel> params) async {
+    try {
+      final response = await http.put(
+          Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.favourites}'),
+          headers: {'content-type': 'application/json'},
+          body: jsonEncode({
+            'uuid': user.uuid,
+            'studio_id': params.map((e) => e.id).toList()
+          }));
+      if (response.statusCode == 200) {
+        jsonDecode(response.body);
+        print("done");
+        return const Right(null);
+      } else {
+        throw ApiException(message: response.body);
+      }
+    } on ApiException catch (e) {
+      print(e);
+      return Left(ApiFailure(message: e.message));
+    } catch (e) {
       return Left(ApiFailure(message: e.toString()));
     }
   }

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod_base/src/core/exceptions.dart';
 import 'package:flutter_riverpod_base/src/core/models/location_model.dart';
 import 'package:flutter_riverpod_base/src/core/models/user_model.dart';
 import 'package:flutter_riverpod_base/src/core/type_def.dart';
+import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:geocoding/geocoding.dart';
@@ -52,7 +53,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
         return Right(user);
       } else {
-        throw ApiException(message: 'ApiFailure: unable to get data');
+        throw ApiException(message: response.body);
       }
     } on ApiException catch (e) {
       return Left(ApiFailure(message: e.message));
@@ -192,10 +193,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   FutureEither<String> sendOtp(String params) async {
     // TODO: implement sendOtp
     try {
+      print(params);
       final response = await client.get(Uri.parse(
           '${AppRequestUrl.baseUrl}${AppRequestUrl.otpEndPoint}?params=$params'));
       if (response.statusCode == 200) {
-        final otp = response.body.toString();
+        final data = jsonDecode(response.body);
+        final otp = data["otp"];
+        newUser = data["newUser"];
         return Right(otp);
       } else {
         throw ApiException(message: response.body);

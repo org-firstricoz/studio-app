@@ -4,6 +4,7 @@ import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/core/core.dart';
 import 'package:flutter_riverpod_base/src/core/exceptions.dart';
 import 'package:flutter_riverpod_base/src/core/models/agent_details.dart';
+import 'package:flutter_riverpod_base/src/core/models/chat.dart';
 import 'package:flutter_riverpod_base/src/core/models/chat_model.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/res/strings.dart';
@@ -31,10 +32,15 @@ class ChatRemoteDataSourceImpl extends ChatRemoteDataSource {
           Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.chat}'),
           headers: {'content-type': 'application/json'},
           body: jsonEncode(message.toMap()));
-      print(response.statusCode);
+
       if (response.statusCode == 200) {
-        AppData.chatMessages.add(message);
-        print(AppData.chatMessages);
+        final data = jsonDecode(response.body);
+
+        data['chat'] != null
+            ? AppData.chatData.insert(0, ChatDetails.fromMap(data['chat']))
+            : null;
+        AppData.chatMessages.add(ChatMessage.fromMap(data["message"]));
+
         return Right(AppData.chatMessages);
       } else {
         throw ApiException(
@@ -77,7 +83,6 @@ class ChatRemoteDataSourceImpl extends ChatRemoteDataSource {
   @override
   FutureEither<AgentDetails> getAgentDetails(String agentId) async {
     try {
-      
       final response = await _client.get(Uri.parse(
           '${AppRequestUrl.baseUrl}${AppRequestUrl.agent}?agentID=$agentId'));
       if (response.statusCode == 200) {

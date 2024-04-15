@@ -6,6 +6,7 @@ import 'package:flutter_riverpod_base/src/feature/booking/presentation/tabs/widg
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
+import 'package:intl/intl.dart';
 
 import '../sheet/add_review_model.dart';
 import 'widget/filter_option_widget.dart';
@@ -137,7 +138,7 @@ class _ReviewTabState extends State<ReviewTab> {
               CircleAvatar(
                 backgroundColor: color.secondary,
                 radius: 15,
-                backgroundImage: const AssetImage(ImageAssets.profileImageJpeg),
+                backgroundImage: NetworkImage(review[index].photoUrl),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -158,7 +159,7 @@ class _ReviewTabState extends State<ReviewTab> {
                             ),
                           ),
                           Text(
-                            review[index].time.toIso8601String(),
+                            DateFormat("dd-MM-yyyy").format(review[index].time),
                             style: const TextStyle(
                               color: ColorAssets.lightGray,
                               fontWeight: FontWeight.w600,

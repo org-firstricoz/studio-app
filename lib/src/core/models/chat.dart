@@ -7,14 +7,12 @@ class ChatDetails {
   final AgentModel agentModel;
   final String id;
   final String time;
-  final String message;
   final int unread;
 
   ChatDetails(
       {required this.agentModel,
       required this.id,
       required this.time,
-      required this.message,
       required this.unread});
 
   ChatDetails copyWith(
@@ -29,27 +27,24 @@ class ChatDetails {
       agentModel: agentModel ?? this.agentModel,
       id: id ?? this.id,
       time: time ?? this.time,
-      message: message ?? this.message,
       unread: unread ?? this.unread,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'agentModel': agentModel.toMap(),
+      'id': id,
       'time': time,
-      'message': message,
       'unread': unread,
     };
   }
 
   factory ChatDetails.fromMap(Map<String, dynamic> map) {
     return ChatDetails(
-      agentModel: AgentModel.fromMap(map['agent_details']),
+      agentModel: AgentModel.fromMap(map['agentModel'] as Map<String, dynamic>),
       id: map['id'] as String,
       time: map['time'] as String,
-      message: map['message'] as String,
       unread: map['unread'] as int,
     );
   }
@@ -61,21 +56,21 @@ class ChatDetails {
 
   @override
   String toString() {
-    return 'ChatDetails(id: $id,  time: $time, message: $message, unread: $unread)';
+    return 'ChatDetails(agentModel: $agentModel, id: $id, time: $time, unread: $unread)';
   }
 
   @override
   bool operator ==(covariant ChatDetails other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
+    return other.agentModel == agentModel &&
+        other.id == id &&
         other.time == time &&
-        other.message == message &&
         other.unread == unread;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ time.hashCode ^ message.hashCode ^ unread.hashCode;
+    return agentModel.hashCode ^ id.hashCode ^ time.hashCode ^ unread.hashCode;
   }
 }

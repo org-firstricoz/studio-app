@@ -34,6 +34,7 @@ import 'package:flutter_riverpod_base/src/feature/settings/domain/repository/upd
 import 'package:flutter_riverpod_base/src/feature/settings/domain/usecase/update_data.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/provider/theme_provider.dart';
+import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/utils/router.dart';
 import 'package:http/http.dart' as http;
 import '../color_schemes.g.dart';
@@ -75,7 +76,10 @@ class App extends ConsumerWidget {
         ),
         BlocProvider(
             create: (context) => HomeViewBloc(
-                  GetHomeViewDetails(
+                  saveFavourites: SaveFavourites(
+                      homeViewRepository: HomeViewRepositoryImpl(
+                          dataSource: HomeViewRemoteDataSourceImpl())),
+                  getHomeViewDetails: GetHomeViewDetails(
                       homeViewRepository: HomeViewRepositoryImpl(
                           dataSource: HomeViewRemoteDataSourceImpl())),
                 )),
@@ -128,14 +132,23 @@ class App extends ConsumerWidget {
                         dataSource:
                             UpdateDataDataSourceImpl(client: http.Client()))))),
       ],
-      child: MaterialApp.router(
-        // theme: Themes.lightTheme(context),
-        theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-        darkTheme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-        // darkTheme: Themes.darkTheme(context),
-        themeMode: themeModeState,
-        debugShowCheckedModeBanner: false,
-        routerConfig: router,
+      child: PopScope(
+        onPopInvoked: (didPop) {
+          context
+              .read<HomeViewBloc>()
+              .add(SavingFavouritesEvent(params: AppData.favouriteModel));
+          print(didPop);
+        },
+        child: MaterialApp.router(
+          // theme: Themes.lightTheme(context),
+          theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+          darkTheme:
+              ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+          // darkTheme: Themes.darkTheme(context),
+          themeMode: themeModeState,
+          debugShowCheckedModeBanner: false,
+          routerConfig: router,
+        ),
       ),
     );
   }

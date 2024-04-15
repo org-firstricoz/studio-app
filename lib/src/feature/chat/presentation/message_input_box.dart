@@ -25,8 +25,9 @@ class MessageInputBoxWidget extends StatefulWidget {
 class _MessageInputBoxWidgetState extends State<MessageInputBoxWidget> {
   @override
   void dispose() {
-    super.dispose();
+    
     messageController.dispose();
+    super.dispose();
   }
   // final ImagePicker _imagePicker = ImagePicker();
   // List<File> pickedImage = [];
@@ -305,8 +306,8 @@ class _MessageInputBoxWidgetState extends State<MessageInputBoxWidget> {
                     if (messageController.text.isNotEmpty) {
                       context.read<ChatBloc>().add(SendChatEvent(
                           chatMessage: ChatMessage(
-                              agentID: widget.agentModel.id,
-                              userID: user.uuid,
+                              agentID: widget.agentModel.agentId,
+                              uuid: user.uuid,
                               message: messageController.text.trim(),
                               timestamp: DateTime.now())));
                       messageController.clear();

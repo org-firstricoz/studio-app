@@ -40,21 +40,22 @@ class LogLabel {
 }
 
 class AppRequestUrl {
-  static const baseUrl = 'https://11c4-103-24-84-183.ngrok-free.app';
+  static const baseUrl = 'https://b971-103-24-84-27.ngrok-free.app';
   // name@gmail.com name123
-  static const locationEndPoint = '/city';
-  static const loginEndPoint = '/login';
-  static const signupEndPoint = '/signup';
-  static const homeViewEndPoint = '/homeview';
-  static const descriptionEndpoint = '/description';
-  static const reviewEndPoint = '/review';
-  static const search = '/search';
-  static const chat = '/chat';
-  static const agent = '/agent';
-  static const requestEndPoint = '/request';
-  static const otpEndPoint = '/otp';
-  static const loginOtpEndPoint = '/otp/login';
-  static const payment = '/payment';
-  static const filter = '/filter';
-  static const update = '/update';
+  static const locationEndPoint = '/api/city';
+  static const loginEndPoint = '/api/login';
+  static const signupEndPoint = '/api/signup';
+  static const homeViewEndPoint = '/api/homeview';
+  static const descriptionEndpoint = '/api/description';
+  static const reviewEndPoint = '/api/review';
+  static const search = '/api/search';
+  static const chat = '/api/chat';
+  static const agent = '/api/agent';
+  static const requestEndPoint = '/api/request';
+  static const otpEndPoint = '/api/otp';
+  static const loginOtpEndPoint = '/api/otp/login';
+  static const payment = '/api/payment';
+  static const filter = '/api/filter';
+  static const update = '/api/update';
+  static const favourites = '/api/favourites';
 }

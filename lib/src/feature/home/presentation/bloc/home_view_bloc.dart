@@ -15,16 +15,18 @@ part 'home_view_state.dart';
 
 class HomeViewBloc extends Bloc<HomeViewEvent, AllDataState> {
   final GetHomeViewDetails _getHomeViewDetails;
+  final SaveFavourites _saveFavourites;
   HomeViewBloc(
-    GetHomeViewDetails getHomeViewDetails,
-  )   : _getHomeViewDetails = getHomeViewDetails,
+      {required GetHomeViewDetails getHomeViewDetails,
+      required SaveFavourites saveFavourites})
+      : _getHomeViewDetails = getHomeViewDetails,
+        _saveFavourites = saveFavourites,
         super(HomeViewInitial()) {
-    on<HomeViewEvent>((event, emit) {
-      emit(LoadingState());
-    });
+    on<HomeViewEvent>((event, emit) {});
 
     on<FetchingStudioDataEvent>(
       (event, emit) async {
+        emit(LoadingState());
         try {
           await locationFromAdd(user.location);
           final res = await _getHomeViewDetails.call(event.params);
@@ -33,6 +35,14 @@ class HomeViewBloc extends Bloc<HomeViewEvent, AllDataState> {
         } catch (e) {
           return emit(HomeViewFailure(message: 'unable to load'));
         }
+      },
+    );
+    on<SavingFavouritesEvent>(
+      (event, emit) async {
+        final res = await _saveFavourites.call(event.params);
+        print(res);
+        res.fold((l) => emit(HomeViewFailure(message: l.message)),
+            (r) => emit(HomeViewInitial()));
       },
     );
   }

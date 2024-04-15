@@ -6,5 +6,5 @@ import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.
 abstract class HomeViewRepository {
   FutureEither<Map<String, List<StudioModel>>> getHomeViewDetails(
       AllParams params);
-
+  FutureEitherVoid saveFavourites(List<StudioModel> params);
 }

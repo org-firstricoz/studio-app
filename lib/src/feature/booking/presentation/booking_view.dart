@@ -250,7 +250,7 @@ class _BookingViewState extends State<BookingView>
                         ),
                       ]));
                 }
-                return Center(
+                return Center(  
                   child: TextButton(
                     child: const Text('Unable to fetch data try refreshing'),
                     onPressed: () async {

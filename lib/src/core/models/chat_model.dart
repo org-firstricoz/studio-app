@@ -4,21 +4,21 @@ import 'dart:convert';
 class ChatMessage {
   final bool isMe;
   final String agentID;
-  final String userID;
+  final String uuid;
   final String message;
   final DateTime timestamp;
 
   ChatMessage({
     this.isMe=true,
     required this.agentID,
-    required this.userID,
+    required this.uuid,
     required this.message,
     required this.timestamp,
   });
 
   static ChatMessage empty() {
     return ChatMessage(
-        userID: 'sender',
+        uuid: 'sender',
         message: 'message',
         timestamp: DateTime.now(),
         agentID: 'agent');
@@ -26,13 +26,13 @@ class ChatMessage {
 
   ChatMessage copyWith({
     String? agentID,
-    String? userID,
+    String? uuid,
     String? message,
     DateTime? timestamp,
   }) {
     return ChatMessage(
       agentID: agentID ?? this.agentID,
-      userID: userID ?? this.userID,
+      uuid: uuid ?? this.uuid,
       message: message ?? this.message,
       timestamp: timestamp ?? this.timestamp,
     );
@@ -42,7 +42,7 @@ class ChatMessage {
     return <String, dynamic>{
       'isMe':isMe,
       'agentID': agentID,
-      'userID': userID,
+      'uuid': uuid,
       'message': message,
       'timestamp': timestamp.toIso8601String(),
     };
@@ -52,7 +52,7 @@ class ChatMessage {
     return ChatMessage(
       isMe: map['isMe'] as bool,
       agentID: map['agentID'].toString(),
-      userID: map['userID'].toString(),
+      uuid: map['uuid'].toString(),
       message: map['message'].toString(),
       timestamp: DateTime.tryParse(map['timestamp'])?? DateTime.now(),
     );
@@ -65,7 +65,7 @@ class ChatMessage {
 
   @override
   String toString() {
-    return 'ChatMessage(agentID: $agentID, userID: $userID, message: $message, timestamp: $timestamp)';
+    return 'ChatMessage(agentID: $agentID, uuid: $uuid, message: $message, timestamp: $timestamp)';
   }
 
   @override
@@ -73,7 +73,7 @@ class ChatMessage {
     if (identical(this, other)) return true;
 
     return other.agentID == agentID &&
-        other.userID == userID &&
+        other.uuid == uuid &&
         other.message == message &&
         other.timestamp == timestamp;
   }
@@ -81,7 +81,7 @@ class ChatMessage {
   @override
   int get hashCode {
     return agentID.hashCode ^
-        userID.hashCode ^
+        uuid.hashCode ^
         message.hashCode ^
         timestamp.hashCode;
   }

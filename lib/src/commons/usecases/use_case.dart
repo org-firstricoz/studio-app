@@ -329,7 +329,6 @@ class LogInParams {
 
 class SignUpParams {
   final String email;
-  final String password;
   final DateTime createdAt;
   final String name;
   final String photoUrl;
@@ -339,18 +338,16 @@ class SignUpParams {
 
   SignUpParams({
     required this.email,
-    required this.password,
+    required this.createdAt,
     required this.name,
     required this.photoUrl,
     required this.gender,
     required this.phoneNumber,
     required this.location,
-    required this.createdAt,
   });
 
   SignUpParams copyWith({
     String? email,
-    String? password,
     DateTime? createdAt,
     String? name,
     String? photoUrl,
@@ -360,7 +357,6 @@ class SignUpParams {
   }) {
     return SignUpParams(
       email: email ?? this.email,
-      password: password ?? this.password,
       createdAt: createdAt ?? this.createdAt,
       name: name ?? this.name,
       photoUrl: photoUrl ?? this.photoUrl,
@@ -373,8 +369,7 @@ class SignUpParams {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'email': email,
-      'password': password,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': createdAt.millisecondsSinceEpoch,
       'name': name,
       'photoUrl': photoUrl,
       'gender': gender,
@@ -386,8 +381,7 @@ class SignUpParams {
   factory SignUpParams.fromMap(Map<String, dynamic> map) {
     return SignUpParams(
       email: map['email'] as String,
-      password: map['password'] as String,
-      createdAt: DateTime.now(),
+      createdAt: map['createdAt'],
       name: map['name'] as String,
       photoUrl: map['photoUrl'] as String,
       gender: map['gender'] as String,
@@ -403,7 +397,31 @@ class SignUpParams {
 
   @override
   String toString() {
-    return 'SignUpParams(email: $email, password: $password, createdAt: $createdAt, name: $name, photoUrl: $photoUrl, gender: $gender, phoneNumber: $phoneNumber, location: $location)';
+    return 'SignUpParams(email: $email, createdAt: $createdAt, name: $name, photoUrl: $photoUrl, gender: $gender, phoneNumber: $phoneNumber, location: $location)';
+  }
+
+  @override
+  bool operator ==(covariant SignUpParams other) {
+    if (identical(this, other)) return true;
+
+    return other.email == email &&
+        other.createdAt == createdAt &&
+        other.name == name &&
+        other.photoUrl == photoUrl &&
+        other.gender == gender &&
+        other.phoneNumber == phoneNumber &&
+        other.location == location;
+  }
+
+  @override
+  int get hashCode {
+    return email.hashCode ^
+        createdAt.hashCode ^
+        name.hashCode ^
+        photoUrl.hashCode ^
+        gender.hashCode ^
+        phoneNumber.hashCode ^
+        location.hashCode;
   }
 }
 
@@ -440,27 +458,27 @@ class StudioParams {
 class ReviewParams {
   final String review;
   final double rating;
-  final DateTime createdAt;
   final String uuid;
+  final String studioId;
 
   ReviewParams({
     required this.review,
     required this.rating,
-    required this.createdAt,
     required this.uuid,
+    required this.studioId,
   });
 
   ReviewParams copyWith({
     String? review,
     double? rating,
-    DateTime? createdAt,
     String? uuid,
+    String? studioId,
   }) {
     return ReviewParams(
       review: review ?? this.review,
       rating: rating ?? this.rating,
-      createdAt: createdAt ?? this.createdAt,
       uuid: uuid ?? this.uuid,
+      studioId: studioId ?? this.studioId,
     );
   }
 
@@ -468,8 +486,8 @@ class ReviewParams {
     return <String, dynamic>{
       'review': review,
       'rating': rating,
-      'createdAt': createdAt.millisecondsSinceEpoch,
       'uuid': uuid,
+      'studioId': studioId,
     };
   }
 
@@ -477,8 +495,8 @@ class ReviewParams {
     return ReviewParams(
       review: map['review'] as String,
       rating: map['rating'] as double,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
       uuid: map['uuid'] as String,
+      studioId: map['studioId'] as String,
     );
   }
 
@@ -489,7 +507,7 @@ class ReviewParams {
 
   @override
   String toString() {
-    return 'ReviewParams(review: $review, rating: $rating, createdAt: $createdAt, uuid: $uuid)';
+    return 'ReviewParams(review: $review, rating: $rating, uuid: $uuid, studioId: $studioId)';
   }
 
   @override
@@ -498,15 +516,15 @@ class ReviewParams {
 
     return other.review == review &&
         other.rating == rating &&
-        other.createdAt == createdAt &&
-        other.uuid == uuid;
+        other.uuid == uuid &&
+        other.studioId == studioId;
   }
 
   @override
   int get hashCode {
     return review.hashCode ^
         rating.hashCode ^
-        createdAt.hashCode ^
-        uuid.hashCode;
+        uuid.hashCode ^
+        studioId.hashCode;
   }
 }

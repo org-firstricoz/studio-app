@@ -191,10 +191,11 @@ class _AddReviewModelState extends State<AddReviewModel> {
                   text: "Submit",
                   ontap: () async {
                     //ontaps
-                    if (reviewEditingController.text.trim().isNotEmpty && rating !=0) {
+                    if (reviewEditingController.text.trim().isNotEmpty &&
+                        rating != 0) {
                       context.read<BookingBloc>().add(AddReviewEvent(
                           params: ReviewParams(
-                              createdAt: DateTime.now(),
+                              studioId: widget.studioDetails.id,
                               rating: rating,
                               review: reviewEditingController.text.trim(),
                               uuid: user.uuid)));

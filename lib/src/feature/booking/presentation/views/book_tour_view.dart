@@ -38,27 +38,13 @@ class BookingTourView extends StatefulWidget {
 class _BookingTourViewState extends State<BookingTourView> {
   final Razorpay _razorpay = Razorpay();
 
-  _handlePaymentSuccess(PaymentSuccessResponse response) {
-    context.read<BookingBloc>().add(PaymentEvent(data: {
-          'userId': user.uuid,
-          'studioId': widget.studioDetails.id,
-          'orderId': response.orderId,
-          'paymentId': response.paymentId,
-          'time': widget.time.toString(),
-          'date': widget.date.toIso8601String()
-        }));
-    context.go(TourRequestView.routePath, extra: {'date':widget.date});
+  @override
+  void initState() {
+    super.initState();
+    print('object');
   }
 
-  _handlePaymentError(PaymentFailureResponse response) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(response.message ?? 'Unable to Make payment'),
-      duration: const Duration(seconds: 5),
-    ));
-  }
-
-  _handleExternalWallet(ExternalWalletResponse response) {}
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +56,30 @@ class _BookingTourViewState extends State<BookingTourView> {
       body: BlocListener<BookingBloc, BookingState>(
         listener: (context, state) {
           // TODO: implement listener
+
           if (state is OrderSuccessState) {
+             _handlePaymentSuccess(PaymentSuccessResponse response) {
+    context.read<BookingBloc>().add(PaymentEvent(data: {
+          'userId': user.uuid,
+          'studioId': widget.studioDetails.id,
+          'orderId': state.options['id'],
+          'paymentId': response.paymentId,
+          'time': '${widget.time.hour}:${widget.time.minute}',
+          'date': widget.date.toIso8601String(),
+          
+        }));
+    context.push(TourRequestView.routePath, extra: {'date': widget.date});
+  }
+
+  _handlePaymentError(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response.message.toString()),
+      duration: const Duration(seconds: 5),
+    ));
+  }
+
+  _handleExternalWallet(ExternalWalletResponse response) {}
             _razorpay.open(state.options);
             _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
             _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
@@ -78,6 +87,12 @@ class _BookingTourViewState extends State<BookingTourView> {
           } else if (state is BookingFailure) {
             print(state.message);
             context.go(HomeView.routePath);
+          } else if (state is LoadingState) {
+            showDialog(
+                context: context,
+                builder: (context) => const Center(
+                      child: CircularProgressIndicator(),
+                    ));
           }
         },
         child: Column(

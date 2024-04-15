@@ -28,7 +28,7 @@ class _ChatViewState extends State<ChatView> {
     super.initState();
     context.read<ChatBloc>().add(GetChatDataEvent(
         chatParams:
-            ChatParams(agentId: widget.agentModel.id, userId: user.uuid)));
+            ChatParams(agentId: widget.agentModel.agentId, userId: user.uuid)));
   }
 
   bool showsSearchBar = false;
@@ -45,7 +45,7 @@ class _ChatViewState extends State<ChatView> {
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(widget.agentModel.imageUrl)),
+              backgroundImage: NetworkImage(widget.agentModel.photoUrl)),
           title: Text(
             widget.agentModel.name,
             style: TextStyle(
@@ -83,7 +83,7 @@ class _ChatViewState extends State<ChatView> {
             : null,
         actions: [
           ChatPopUpMenuBuilder(
-              toggleSearchBar: toggleSearchBar, id: widget.agentModel.id),
+              toggleSearchBar: toggleSearchBar, id: widget.agentModel.agentId),
         ],
       ),
       backgroundColor: colorScheme.primary,

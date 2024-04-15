@@ -23,25 +23,24 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       body: Column(
         children: [
           Expanded(
-          
-              child: PageView(
-                controller: pageController,
-                children: const [
-                  Page1(),
-                  Page2(),
-                  Page3(),
-                ],
+            child: PageView(
+              controller: pageController,
+              children: const [
+                // Page1(),
+                // Page2(),
+                Page3(),
+              ],
               // ),
             ),
           ),
           SmoothPageIndicator(
             controller: pageController,
-            count: 3,
+            count: 1,
             onDotClicked: (index) => pageController.animateToPage(index,
                 duration: const Duration(seconds: 1), curve: Curves.easeIn),
             effect: WormEffect(
                 spacing: 28,
-                activeDotColor:color.primary,
+                activeDotColor: color.primary,
                 dotColor: color.tertiary,
                 dotWidth: 12,
                 dotHeight: 12),

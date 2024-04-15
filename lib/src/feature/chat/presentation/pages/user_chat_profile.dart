@@ -36,7 +36,7 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
     super.initState();
     context
         .read<ChatBloc>()
-        .add(GetAgentDetailsEvent(agentID: widget.agentModel.id));
+        .add(GetAgentDetailsEvent(agentID: widget.agentModel.agentId));
   }
 
   @override

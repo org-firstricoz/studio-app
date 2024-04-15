@@ -8,3 +8,9 @@ class FetchingStudioDataEvent extends HomeViewEvent {
 
   FetchingStudioDataEvent({required this.params});
 }
+
+class SavingFavouritesEvent extends HomeViewEvent {
+  final List<StudioModel> params;
+
+  SavingFavouritesEvent({required this.params});
+}

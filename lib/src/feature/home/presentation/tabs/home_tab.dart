@@ -123,7 +123,8 @@ class _HomeTabState extends State<HomeTab> {
                 child: ItemCardView(
                     studioModel: data,
                     onClick: () {
-                       context.push(BookingView.routePath,extra: {'id':data.id});
+                      context
+                          .push(BookingView.routePath, extra: {'id': data.id});
                     }),
               );
             },
@@ -142,25 +143,33 @@ class _HomeTabState extends State<HomeTab> {
               title: "Nearby Studios",
               onTap: () {
                 context.push(NearbyStudiosView.routePath,
-                    extra: AppData.recomendedStudios);
+                    extra: AppData.nearByStudios);
               }),
-          ListView.builder(
-            itemCount: AppData.recomendedStudios.length,
-            // scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              final data = AppData.recomendedStudios[index];
-              return Container(
-                padding: const EdgeInsets.only(
-                  top: 10,
+          AppData.nearByStudios.isNotEmpty
+              ? ListView.builder(
+                  itemCount: AppData.nearByStudios.length,
+                  // scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final data = AppData.nearByStudios[index];
+                    return Container(
+                      padding: const EdgeInsets.only(
+                        top: 10,
+                      ),
+                      child: ItemListTileView(
+                          studioModel: data,
+                          onTap: () {
+                            context.push(BookingView.routePath,
+                                extra: {'id': data.id});
+                          }),
+                    );
+                  },
+                )
+              : const Center(
+                  child: Text(
+                      'No One is near you </3, So sorry !!! Checkout our Recomended Studios :>'),
                 ),
-                child: ItemListTileView(studioModel: data,onTap: (){
-                  context.push(BookingView.routePath,extra: {'id':data.id});
-                }),
-              );
-            },
-          ),
         ],
       ),
     );

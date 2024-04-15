@@ -143,7 +143,7 @@ class _TourRequestViewState extends State<TourRequestView> {
           leading: CircleAvatar(
             backgroundColor: color.secondary,
             radius: 20,
-            backgroundImage: NetworkImage(AppData.agentDetails.first.imageUrl),
+            backgroundImage: NetworkImage(AppData.agentDetails.first.photoUrl),
           ),
           title: Text(
             AppData.agentDetails.first.name,
@@ -153,7 +153,7 @@ class _TourRequestViewState extends State<TourRequestView> {
                 color: ColorAssets.blackFaded),
           ),
           subtitle: Text(
-            "Owner",
+           AppData.agentDetails.first.status,
             style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 14,

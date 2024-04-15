@@ -5,3 +5,4 @@ User user = User.empty();
 late double latitude;
 late double longitude;
 String? photoUrl = null;
+bool newUser = false;

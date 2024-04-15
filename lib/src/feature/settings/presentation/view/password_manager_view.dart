@@ -1,5 +1,6 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod_base/src/commons/views/otp/login_otp.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/presentation/pages/login_page.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
@@ -64,7 +65,7 @@ class PasswordManagerView extends StatelessWidget {
                 context: context,
                 message: "Do you want to logout of all devices ?",
                 ontap: () {
-                  context.push(LoginPage.routePath);
+                  context.push(LoginOtp.routePath);
                 });
           },
         ),

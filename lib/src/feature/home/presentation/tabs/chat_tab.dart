@@ -9,6 +9,7 @@ import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/sliverAppbarwithSearchbar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class ChatTab extends StatefulWidget {
   const ChatTab({super.key});
@@ -86,7 +87,7 @@ class _ChatTabState extends State<ChatTab> {
             ),
             child: ListTile(
               leading: CircleAvatar(
-                backgroundImage: NetworkImage(chat.agentModel.imageUrl),
+                backgroundImage: NetworkImage(chat.agentModel.photoUrl),
               ),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,7 +109,8 @@ class _ChatTabState extends State<ChatTab> {
                         )
                       : SizedBox.shrink(),
                   Text(
-                    chat.time,
+                    DateFormat(DateFormat.HOUR24_MINUTE)
+                        .format(DateTime.parse(chat.time,)),
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 12,
