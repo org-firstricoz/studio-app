@@ -190,6 +190,7 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   _image() {
+    print(photoUrl);
     return photoUrl != null
         ? FileImage(File(photoUrl!))
         : NetworkImage(user.photoUrl);

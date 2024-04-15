@@ -35,6 +35,13 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
       TextEditingController(text: user.email);
 
   @override
+  void initState() {
+    // TODO: implement initState
+    _image();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<SettingsBloc, SettingsState>(
       listener: (context, state) {
@@ -171,14 +178,17 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
     );
   }
 
-  File? pickedImage;
+  var pickedImage;
 
   _pickImage() async {
     XFile? img = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (img != null) {
-      pickedImage = File(img.path);
+      final _pickedImage = File(img.path);
+      print(img.path);
       Hive.box('USER').put('image', img.path);
-      setState(() {});
+      return setState(() {
+        pickedImage = FileImage(_pickedImage);
+      });
     }
   }
 
@@ -198,7 +208,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: _image(),
+                backgroundImage: pickedImage,
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -223,8 +233,9 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
   }
 
   _image() {
-    return photoUrl != null
+    pickedImage = photoUrl != null
         ? FileImage(File(photoUrl!))
-        : Image.network(user.photoUrl);
+        : NetworkImage(user.photoUrl);
+    return pickedImage;
   }
 }
