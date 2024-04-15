@@ -88,6 +88,7 @@ class ChatRemoteDataSourceImpl extends ChatRemoteDataSource {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final agentDetails = AgentDetails.fromMap(data);
+        print(agentDetails);
         AppData.allAgentDetails = agentDetails;
 
         return Right(agentDetails);

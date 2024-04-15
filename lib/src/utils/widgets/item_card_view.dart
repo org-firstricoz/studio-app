@@ -46,7 +46,7 @@ class _ItemCardViewState extends State<ItemCardView> {
         decoration: BoxDecoration(
             boxShadow: [const BoxShadow(color: Colors.grey, blurRadius: 2)],
             borderRadius: BorderRadius.circular(6),
-            color: ColorAssets.white),
+            color: color.surface),
         padding: const EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

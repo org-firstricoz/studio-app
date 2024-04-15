@@ -47,16 +47,16 @@ class _BookingTourViewState extends State<BookingTourView> {
  
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: ColorAssets.white,
+      backgroundColor: color.surface,
       appBar: SimpleAppBar(
         title: "Book Tour",
         leadingCallback: () => context.go(HomeView.routePath),
       ),
       body: BlocListener<BookingBloc, BookingState>(
         listener: (context, state) {
-          // TODO: implement listener
-
+         
           if (state is OrderSuccessState) {
              _handlePaymentSuccess(PaymentSuccessResponse response) {
     context.read<BookingBloc>().add(PaymentEvent(data: {

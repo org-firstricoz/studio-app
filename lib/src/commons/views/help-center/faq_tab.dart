@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod_base/src/res/colors.dart';
 
 class FaqTab extends StatefulWidget {
   const FaqTab({super.key});
@@ -9,7 +8,6 @@ class FaqTab extends StatefulWidget {
 }
 
 class _FaqTabState extends State<FaqTab> {
-  @override
   List<String> categories = ["All", "Services", "General", "Account", "hello"];
   @override
   Widget build(BuildContext context) {
@@ -27,6 +25,7 @@ class _FaqTabState extends State<FaqTab> {
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 return Container(
+                  
                   height: 29,
                   margin: EdgeInsets.only(
                       left: index == 0 ? 20 : 15,
@@ -44,8 +43,8 @@ class _FaqTabState extends State<FaqTab> {
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                         color: isActive == index
-                            ? color.background
-                            : color.onBackground),
+                            ? color.surface
+                            : color.onSurface),
                   ),
                 );
               },
@@ -93,9 +92,9 @@ class CustomExpadedTile extends StatelessWidget {
     final color = Theme.of(context).colorScheme;
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       decoration: BoxDecoration(
-          color: color.background,
+          color: color.surface,
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
@@ -107,17 +106,17 @@ class CustomExpadedTile extends StatelessWidget {
         collapsedShape: Border.all(color: Colors.transparent, width: 0),
         title: Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 16,
           ),
         ),
-        childrenPadding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+        childrenPadding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
         children: [
-          Divider(thickness: 0.5),
+          const Divider(thickness: 0.5),
           Text(
             description,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w400,
             ),
           )

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/widgets/profile_form_fields.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -23,19 +24,32 @@ class _CompleteYourProfileInfoViewState
   File? pickedImage;
 
   pickedProfileimage() {
-    var imageProfile = pickedImage == null
+    return photoUrl == null
         ? const NetworkImage(
             'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=')
         : FileImage(pickedImage!);
-    return imageProfile;
+    // var imageProfile;
+    // if (pickedImage == null) {
+    //   imageProfile = const NetworkImage(
+    //       'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
+    // } else {
+    //   imageProfile = FileImage(pickedImage!);
+    //   photoUrl = pickedImage!.path;
+    //   Hive.box('USER').put('image', photoUrl);
+    // }
+    // return imageProfile;
   }
 
   void pickImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      pickedImage = File(image.path);
+      print(image.path);
+
       userDetails.addAll({'photoUrl': pickedImage!.path});
-      setState(() {});
+      setState(() {
+        pickedImage = File(image.path);
+        photoUrl = image.path;
+      });
     } else {
       pickedImage = File(
           'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
@@ -44,9 +58,10 @@ class _CompleteYourProfileInfoViewState
   }
 
   saveImage() {
-    pickedImage = File(
-        'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
-    userDetails.addAll({'photoUrl': pickedImage!.path});
+    // pickedImage = File(
+    //     'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
+    // userDetails.addAll({'photoUrl': pickedImage!.path});
+    Hive.box('USER').put('image', photoUrl);
   }
 
   @override

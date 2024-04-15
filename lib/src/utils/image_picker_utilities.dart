@@ -16,7 +16,8 @@ Future<File?> showImagePickerBottomSheet(BuildContext context) async {
             title: Text('Take Photo'),
             onTap: () async {
               selectedImage = await _getImage(ImageSource.camera);
-              Navigator.pop(context);
+              if(context.mounted){
+              Navigator.pop(context);}
             },
           ),
           ListTile(
@@ -24,7 +25,8 @@ Future<File?> showImagePickerBottomSheet(BuildContext context) async {
             title: Text('Choose from Gallery'),
             onTap: () async {
               selectedImage = await _getImage(ImageSource.gallery);
-              Navigator.pop(context);
+               if(context.mounted){
+              Navigator.pop(context);}
             },
           ),
         ],

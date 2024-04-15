@@ -13,6 +13,7 @@ import 'package:flutter_riverpod_base/src/utils/custom_text_button.dart';
 import 'package:flutter_riverpod_base/src/utils/form_text_field.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileInfoView extends StatefulWidget {
@@ -40,7 +41,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
         if (state is UpdateSuccessState) {
           user = state.user;
           context.go(HomeView.routePath);
-        } else if (state is UpdateFailureState) {
+        } else if (state is SettingsFailureState) {
           ScaffoldMessenger.of(context).clearMaterialBanners();
           ScaffoldMessenger.of(context).showMaterialBanner(
             MaterialBanner(
@@ -111,19 +112,14 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
             labelText: "Name",
             hintText: "Tara Choudhary",
           ),
-          FormTextField(
+          TextField(
             controller: phoneController,
-            labelText: "Phone Number",
-            suffixIcon: TextButton(
-                onPressed: () {},
-                child: Text(
-                  "Change",
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: color.primary),
-                )),
-            hintText: "1235468790",
+            enabled: false,
+            decoration: const InputDecoration(
+                border: InputBorder.none, label: Text('Phone Number')),
+            // labelText: "Phone Number",
+
+            // hintText: "1235468790",
           ),
           // email
           FormTextField(
@@ -181,7 +177,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
     XFile? img = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (img != null) {
       pickedImage = File(img.path);
-      print(user.gender);
+      Hive.box('USER').put('image', img.path);
       setState(() {});
     }
   }
@@ -189,34 +185,46 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
   _profilePickBuilder(BuildContext context) {
     final color = Theme.of(context).colorScheme;
 
-    return Container(
-      width: 100,
-      height: 130,
-      margin: const EdgeInsets.symmetric(vertical: 30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          CircleAvatar(
-              radius: 50, backgroundImage: NetworkImage(user.photoUrl)),
-          Row(
-            mainAxisSize: MainAxisSize.min,
+    return GestureDetector(
+        onTap: () {
+          _pickImage();
+        },
+        child: Container(
+          width: 100,
+          height: 130,
+          margin: const EdgeInsets.symmetric(vertical: 30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(
-                Icons.edit,
-                size: 18,
-                color: color.primary,
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: _image(),
               ),
-              Text(
-                "EDIT",
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.edit,
+                    size: 18,
                     color: color.primary,
-                    fontSize: 18),
-              )
+                  ),
+                  Text(
+                    "EDIT",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: color.primary,
+                        fontSize: 18),
+                  )
+                ],
+              ),
             ],
-          ).onTap(_pickImage)
-        ],
-      ),
-    );
+          ),
+        ));
+  }
+
+  _image() {
+    return photoUrl != null
+        ? FileImage(File(photoUrl!))
+        : Image.network(user.photoUrl);
   }
 }

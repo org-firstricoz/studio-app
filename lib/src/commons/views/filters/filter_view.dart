@@ -5,7 +5,7 @@ import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/presentation/bloc/search_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/presentation/pages/search_results_view.dart';
-import 'package:flutter_riverpod_base/src/res/colors.dart';
+
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:go_router/go_router.dart';
 
@@ -89,7 +89,8 @@ class _FilterViewState extends State<FilterView> {
                   BoxShadow(
                       color: color.tertiary, blurRadius: 1, spreadRadius: 0)
                 ],
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: Row(
                 // mainAxisSize: MainAxisSize.min,
@@ -334,7 +335,7 @@ class _PricesWrapWidgetState extends State<PricesWrapWidget> {
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                       color: selectedPriceIndex == index
-                          ? color.background
+                          ? color.surface
                           : color.tertiary,
                     ),
                   ),
@@ -353,10 +354,10 @@ class RatingCheckBoxBuilder extends StatefulWidget {
       : super(key: key);
   final FilterParams filterParams;
   @override
-  _RatingCheckBoxBuilderState createState() => _RatingCheckBoxBuilderState();
+  RatingCheckBoxBuilderState createState() => RatingCheckBoxBuilderState();
 }
 
-class _RatingCheckBoxBuilderState extends State<RatingCheckBoxBuilder> {
+class RatingCheckBoxBuilderState extends State<RatingCheckBoxBuilder> {
   @override
   Widget build(BuildContext context) {
     return Padding(

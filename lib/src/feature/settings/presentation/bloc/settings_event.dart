@@ -8,3 +8,9 @@ class UpdateEvent extends SettingsEvent {
 
   UpdateEvent({required this.updateParams});
 }
+
+class DeleteAccountEvent extends SettingsEvent {
+  final NoParams noParams;
+
+  DeleteAccountEvent({required this.noParams});
+}

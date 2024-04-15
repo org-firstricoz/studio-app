@@ -7,6 +7,7 @@ import 'package:flutter_riverpod_base/src/core/models/location_model.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/views/complete_profile_info.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
 import 'package:flutter_riverpod_base/src/utils/form_text_field.dart';
@@ -100,10 +101,16 @@ class _LoactionSearchingWidgetState extends State<LoactionSearchingWidget> {
                     itemBuilder: (context, index) => ListTile(
                       title: GestureDetector(
                           onTap: () {
-                            userDetails.addAll({
-                              'location': filteredLocations[index].name
-                            });
-                            context.go(CompleteYourProfileInfoView.routePath);
+                            print('object');
+                            newUser
+                                ? userDetails.addAll(
+                                    {'location': filteredLocations[index].name})
+                                : user = user.copyWith(
+                                    location: filteredLocations[index].name);
+                            newUser
+                                ? context
+                                    .go(CompleteYourProfileInfoView.routePath)
+                                : context.go(HomeView.routePath);
                           },
                           child: Text(filteredLocations[index].name)),
                     ),

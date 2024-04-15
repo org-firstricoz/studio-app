@@ -145,6 +145,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final res = await _client.get(Uri.parse(
           '${AppRequestUrl.baseUrl}${AppRequestUrl.locationEndPoint}'));
+
       if (res.statusCode == 200) {
         final mapOfLocationData = jsonDecode(res.body) as List;
         print(mapOfLocationData);
@@ -153,8 +154,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
         print(mapOfLocationData);
         return Right(listOfLocationModels);
+      } else {
+        throw LocationException(message: 'Unable to Fetch Data');
       }
-      throw LocationException(message: 'Unable to Fetch Data');
     } on LocationException catch (e) {
       return Left(ApiFailure(message: e.message));
     } catch (e) {

@@ -14,7 +14,6 @@ import 'package:flutter_riverpod_base/src/feature/booking/domain/usecase/request
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/bloc/booking_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/data/datasource/chat_remote_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/data/repository/chat_repository_impl.dart';
-import 'package:flutter_riverpod_base/src/feature/chat/domain/repository/chat_repository.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/domain/usecase/chat_service.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/home/data/datasource/remote_data_source.dart';
@@ -28,9 +27,9 @@ import 'package:flutter_riverpod_base/src/feature/search_view/data/repository/se
 import 'package:flutter_riverpod_base/src/feature/search_view/domain/usecase/filter_use_case.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/domain/usecase/search_view.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/presentation/bloc/search_bloc.dart';
-import 'package:flutter_riverpod_base/src/feature/settings/data/datasource/update_data_data_source.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/data/datasource/settings_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/data/repository/update_data_repository_impl.dart';
-import 'package:flutter_riverpod_base/src/feature/settings/domain/repository/update_data_repository.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/domain/usecase/delete_account.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/domain/usecase/update_data.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/provider/theme_provider.dart';
@@ -127,23 +126,27 @@ class App extends ConsumerWidget {
                             ChatRemoteDataSourceImpl(client: http.Client()))))),
         BlocProvider(
             create: (context) => SettingsBloc(
-                updateData: UpdateData(
-                    updateDataRepository: UpdateDataRepositoryImpl(
+                deleteAccount: DeleteAccount(
+                    settingsRepository: SettingsRepositoryImpl(
                         dataSource:
-                            UpdateDataDataSourceImpl(client: http.Client()))))),
+                            SettingsDataSourceImpl(client: http.Client()))),
+                updateData: UpdateData(
+                    settingsRepository: SettingsRepositoryImpl(
+                        dataSource:
+                            SettingsDataSourceImpl(client: http.Client()))))),
       ],
       child: PopScope(
         onPopInvoked: (didPop) {
           context
               .read<HomeViewBloc>()
               .add(SavingFavouritesEvent(params: AppData.favouriteModel));
-          print(didPop);
+          // print(didPop);
         },
         child: MaterialApp.router(
           // theme: Themes.lightTheme(context),
           theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
           darkTheme:
-              ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+              ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
           // darkTheme: Themes.darkTheme(context),
           themeMode: themeModeState,
           debugShowCheckedModeBanner: false,

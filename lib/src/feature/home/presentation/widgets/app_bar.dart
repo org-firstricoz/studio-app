@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod_base/src/commons/views/location_access/location_access_page.dart';
@@ -10,10 +12,11 @@ import 'package:go_router/go_router.dart';
 class HomeViewAppBar extends StatelessWidget {
   const HomeViewAppBar({super.key});
   photoBuilder() {
-    if (photoUrl != null)
-      return AssetImage(photoUrl!);
-    else
+    if (photoUrl != null) {
+      return FileImage(File(photoUrl!));
+    } else {
       return NetworkImage(user.photoUrl);
+    }
   }
 
   @override

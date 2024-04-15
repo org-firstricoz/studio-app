@@ -16,15 +16,14 @@ class PrivacyPolicyView extends StatefulWidget {
 class _PrivacyPolicyViewState extends State<PrivacyPolicyView> {
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
     return Scaffold(
-        backgroundColor: ColorAssets.white,
-        appBar: 
-        SimpleAppBar(
-  title: "Privacy Policy",
-  leadingCallback: () => Navigator.pop(context),
-),
-
-         body: Padding(
+        backgroundColor: color.surface,
+        appBar: SimpleAppBar(
+          title: "Privacy Policy",
+          leadingCallback: () => Navigator.pop(context),
+        ),
+        body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: SingleChildScrollView(
             child: Column(
@@ -77,7 +76,8 @@ class _PrivacyPolicyViewState extends State<PrivacyPolicyView> {
                               children: [
                                 TextSpan(
                                   text: '${i.keys.first}: ',
-                                  style: const TextStyle(
+                                  style: TextStyle(
+                                      color: color.secondary,
                                       letterSpacing: 0.4,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
@@ -85,7 +85,8 @@ class _PrivacyPolicyViewState extends State<PrivacyPolicyView> {
                                 ),
                                 TextSpan(
                                     text: i.values.first,
-                                    style: const TextStyle(
+                                    style: TextStyle(
+                                        color: color.secondary,
                                         letterSpacing: 0.4,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,

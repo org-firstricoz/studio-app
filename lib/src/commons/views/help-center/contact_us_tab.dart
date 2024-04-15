@@ -1,9 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/custom_list_tile.dart';
-import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:latlong2/latlong.dart';
@@ -24,9 +23,9 @@ class _ContactUsTabState extends State<ContactUsTab> {
         children: [
           SizedBox(
             child: Container(
-            height: 300,
-            margin: const EdgeInsetsDirectional.symmetric(horizontal: 15,vertical: 10),
-              
+              height: 300,
+              margin: const EdgeInsetsDirectional.symmetric(
+                  horizontal: 15, vertical: 10),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: FlutterMap(
@@ -36,7 +35,8 @@ class _ContactUsTabState extends State<ContactUsTab> {
                   ),
                   children: [
                     TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                       userAgentPackageName: 'com.example.app',
                     ),
                     RichAttributionWidget(
@@ -70,11 +70,11 @@ class _ContactUsTabState extends State<ContactUsTab> {
           CustomListTile(
             enableBottom: false,
             onTap: () async {
-              final String subject = "Subject:";
-              final String stringText = "Same Message:";
+              const String subject = "Subject:";
+              const String stringText = "Same Message:";
               String uri = 'mailto:administrator@gmail.com';
               // if (await canLaunchUrl(Uri.parse(uri))) {
-              launch((uri));
+              launchUrl(Uri.parse(uri));
               // } else {
               //   print("No email client found");
               // }
@@ -137,7 +137,9 @@ class _ContactUsTabState extends State<ContactUsTab> {
       launchUrl(uri);
     } else {
       // Handle error
-      print('Could not launch $uri');
+      if (kDebugMode) {
+        print('Could not launch $uri');
+      }
     }
   }
 }

@@ -83,6 +83,7 @@ class _HomeViewState extends State<HomeView> {
           child: BlocBuilder<HomeViewBloc, AllDataState>(
             builder: (context, state) {
               if (state is HomeViewFailure) {
+              
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -93,6 +94,7 @@ class _HomeViewState extends State<HomeView> {
                               color: Color.fromARGB(255, 174, 174, 174))),
                       TextButton(
                           onPressed: () {
+                            print(user.location);
                             context.read<HomeViewBloc>().add(
                                 FetchingStudioDataEvent(
                                     params:
@@ -103,9 +105,7 @@ class _HomeViewState extends State<HomeView> {
                     ],
                   ),
                 );
-              }
-
-              if (state is LoadingState) {
+              } else if (state is LoadingState) {
                 return const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

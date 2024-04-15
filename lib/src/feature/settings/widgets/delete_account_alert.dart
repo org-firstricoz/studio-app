@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 
 class DeleteAccountAlertModel extends StatefulWidget {
@@ -14,9 +17,10 @@ class _DeleteAccountAlertModelState extends State<DeleteAccountAlertModel> {
   bool agreeDataDeletion = false;
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
     return AlertDialog(
-      backgroundColor: ColorAssets.white,
-      surfaceTintColor: ColorAssets.white,
+      backgroundColor: color.surface,
+      surfaceTintColor: color.onSecondary,
       title: const Text("Confirm Account Deletion"),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +97,11 @@ class _DeleteAccountAlertModelState extends State<DeleteAccountAlertModel> {
               },
             ),
           ),
-          onPressed: (agreeTerms && agreeDataDeletion) ? () {} : null,
+          onPressed: (agreeTerms && agreeDataDeletion)
+              ? () {
+                  context.read<SettingsBloc>().add(DeleteAccountEvent(noParams: NoParams()));
+                }
+              : null,
           child: const Text("Delete Account"),
         ),
       ],

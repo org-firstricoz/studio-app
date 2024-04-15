@@ -8,9 +8,11 @@ class AppSettingsHandler {
       await AppSettings.openAppSettings(type: AppSettingsType.notification);
     } catch (e) {
       // ignore: use_build_context_synchronously
-      SnackBarService.showSnackBar(
-          context: context,
-          message: "Error while navigating to notification settings");
+      if (context.mounted) {
+        SnackBarService.showSnackBar(
+            context: context,
+            message: "Error while navigating to notification settings");
+      }
     }
   }
 }

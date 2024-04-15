@@ -29,6 +29,7 @@ class HomeViewBloc extends Bloc<HomeViewEvent, AllDataState> {
         emit(LoadingState());
         try {
           await locationFromAdd(user.location);
+
           final res = await _getHomeViewDetails.call(event.params);
           res.fold((l) => emit(HomeViewFailure(message: l.message)),
               (r) => emit(HomeViewSuccess(modelDatas: r)));

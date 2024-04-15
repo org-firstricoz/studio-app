@@ -205,37 +205,37 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
                         ).addSpacingBetweenElements(10),
                       ),
                     ),
-                    Card(
-                      child: CustomListTile(
-                        leadingIcon: const Icon(Icons.backup_rounded),
-                        onTap: () {},
-                        title: const Text('Backup chat'),
-                      ),
-                    ),
-                    Card(
-                      child: Column(
-                        children: [
-                          CustomListTile(
-                            leadingIcon: Icon(
-                              Icons.block_rounded,
-                              color: colorScheme.error,
-                            ),
-                            error: true,
-                            title: const Text('Block Pavan Kumar'),
-                            onTap: () {},
-                          ),
-                          CustomListTile(
-                            leadingIcon: Icon(
-                              Icons.thumb_down,
-                              color: colorScheme.error,
-                            ),
-                            error: true,
-                            title: const Text('Report Pavan Kumar'),
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Card(
+                    //   child: CustomListTile(
+                    //     leadingIcon: const Icon(Icons.backup_rounded),
+                    //     onTap: () {},
+                    //     title: const Text('Backup chat'),
+                    //   ),
+                    // ),
+                    // Card(
+                    //   child: Column(
+                    //     children: [
+                    //       CustomListTile(
+                    //         leadingIcon: Icon(
+                    //           Icons.block_rounded,
+                    //           color: colorScheme.error,
+                    //         ),
+                    //         error: true,
+                    //         title: const Text('Block Pavan Kumar'),
+                    //         onTap: () {},
+                    //       ),
+                    //       CustomListTile(
+                    //         leadingIcon: Icon(
+                    //           Icons.thumb_down,
+                    //           color: colorScheme.error,
+                    //         ),
+                    //         error: true,
+                    //         title: const Text('Report Pavan Kumar'),
+                    //         onTap: () {},
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ).addSpacingBetweenElements(5),
               );

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod_base/src/commons/views/onboarding/on_boarding_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,6 +14,7 @@ import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/lan
 import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/settings_view.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/basic_sliver_appbar.dart';
+import 'package:hive/hive.dart';
 
 import '../../../../res/colors.dart';
 
@@ -45,9 +49,7 @@ class _ProfileTabState extends State<ProfileTab> {
               children: [
                 Column(
                   children: [
-                    CircleAvatar(
-                        radius: 40,
-                        backgroundImage: NetworkImage(user.photoUrl)),
+                    CircleAvatar(radius: 40, backgroundImage: _image()),
                   ],
                 ),
                 const SizedBox(width: 10),
@@ -76,32 +78,33 @@ class _ProfileTabState extends State<ProfileTab> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-            child: GestureDetector(
-              onTap: () {
-                // edit option
-              },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.edit,
-                    size: 15,
-                    color: ColorAssets.primaryBlue,
-                  ),
-                  SizedBox(width: 3.51),
-                  Text(
-                    "EDIT",
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: ColorAssets.primaryBlue),
-                  )
-                ],
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       // edit option
+
+          //     },
+          //     child: const Row(
+          //       mainAxisAlignment: MainAxisAlignment.start,
+          //       children: [
+          //         Icon(
+          //           Icons.edit,
+          //           size: 15,
+          //           color: ColorAssets.primaryBlue,
+          //         ),
+          //         SizedBox(width: 3.51),
+          //         Text(
+          //           "EDIT",
+          //           style: TextStyle(
+          //               fontSize: 16,
+          //               fontWeight: FontWeight.w600,
+          //               color: ColorAssets.primaryBlue),
+          //         )
+          //       ],
+          //     ),
+          //   ),
+          // ),
 
           // options
           CustomListTile(
@@ -176,11 +179,20 @@ class _ProfileTabState extends State<ProfileTab> {
                     fontSize: 16,
                     color: ColorAssets.redAccent),
               ),
-              onTap: () {},
+              onTap: () {
+                context.go(OnBoardingPage.routePath);
+                Hive.box('USER').clear();
+              },
               enableBottom: false),
         ]))
       ],
     );
+  }
+
+  _image() {
+    return photoUrl != null
+        ? FileImage(File(photoUrl!))
+        : NetworkImage(user.photoUrl);
   }
 }
 

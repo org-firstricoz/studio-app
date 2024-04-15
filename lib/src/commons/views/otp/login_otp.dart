@@ -59,6 +59,7 @@ class _LoginOtpState extends State<LoginOtp> {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: const SimpleAppBar(
         title: 'OTP',
@@ -71,7 +72,7 @@ class _LoginOtpState extends State<LoginOtp> {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is AuthSuccess) {
-            user = state.user;  
+            user = state.user;
             context.go(HomeView.routePath);
           }
         },
@@ -97,8 +98,9 @@ class _LoginOtpState extends State<LoginOtp> {
                         color: const Color.fromARGB(255, 216, 216, 216),
                       ),
                       child: TextFormField(
+                        style: TextStyle(color: color.onSecondary),
                         controller: _controller,
-                       maxLength: 10,
+                        maxLength: 10,
                         readOnly: editable,
                         cursorColor: Colors.black,
                         keyboardType: TextInputType.phone,
@@ -158,6 +160,7 @@ class _LoginOtpState extends State<LoginOtp> {
                           ),
                     requestedOtp
                         ? OtpFieldsCustom(
+                            style: TextStyle(color: color.onSecondary),
                             autofillOtp: smsOtp,
                             filledBorderColor:
                                 const Color.fromARGB(255, 132, 145, 219),

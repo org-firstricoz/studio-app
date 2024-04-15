@@ -24,6 +24,7 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
   FutureEither<Map<String, List<StudioModel>>> getHomeViewDetails(
       AllParams params) async {
     try {
+      print('hi');
       final response = await http.get(
         Uri.parse(
             '${AppRequestUrl.baseUrl}${AppRequestUrl.homeViewEndPoint}?location=${params.location}&uuid=${user.uuid}'),
@@ -92,6 +93,7 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
         'favouriteStudios': favouriteStudio,
       });
     } on ApiException catch (e) {
+      print(e.message);
       return Left(ApiFailure(message: e.message));
     } catch (e) {
       print(e.toString());
@@ -120,6 +122,7 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
       print(e);
       return Left(ApiFailure(message: e.message));
     } catch (e) {
+      print(e);
       return Left(ApiFailure(message: e.toString()));
     }
   }

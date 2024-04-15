@@ -6,6 +6,7 @@ import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod_base/src/commons/views/location_access/widgets/manual_location_access_sheet.dart.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/views/complete_profile_info.dart';
@@ -25,7 +26,7 @@ class LocationAccessPage extends StatelessWidget {
     final color = Theme.of(context).colorScheme;
 
     return Scaffold(
-        backgroundColor: ColorAssets.white,
+        backgroundColor: color.surface,
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: BlocConsumer<AuthBloc, AuthState>(
@@ -35,7 +36,9 @@ class LocationAccessPage extends StatelessWidget {
                       .showSnackBar(SnackBar(content: Text(state.message)));
                 } else if (state is LocationSuccess) {
                   userDetails.addAll({'location': state.city});
-                  context.go(CompleteYourProfileInfoView.routePath);
+                  newUser
+                      ? context.go(CompleteYourProfileInfoView.routePath)
+                      : context.push(HomeView.routePath);
                 }
               },
               builder: (context, state) {

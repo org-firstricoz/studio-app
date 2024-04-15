@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod_base/src/core/models/studio_details.dart';
@@ -112,6 +114,24 @@ class _ReviewTabState extends State<ReviewTab> {
           onOptionSelected: (option) {
             setState(() {
               selectedFilter = option;
+              switch (option) {
+                case ReviewFilterEnum.lowRating:
+                  AppData.reviewModels
+                      .sort((a, b) => a.rating.compareTo(b.rating));
+                  break;
+                case ReviewFilterEnum.highRating:
+                  AppData.reviewModels
+                      .sort((a, b) => b.rating.compareTo(a.rating));
+                  break;
+                case ReviewFilterEnum.newReviews:
+                  AppData.reviewModels.sort((a, b) => b.time.compareTo(a.time));
+                  break;
+                case ReviewFilterEnum.oldReviews:
+                  AppData.reviewModels.sort((a, b) => a.time.compareTo(b.time));
+                  break;
+                case ReviewFilterEnum.all:
+                  AppData.reviewModels.sort((a, b) => a.name.compareTo(b.name));
+              }
             });
           },
         );

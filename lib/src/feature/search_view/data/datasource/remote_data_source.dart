@@ -4,6 +4,7 @@ import 'package:flutter_riverpod_base/src/core/core.dart';
 import 'package:flutter_riverpod_base/src/core/exceptions.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_model.dart';
 import 'package:flutter_riverpod_base/src/core/type_def.dart';
+import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:fpdart/fpdart.dart';
@@ -23,8 +24,12 @@ class SearchViewRemoteDataSourceImpl implements SearchViewRemoteDataSource {
   @override
   FutureEither<Map<String, dynamic>> getSearchResults(String query) async {
     try {
+      if (!AppData.recentSearches.contains(query)) {
+        AppData.recentSearches.insert(0, query);
+      }
+      final uuid = user.uuid;
       final response = await client.get(Uri.parse(
-          '${AppRequestUrl.baseUrl}${AppRequestUrl.search}?search=$query'));
+          '${AppRequestUrl.baseUrl}${AppRequestUrl.search}/$uuid/$query'));
       if (response.statusCode == 200) {
         final List data = jsonDecode(response.body);
         final List<StudioModel> searchResult =

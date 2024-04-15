@@ -99,7 +99,15 @@ class _StudioSearchViewState extends State<StudioSearchView> {
                           context.push(SearchResultsView.routePath,
                               extra: {'query': searchResults[index]});
                         }),
-                        const Icon(Icons.cancel_outlined)
+                        GestureDetector(
+                          child: const Icon(Icons.cancel_outlined),
+                          onTap: () {
+                            setState(() {
+                              AppData.recentSearches
+                                  .remove(searchResults[index]);
+                            });
+                          },
+                        )
                       ],
                     ),
                   );

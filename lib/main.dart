@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_base/src/app.dart';
-import 'package:flutter_riverpod_base/src/utils/functions.dart';
 import 'package:hive_flutter/adapters.dart';
 void main() async {
   
@@ -18,6 +17,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(child: const App());
+    return const ProviderScope(child: App());
   }
 }

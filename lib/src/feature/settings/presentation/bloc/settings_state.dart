@@ -11,10 +11,12 @@ class UpdateSuccessState extends SettingsState {
   UpdateSuccessState({required this.user});
 }
 
-class UpdateFailureState extends SettingsState {
+class SettingsFailureState extends SettingsState {
   final String message;
 
-  UpdateFailureState({required this.message});
+  SettingsFailureState({required this.message});
 }
 
-class LoadingState extends SettingsState{}
+class LoadingState extends SettingsState {}
+
+class SettingsDeleteSuccess extends SettingsState {}
