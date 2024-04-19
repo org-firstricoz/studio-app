@@ -15,7 +15,8 @@ class HomeViewAppBar extends StatelessWidget {
     if (photoUrl != null) {
       return FileImage(File(photoUrl!));
     } else {
-      return NetworkImage(user.photoUrl);
+      return NetworkImage(
+          'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
     }
   }
 
@@ -65,7 +66,7 @@ class HomeViewAppBar extends StatelessWidget {
           child: Badge(
             child: Icon(
               Icons.notifications,
-              color: color.onBackground,
+              color: color.onSurface,
             ),
           ),
         ),

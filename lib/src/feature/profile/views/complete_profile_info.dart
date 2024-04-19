@@ -27,8 +27,8 @@ class _CompleteYourProfileInfoViewState
     return photoUrl == null
         ? const NetworkImage(
             'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=')
-        : FileImage(pickedImage!);
-    // var imageProfile;
+        : FileImage(pickedImage ?? File(""));
+  /*  // var imageProfile;
     // if (pickedImage == null) {
     //   imageProfile = const NetworkImage(
     //       'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
@@ -37,15 +37,13 @@ class _CompleteYourProfileInfoViewState
     //   photoUrl = pickedImage!.path;
     //   Hive.box('USER').put('image', photoUrl);
     // }
-    // return imageProfile;
+    // return imageProfile;*/
   }
 
   void pickImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      print(image.path);
-
-      userDetails.addAll({'photoUrl': pickedImage!.path});
+      userDetails.addAll({'photoUrl': image.path});
       setState(() {
         pickedImage = File(image.path);
         photoUrl = image.path;

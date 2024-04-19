@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
+import 'package:flutter_riverpod_base/src/commons/views/onboarding/on_boarding_page.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
+import 'package:go_router/go_router.dart';
 
 class DeleteAccountAlertModel extends StatefulWidget {
   const DeleteAccountAlertModel({super.key});
@@ -99,7 +101,11 @@ class _DeleteAccountAlertModelState extends State<DeleteAccountAlertModel> {
           ),
           onPressed: (agreeTerms && agreeDataDeletion)
               ? () {
-                  context.read<SettingsBloc>().add(DeleteAccountEvent(noParams: NoParams()));
+                  Navigator.of(context).pop();
+
+                  context
+                      .read<SettingsBloc>()
+                      .add(DeleteAccountEvent(noParams: NoParams()));
                 }
               : null,
           child: const Text("Delete Account"),

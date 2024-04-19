@@ -48,12 +48,13 @@ class SettingsDataSourceImpl implements SettingsDataSource {
       final response = await client.delete(Uri.parse(
           '${AppRequestUrl.baseUrl}${AppRequestUrl.delete}/${user.uuid}'));
       if (response.statusCode == 200) {
+        print('Account deleted');
         return const Right(null);
       } else {
         throw ApiException(message: response.body);
       }
     } on ApiException catch (e) {
-      // print(e.message);
+      print(e.message);
       return Left(ApiFailure(message: e.message));
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));

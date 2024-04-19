@@ -9,6 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/views/location_access/location_access_page.dart';
+import 'package:flutter_riverpod_base/src/commons/views/onboarding/widgets/page1.dart';
+import 'package:flutter_riverpod_base/src/commons/views/onboarding/widgets/page2.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/presentation/bloc/auth_bloc.dart';
@@ -19,6 +21,7 @@ import 'package:flutter_riverpod_base/src/feature/profile/views/complete_profile
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
 import 'package:flutter_riverpod_base/src/utils/form_text_field.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:otp_fields/otp_fields.dart';
 import 'package:otp_timer/otp_timer.dart';
@@ -33,7 +36,12 @@ class LoginOtp extends StatefulWidget {
 }
 
 class _LoginOtpState extends State<LoginOtp> {
-  TextEditingController _controller = TextEditingController();
+  int _currentPage = 0;
+  Timer? _timer;
+  final PageController _pageController = PageController(
+    initialPage: 0,
+  );
+  final TextEditingController _controller = TextEditingController();
   String? smsOtp;
   bool requestedOtp = false;
   bool editable = false;
@@ -41,13 +49,29 @@ class _LoginOtpState extends State<LoginOtp> {
     String? commingSms;
     try {
       commingSms = await AltSmsAutofill().listenForSms;
+      smsOtp = commingSms;
+      setState(() {});
     } on PlatformException {
       commingSms = 'Failed to get Sms.';
     }
     if (!mounted) return;
+  }
 
-    setState(() {
-      smsOtp = commingSms;
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(Duration(seconds: 5), (Timer timer) {
+      if (_currentPage < 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(seconds: 2),
+        curve: Curves.easeIn,
+      );
     });
   }
 
@@ -55,11 +79,13 @@ class _LoginOtpState extends State<LoginOtp> {
   void dispose() {
     AltSmsAutofill().unregisterListener();
     super.dispose();
+    _timer?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
+    final textColur = Theme.of(context).textTheme;
     return Scaffold(
       appBar: const SimpleAppBar(
         title: 'OTP',
@@ -85,20 +111,26 @@ class _LoginOtpState extends State<LoginOtp> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      child: Icon(
-                        Icons.home_filled,
-                        size: 200,
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: SvgPicture.asset(
+                        ImageAssets.otp,
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.only(left: 20, right: 20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: const Color.fromARGB(255, 216, 216, 216),
+                        color: color.tertiary,
                       ),
                       child: TextFormField(
-                        style: TextStyle(color: color.onSecondary),
+                        validator: (value) {
+                          if (value!.isEmpty || value.length != 10) {
+                            return 'incorrect phone number';
+                          }
+                          return null;
+                        },
+                        style: TextStyle(color: textColur.bodyLarge!.color),
                         controller: _controller,
                         maxLength: 10,
                         readOnly: editable,
@@ -137,8 +169,7 @@ class _LoginOtpState extends State<LoginOtp> {
                             child: TextButton(
                                 onPressed: () async {
                                   final value = _controller.text.trim();
-                                  if (value.isNotEmpty) {
-                                    print(value);
+                                  if (value.isNotEmpty && value.length == 10) {
                                     requestedOtp = !requestedOtp;
                                     editable = true;
                                     context
@@ -147,6 +178,33 @@ class _LoginOtpState extends State<LoginOtp> {
 
                                     setState(() {});
                                     await initSmsListener();
+                                  } else {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => Dialog(
+                                              child: Container(
+                                                height: 100,
+                                                child: Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(
+                                                        'Error',
+                                                        style: TextStyle(
+                                                            fontSize: 20,
+                                                            color: color.error),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Text('Invalid Number')
+                                                  ],
+                                                ),
+                                              ),
+                                            ));
                                   }
                                 },
                                 child: const Text(
@@ -160,10 +218,9 @@ class _LoginOtpState extends State<LoginOtp> {
                           ),
                     requestedOtp
                         ? OtpFieldsCustom(
-                            style: TextStyle(color: color.onSecondary),
+                            backgroundColor: color.tertiary,
+                            style: TextStyle(color: color.onSurface),
                             autofillOtp: smsOtp,
-                            filledBorderColor:
-                                const Color.fromARGB(255, 132, 145, 219),
                             context: context,
                             numberOfFields: 6,
                             onCodeChanged: (otp) {
@@ -172,8 +229,7 @@ class _LoginOtpState extends State<LoginOtp> {
                                   userDetails.addAll(
                                       {'phoneNumber': _controller.text.trim()});
                                   newUser
-                                      ? context
-                                          .push(LocationAccessPage.routePath)
+                                      ? context.go(LocationAccessPage.routePath)
                                       : context.read<AuthBloc>().add(
                                           LoginWithOtpEvent(
                                               emailOrPhone:
@@ -202,11 +258,14 @@ class _LoginOtpState extends State<LoginOtp> {
                                 },
                                 timeOutInSeconds: 25))
                         : const SizedBox.shrink(),
-                    Image.asset(
-                      ImageAssets.page3,
-                      width: 290,
-                      height: 477,
-                    ),
+                    SizedBox(
+                      height: 500,
+                      child: PageView(
+                        controller: _pageController,
+                        allowImplicitScrolling: true,
+                        children: [Page1(), Page2()],
+                      ),
+                    )
                   ],
                 ),
               ),

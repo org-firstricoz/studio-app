@@ -184,9 +184,10 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
     XFile? img = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (img != null) {
       final _pickedImage = File(img.path);
-      print(img.path);
+
       Hive.box('USER').put('image', img.path);
       return setState(() {
+        photoUrl = img.path;
         pickedImage = FileImage(_pickedImage);
       });
     }
@@ -233,9 +234,10 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
   }
 
   _image() {
-    pickedImage = photoUrl != null
-        ? FileImage(File(photoUrl!))
-        : NetworkImage(user.photoUrl);
+    pickedImage = photoUrl == null
+        ? NetworkImage(
+            'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=')
+        : FileImage(File(photoUrl!));
     return pickedImage;
   }
 }

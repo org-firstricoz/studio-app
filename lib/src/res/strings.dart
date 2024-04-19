@@ -40,7 +40,7 @@ class LogLabel {
 }
 
 class AppRequestUrl {
-  static const baseUrl = 'https://89b8-103-24-84-27.ngrok-free.app';
+  static const baseUrl = 'https://63a9-103-24-84-27.ngrok-free.app';
   // name@gmail.com name123
   static const locationEndPoint = '/api/city';
   static const loginEndPoint = '/api/login';

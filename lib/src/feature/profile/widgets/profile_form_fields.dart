@@ -50,7 +50,6 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
             if (state is AuthFailure) {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text(state.message)));
-              context.go(LoginOtp.routePath);
             }
             if (state is AuthSuccess) {
               user = state.user;
@@ -144,7 +143,6 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
                             style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.w600),
                             decoration: const InputDecoration(
-                            
                               border: InputBorder.none,
                               hintStyle: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w600),

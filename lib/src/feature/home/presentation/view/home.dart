@@ -25,17 +25,18 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   @override
   void initState() {
-    FlutterLifecycleDetector().onBackgroundChange.listen((isBackground) {
-      /// `isBackground` is true => background
-      /// `isBackground` is false => foreground
-      print('Status background $isBackground');
-      context
-          .read<HomeViewBloc>()
-          .add(SavingFavouritesEvent(params: AppData.favouriteModel));
-    });
+    WidgetsBinding.instance.addObserver(this);
+    // FlutterLifecycleDetector().onBackgroundChange.listen((isBackground) {
+    //   /// `isBackground` is true => background
+    //   /// `isBackground` is false => foreground
+    //   print('Status background $isBackground');
+    //   context
+    //       .read<HomeViewBloc>()
+    //       .add(SavingFavouritesEvent(params: AppData.favouriteModel));
+    // });
     context.read<HomeViewBloc>().add(
         FetchingStudioDataEvent(params: AllParams(location: user.location)));
     super.initState();
@@ -43,7 +44,39 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(state) {
+    switch (state) {
+      case AppLifecycleState.detached:
+        context
+            .read<HomeViewBloc>()
+            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
+        break;
+
+      case AppLifecycleState.resumed:
+        break;
+      case AppLifecycleState.inactive:
+        context
+            .read<HomeViewBloc>()
+            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
+        break;
+
+      case AppLifecycleState.hidden:
+        context
+            .read<HomeViewBloc>()
+            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
+        break;
+
+      case AppLifecycleState.paused:
+        context
+            .read<HomeViewBloc>()
+            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
+        break;
+    }
   }
 
   int _currentIndex = 0;
@@ -80,10 +113,9 @@ class _HomeViewState extends State<HomeView> {
             context.read<HomeViewBloc>().add(FetchingStudioDataEvent(
                 params: AllParams(location: user.location)));
           },
-          child: BlocBuilder<HomeViewBloc, AllDataState>(
+          child: BlocConsumer<HomeViewBloc, AllDataState>(
             builder: (context, state) {
               if (state is HomeViewFailure) {
-              
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -129,6 +161,13 @@ class _HomeViewState extends State<HomeView> {
                 ][_currentIndex];
               }
               return const SizedBox();
+            },
+            listener: (BuildContext context, AllDataState<dynamic> state) {
+              if (state is HomeViewFailure) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.message)));
+              }
             },
           ),
         ));

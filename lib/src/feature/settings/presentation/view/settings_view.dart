@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/views/onboarding/on_boarding_page.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/custom_list_tile.dart';
+import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/views/edit_profile_info.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/notification_settings_view.dart';
@@ -31,23 +32,32 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return BlocListener<SettingsBloc, SettingsState>(
-      listener: (context, state) {
-        if (state is SettingsDeleteSuccess) {
-          context.go(OnBoardingPage.routePath);
-          Hive.box('USER').clear();
-        }
-      },
-      child: Scaffold(
+    return BlocConsumer<SettingsBloc, SettingsState>(
+        listener: (context, state) {
+      if (state is SettingsDeleteSuccess) {
+        print('object');
+
+        context.go(OnBoardingPage.routePath);
+        Hive.box('USER').clear();
+      } else if (state is SettingsFailureState) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(state.message)));
+      } else if (state is LoadingState) {
+        const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+    }, builder: (context, state) {
+      return Scaffold(
+        appBar: SimpleAppBar(
+          title: "Settings",
+        ),
         // backgroundColor: ColorAssets.white,
-        body: CustomScrollView(
-          slivers: [
-            SliverPersistentHeader(
-                pinned: true,
-                floating: true,
-                delegate: BasicSliverAppbar(title: "Settings")),
-            SliverList(
-              delegate: SliverChildListDelegate([
+        body: state is LoadingState
+            ? Center(child: CircularProgressIndicator())
+            : Column(children: [
                 CustomListTile(
                   leadingIcon: Icon(
                     Icons.notifications_none_sharp,
@@ -86,17 +96,15 @@ class _SettingsViewState extends State<SettingsView> {
                       color: ColorAssets.primaryBlue),
                 ),
               ]),
-            ),
-          ],
-        ),
-      ),
-    );
+      );
+    });
   }
 
   void _showAccountDeleteAlert(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
+          
           return DeleteAccountAlertModel();
         });
   }

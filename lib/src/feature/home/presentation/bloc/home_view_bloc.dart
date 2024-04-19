@@ -34,7 +34,7 @@ class HomeViewBloc extends Bloc<HomeViewEvent, AllDataState> {
           res.fold((l) => emit(HomeViewFailure(message: l.message)),
               (r) => emit(HomeViewSuccess(modelDatas: r)));
         } catch (e) {
-          return emit(HomeViewFailure(message: 'unable to load'));
+          return emit(HomeViewFailure(message: e.toString()));
         }
       },
     );

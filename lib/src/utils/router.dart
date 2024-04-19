@@ -239,13 +239,18 @@ _cachedUser() {
   final box = Hive.box('USER');
   if (box.isNotEmpty) {
     final token = box.get('token');
-    final bool val = JwtDecoder.isExpired(token);
-    if (val) {
-      return SplashView.routePath;
+    if (token != null) {
+      final bool val = JwtDecoder.isExpired(token);
+
+      if (val) {
+        return SplashView.routePath;
+      } else {
+        final userDetails = JwtDecoder.decode(token);
+        user = User.fromMap(userDetails);
+        return HomeView.routePath;
+      }
     } else {
-      final userDetails = JwtDecoder.decode(token);
-      user = User.fromMap(userDetails);
-      return HomeView.routePath;
+      return SplashView.routePath;
     }
   } else {
     return SplashView.routePath;

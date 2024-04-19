@@ -179,9 +179,11 @@ class _ProfileTabState extends State<ProfileTab> {
                     fontSize: 16,
                     color: ColorAssets.redAccent),
               ),
-              onTap: () {
+              onTap: () async {
                 context.go(OnBoardingPage.routePath);
-                Hive.box('USER').clear();
+                await Hive.box('USER').clear();
+                photoUrl = null;
+                print(Hive.box('USER').isEmpty);
               },
               enableBottom: false),
         ]))
@@ -193,7 +195,8 @@ class _ProfileTabState extends State<ProfileTab> {
     print(photoUrl);
     return photoUrl != null
         ? FileImage(File(photoUrl!))
-        : NetworkImage(user.photoUrl);
+        : NetworkImage(
+            'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
   }
 }
 

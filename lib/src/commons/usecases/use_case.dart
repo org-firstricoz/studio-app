@@ -383,7 +383,7 @@ class SignUpParams {
       email: map['email'] as String,
       createdAt: map['createdAt'],
       name: map['name'] as String,
-      photoUrl: map['photoUrl'] as String,
+      photoUrl: map['photoUrl'].toString(),
       gender: map['gender'] as String,
       phoneNumber: map['phoneNumber'] as String,
       location: map['location'] as String,

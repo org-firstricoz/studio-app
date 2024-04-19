@@ -16,6 +16,7 @@ class HomeViewRepositoryImpl implements HomeViewRepository {
     return _dataSource.getHomeViewDetails(params);
   }
 
+  @override
   FutureEitherVoid saveFavourites(List<StudioModel> params) {
     return _dataSource.saveFavourites(params);
   }

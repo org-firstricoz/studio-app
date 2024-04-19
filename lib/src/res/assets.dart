@@ -41,7 +41,7 @@ class ImageAssets {
   static const smile = "$_baseIconPath/smile.svg";
   static const link = "$_baseIconPath/link.svg";
   static const camera = "$_baseIconPath/camera.svg";
-
+  static const otp = "$_baseIconPath/otp.svg";
   static const mapPoints = "$_baseIconPath/map-points.svg";
 
   static const successCheckBox = "$_baseIconPath/suceess-checkbox.svg";
