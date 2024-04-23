@@ -2,12 +2,18 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 
 import 'package:flutter_riverpod_base/src/core/models/studio_details.dart';
+import 'package:flutter_riverpod_base/src/core/user.dart';
+import 'package:flutter_riverpod_base/src/feature/booking/presentation/bloc/booking_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/tabs/widget/filter_option_dialogue.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../sheet/add_review_model.dart';
@@ -216,7 +222,216 @@ class _ReviewTabState extends State<ReviewTab> {
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
                               color: ColorAssets.lightGray),
-                        )
+                        ),
+                        review[index].uuid == user.uuid
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    TextEditingController
+                                        reviewEditingController =
+                                        TextEditingController(
+                                            text: review[index].review);
+                                    var rating = review[index].rating;
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => Dialog(
+                                              child: Container(
+                                                height: 400,
+                                                color: color.secondary,
+                                                child: SingleChildScrollView(
+                                                  child: Column(
+                                                    children: [
+                                                      const Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          CloseButton()
+                                                        ],
+                                                      ),
+                                                      RatingBar.builder(
+                                                        initialRating:
+                                                            rating.toDouble(),
+                                                        minRating: 1,
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        allowHalfRating: false,
+                                                        itemCount: 5,
+                                                        itemPadding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    7.5),
+                                                        itemSize: 30,
+                                                        itemBuilder:
+                                                            (context, _) =>
+                                                                const Icon(
+                                                          Icons.star,
+                                                          color: Colors.amber,
+                                                        ),
+                                                        onRatingUpdate:
+                                                            (value) {
+                                                          setState(() {
+                                                            rating = value;
+                                                          });
+                                                        },
+                                                      ),
+                                                      const Text(
+                                                        'Add detailed review',
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 14,
+                                                            color: ColorAssets
+                                                                .blackFaded),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 15),
+                                                      Padding(
+                                                        padding: MediaQuery.of(
+                                                                context)
+                                                            .viewInsets,
+                                                        child: Container(
+                                                          color:
+                                                              color.onSecondary,
+                                                          child: TextField(
+                                                            controller:
+                                                                reviewEditingController,
+                                                            // scrollPadding: EdgeInsets.all(0),
+
+                                                            minLines: 6,
+                                                            maxLines: 15,
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    contentPadding:
+                                                                        const EdgeInsets
+                                                                            .all(
+                                                                            10),
+                                                                    hintText:
+                                                                        'Enter review',
+                                                                    hintStyle: const TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w600,
+                                                                        fontSize:
+                                                                            16),
+                                                                    fillColor: color
+                                                                        .secondary,
+                                                                    filled:
+                                                                        true,
+                                                                    border:
+                                                                        const OutlineInputBorder(
+                                                                      borderSide:
+                                                                          BorderSide
+                                                                              .none,
+                                                                    )),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 10),
+                                                      Center(
+                                                        child: TextButton(
+                                                          child: const Text(
+                                                              'Edit'),
+                                                          onPressed: () {
+                                                            context.pop();
+
+                                                            context
+                                                                .read<
+                                                                    BookingBloc>()
+                                                                .add(
+                                                                    EditReviewEvent(
+                                                                        reviewParams:
+                                                                            ReviewParams(
+                                                                  reviewId: review[
+                                                                          index]
+                                                                      .reviewId,
+                                                                  rating: rating
+                                                                      .toDouble(),
+                                                                  review:
+                                                                      reviewEditingController
+                                                                          .text
+                                                                          .trim(),
+                                                                  uuid:
+                                                                      user.uuid,
+                                                                  studioId: widget
+                                                                      .studioDetails
+                                                                      .id,
+                                                                )));
+                                                            review[index]
+                                                                    .review =
+                                                                reviewEditingController
+                                                                    .text
+                                                                    .trim();
+                                                            review[index]
+                                                                    .rating =
+                                                                rating;
+                                                            setState(() {});
+                                                          },
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ));
+                                  },
+                                  child: const Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                        color: ColorAssets.lightGray),
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                        review[index].uuid == user.uuid
+                            ? Padding(
+                                padding: EdgeInsets.all(8),
+                                child: GestureDetector(
+                                  child: const Text('Delete'),
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => Dialog(
+                                              child: SizedBox(
+                                                height: 200,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    const Center(
+                                                        child: Text(
+                                                            'You Sure About That!!!')),
+                                                    Center(
+                                                      child: TextButton(
+                                                        child: Text("Delete"),
+                                                        onPressed: () {
+                                                          context.pop();
+                                                          context
+                                                              .read<
+                                                                  BookingBloc>()
+                                                              .add(DeleteReviewEvent(
+                                                                  reviewId: review[
+                                                                          index]
+                                                                      .reviewId));
+                                                          review.remove(
+                                                              review[index]);
+                                                        },
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ));
+                                  },
+                                ),
+                              )
+                            : SizedBox(),
                       ],
                     )
                   ],

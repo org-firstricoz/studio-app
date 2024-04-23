@@ -14,6 +14,8 @@ import 'package:http/http.dart' as http;
 abstract class RemoteDataSource {
   FutureEither<Map<String, dynamic>> getAboutSection(uid);
   FutureEither<Map<String, dynamic>> addReviewSection(ReviewParams params);
+  FutureEither<Map<String, dynamic>> delteReview(String reviewId);
+  FutureEither<Map<String, dynamic>> editReview(ReviewParams params);
 }
 
 class RemoteDataSourceImpl implements RemoteDataSource {
@@ -92,6 +94,58 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         return Right({'review_model': reviewModel});
       } else {
         throw ApiException(message: 'Unable to add review');
+      }
+    } on ApiException catch (e) {
+      print(e);
+
+      return Left(ApiFailure(message: e.message));
+    } catch (e) {
+      print(e);
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  FutureEither<Map<String, dynamic>> delteReview(String reviewId) async {
+    try {
+      final response = await _client.delete(
+        Uri.parse(
+            '${AppRequestUrl.baseUrl}${AppRequestUrl.reviewEndPoint}/$reviewId'),
+      );
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        return Right({'review_model': ReviewModel.fromMap(body)});
+      } else {
+        throw ApiException(message: 'Unable to Delete review');
+      }
+    } on ApiException catch (e) {
+      print(e);
+
+      return Left(ApiFailure(message: e.message));
+    } catch (e) {
+      print(e);
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  FutureEither<Map<String, dynamic>> editReview(ReviewParams params) async {
+    try {
+      final response = await _client.put(
+          Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.reviewEndPoint}'),
+          headers: {'content-type': 'application/json'},
+          body: jsonEncode(params.toMap()));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        final ReviewModel reviewModel = ReviewModel.fromMap(data);
+        AppData.reviewModels.insert(0, reviewModel);
+
+        return Right({'review_model': reviewModel});
+      } else {
+        throw ApiException(message: 'Unable to Edit review');
       }
     } on ApiException catch (e) {
       print(e);

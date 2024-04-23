@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/core/core.dart';
@@ -12,6 +14,8 @@ import 'package:meta/meta.dart';
 
 part 'home_view_event.dart';
 part 'home_view_state.dart';
+
+int c = 0;
 
 class HomeViewBloc extends Bloc<HomeViewEvent, AllDataState> {
   final GetHomeViewDetails _getHomeViewDetails;

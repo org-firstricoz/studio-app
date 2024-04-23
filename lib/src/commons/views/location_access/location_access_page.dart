@@ -1,18 +1,27 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_view_bloc.dart'
+    as hv;
 import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/data/datasource/settings_data_source.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart'
+    as st;
+import 'package:flutter_riverpod_base/src/utils/functions.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod_base/src/commons/views/location_access/widgets/manual_location_access_sheet.dart.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/views/complete_profile_info.dart';
-import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_text_button.dart';
+
+int counter = 0;
 
 class LocationAccessPage extends StatelessWidget {
   static String routePath = '/location-access';
@@ -36,9 +45,17 @@ class LocationAccessPage extends StatelessWidget {
                       .showSnackBar(SnackBar(content: Text(state.message)));
                 } else if (state is LocationSuccess) {
                   userDetails.addAll({'location': state.city});
-                  newUser
-                      ? context.go(CompleteYourProfileInfoView.routePath)
-                      : context.push(HomeView.routePath);
+                  if (newUser) {
+                    context.go(CompleteYourProfileInfoView.routePath);
+                  } else {
+                    log('How many Times');
+                    if (counter == 0) {
+                      counter += 1;
+                      context.read<st.SettingsBloc>().add(st.UpdateEvent(
+                          updateParams: UpdateParams(location: state.city)));
+                    }
+                    context.push(HomeView.routePath);
+                  }
                 }
               },
               builder: (context, state) {

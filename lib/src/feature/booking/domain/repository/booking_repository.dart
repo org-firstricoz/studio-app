@@ -6,4 +6,6 @@ import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.
 abstract class BookingRepository {
   FutureEither<Map<String, dynamic>> getAboutSection(String uid);
   FutureEither<Map<String, dynamic>> addReviewSection(ReviewParams params);
+   FutureEither<Map<String, dynamic>>  delteReview(String reviewId);
+  FutureEither<Map<String, dynamic>> editReview(ReviewParams params);
 }

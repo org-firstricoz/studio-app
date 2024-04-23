@@ -89,29 +89,31 @@ class MessageBubble extends StatelessWidget {
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         Container(
-            constraints: const BoxConstraints(
-              maxWidth: 283,
+          constraints: const BoxConstraints(
+            maxWidth: 283,
+          ),
+          padding: const EdgeInsets.all(14),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            // color: color.surfaceVariant,
+            color: isMe ? color.primary : color.surface,
+            border: Border.all(
+              color: isMe
+                  ? Colors.transparent
+                  : ColorAssets.blackFaded.withOpacity(0.25),
             ),
-            padding: const EdgeInsets.all(14),
-            margin: const EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              // color: color.surfaceVariant,
-              color: isMe ? color.primary : color.surface,
-              border: Border.all(
-                color: isMe
-                    ? Colors.transparent
-                    : ColorAssets.blackFaded.withOpacity(0.25),
-              ),
-              borderRadius: BorderRadius.only(
-                topRight: isMe ? Radius.zero : const Radius.circular(15),
-                topLeft: isMe ? const Radius.circular(15) : Radius.zero,
-                bottomLeft: const Radius.circular(15),
-                bottomRight: const Radius.circular(15),
-              ),
+            borderRadius: BorderRadius.only(
+              topRight: isMe ? Radius.zero : const Radius.circular(15),
+              topLeft: isMe ? const Radius.circular(15) : Radius.zero,
+              bottomLeft: const Radius.circular(15),
+              bottomRight: const Radius.circular(15),
             ),
-            child: Text(
-              message,
-            ).boldSubString(searchString, context, isMe)),
+          ),
+          child: RichText(
+            text: TextSpan(
+                text: message, style: TextStyle(color: color.onPrimary)),
+          ),
+        )
       ],
     );
   }

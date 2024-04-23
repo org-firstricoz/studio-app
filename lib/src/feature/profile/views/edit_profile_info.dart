@@ -90,6 +90,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                       text: "Update Profile",
                       ontap: () {
                         final updateParams = UpdateParams(
+                            gender: user.gender,
                             name: nameController.text.trim(),
                             email: emailController.text.trim(),
                             phoneNumber: phoneController.text.trim());
@@ -166,7 +167,6 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                   ),
                 ],
                 onChanged: (data) {
-                  ;
                   user = user.copyWith(gender: data);
                   setState(() {});
                 },

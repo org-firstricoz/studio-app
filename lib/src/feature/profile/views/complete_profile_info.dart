@@ -28,7 +28,7 @@ class _CompleteYourProfileInfoViewState
         ? const NetworkImage(
             'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=')
         : FileImage(pickedImage ?? File(""));
-  /*  // var imageProfile;
+    /*  // var imageProfile;
     // if (pickedImage == null) {
     //   imageProfile = const NetworkImage(
     //       'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
@@ -68,7 +68,6 @@ class _CompleteYourProfileInfoViewState
     final color = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: ColorAssets.white,
       body: Padding(
         padding: const EdgeInsets.all(14),
         child: Padding(

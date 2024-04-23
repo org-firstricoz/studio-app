@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 
@@ -16,8 +17,9 @@ class StudioDetails {
   final String description;
   final List<String> frontImage;
   final List<String> gallery;
-  final int numberOfReviews;
-  StudioDetails({required this.id,
+  final num numberOfReviews;
+  StudioDetails({
+    required this.id,
     required this.rent,
     required this.category,
     required this.name,
@@ -43,7 +45,8 @@ class StudioDetails {
     num? rent,
     String? id,
   }) {
-    return StudioDetails(id:id??this.id,
+    return StudioDetails(
+      id: id ?? this.id,
       rent: rent ?? this.rent,
       category: category ?? this.category,
       name: name ?? this.name,
@@ -59,7 +62,7 @@ class StudioDetails {
 
   static StudioDetails empty() {
     return StudioDetails(
-      id: 'q2eq',
+        id: 'q2eq',
         rent: 2344,
         category: 'category',
         name: 'name',
@@ -94,6 +97,7 @@ class StudioDetails {
   }
 
   factory StudioDetails.fromMap(Map<String, dynamic> map) {
+    log('message');
     return StudioDetails(
       id: map['id'].toString(),
       rent: map['rent'],
@@ -105,7 +109,7 @@ class StudioDetails {
       description: map['description'] as String,
       frontImage: List<String>.from(map['frontImage']),
       gallery: List<String>.from(map['gallery']),
-      numberOfReviews: map['numberOfReviews'] as int,
+      numberOfReviews: map['numberOfReviews'] as num,
     );
   }
 
@@ -151,13 +155,15 @@ class StudioDetails {
 class ReviewModel {
   final String name;
   final String reviewId;
+  final String uuid;
   final String photoUrl;
-  final String review;
-  final double rating;
+  String review;
+  num rating;
   final DateTime time;
   ReviewModel({
     required this.name,
     required this.reviewId,
+    required this.uuid,
     required this.photoUrl,
     required this.review,
     required this.rating,
@@ -167,6 +173,7 @@ class ReviewModel {
   ReviewModel copyWith({
     String? name,
     String? reviewId,
+    String? uuid,
     String? photoUrl,
     String? review,
     double? rating,
@@ -175,6 +182,7 @@ class ReviewModel {
     return ReviewModel(
       name: name ?? this.name,
       reviewId: reviewId ?? this.reviewId,
+      uuid: uuid ?? this.uuid,
       photoUrl: photoUrl ?? this.photoUrl,
       review: review ?? this.review,
       rating: rating ?? this.rating,
@@ -182,10 +190,22 @@ class ReviewModel {
     );
   }
 
+  static ReviewModel empty() {
+    return ReviewModel(
+        name: 'name',
+        reviewId: 'reviewId',
+        uuid: 'uuid',
+        photoUrl: 'photoUrl',
+        review: 'review',
+        rating: 2,
+        time: DateTime.now());
+  }
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'name': name,
       'reviewId': reviewId,
+      'uuid': uuid,
       'photoUrl': photoUrl,
       'review': review,
       'rating': rating,
@@ -194,13 +214,15 @@ class ReviewModel {
   }
 
   factory ReviewModel.fromMap(Map<String, dynamic> map) {
+    log(' fdds');
     return ReviewModel(
       name: map['name'].toString(),
       reviewId: map['reviewId'].toString(),
+      uuid: map['uuid'].toString(),
       photoUrl: map['photoUrl'].toString(),
       review: map['review'].toString(),
-      rating: (map['rating'] as num).toDouble(),
-      time: DateTime.tryParse(map['time'].toString()) ?? DateTime.now(),
+      rating: map['rating'] as num,
+      time: DateTime.parse(map['time']),
     );
   }
 
@@ -211,7 +233,7 @@ class ReviewModel {
 
   @override
   String toString() {
-    return 'ReviewModel(name: $name, reviewId: $reviewId, photoUrl: $photoUrl, review: $review, rating: $rating, time: $time)';
+    return 'ReviewModel(name: $name, reviewId: $reviewId, uuid: $uuid, photoUrl: $photoUrl, review: $review, rating: $rating, time: $time)';
   }
 
   @override
@@ -220,6 +242,7 @@ class ReviewModel {
 
     return other.name == name &&
         other.reviewId == reviewId &&
+        other.uuid == uuid &&
         other.photoUrl == photoUrl &&
         other.review == review &&
         other.rating == rating &&
@@ -230,6 +253,7 @@ class ReviewModel {
   int get hashCode {
     return name.hashCode ^
         reviewId.hashCode ^
+        uuid.hashCode ^
         photoUrl.hashCode ^
         review.hashCode ^
         rating.hashCode ^

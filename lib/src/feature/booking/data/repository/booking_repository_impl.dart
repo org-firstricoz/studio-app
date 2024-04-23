@@ -20,4 +20,15 @@ class BookingRepositoryImpl implements BookingRepository {
       ReviewParams params) async {
     return await remoteDataSource.addReviewSection(params);
   }
+  
+  @override
+   FutureEither<Map<String, dynamic>>  delteReview(String reviewId)async {
+    return await remoteDataSource.delteReview(reviewId);
+  }
+  
+  @override
+  FutureEither<Map<String, dynamic>> editReview(ReviewParams params)async {
+    return await remoteDataSource.editReview(params);
+  }
+
 }

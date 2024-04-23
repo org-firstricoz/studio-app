@@ -27,7 +27,7 @@ class StudioSearchView extends StatefulWidget {
 class _StudioSearchViewState extends State<StudioSearchView> {
   List<String> searchResults = AppData.recentSearches;
   int isActive = 0;
-
+  final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
@@ -44,6 +44,7 @@ class _StudioSearchViewState extends State<StudioSearchView> {
               color: color.secondary,
             ),
             child: TextFormField(
+              controller: _controller,
               onFieldSubmitted: (value) {
                 if (value.isNotEmpty) {
                   context
@@ -53,17 +54,22 @@ class _StudioSearchViewState extends State<StudioSearchView> {
                       extra: {'query': value});
                 }
               },
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(vertical: 3),
                   hintText: "Search...",
                   // hintStyle: TextStyle(color: ColorAssets.lightGray),
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.search,
                     color: ColorAssets.primaryBlue,
                   ),
-                  suffixIcon: Icon(
-                    Icons.cancel_outlined,
-                    color: ColorAssets.primaryBlue,
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      _controller.clear();
+                    },
+                    child: const Icon(
+                      Icons.cancel_outlined,
+                      color: ColorAssets.primaryBlue,
+                    ),
                   ),
                   border: InputBorder.none),
             )),

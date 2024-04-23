@@ -102,6 +102,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
                 .first['District']
                 .toString();
             print(city);
+            Hive.box('USER').put("location", city);
             return Right(city);
           } else {
             throw LocationException(

@@ -32,8 +32,8 @@ class _AddReviewModelState extends State<AddReviewModel> {
     final color = Theme.of(context).colorScheme;
 
     return Container(
-      decoration: const BoxDecoration(
-          color: ColorAssets.white,
+      decoration: BoxDecoration(
+          color: color.secondary,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0))),
       child: Column(

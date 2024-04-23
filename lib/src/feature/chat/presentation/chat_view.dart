@@ -125,7 +125,7 @@ class _ChatViewState extends State<ChatView> {
                   agentModel: widget.agentModel,
                 ));
           } else if (state is SendChatSuccessState) {
-            AppData.chatMessages.add(state.message);
+            // AppData.chatMessages.add(state.message);
 
             return Container(
                 decoration: BoxDecoration(

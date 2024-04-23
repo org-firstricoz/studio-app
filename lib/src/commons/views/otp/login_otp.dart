@@ -41,6 +41,7 @@ class _LoginOtpState extends State<LoginOtp> {
   final PageController _pageController = PageController(
     initialPage: 0,
   );
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _controller = TextEditingController();
   String? smsOtp;
   bool requestedOtp = false;
@@ -49,7 +50,10 @@ class _LoginOtpState extends State<LoginOtp> {
     String? commingSms;
     try {
       commingSms = await AltSmsAutofill().listenForSms;
-      smsOtp = commingSms;
+      RegExp regex = RegExp(r'\b\d{6}\b'); // Matches exactly 6 digits
+
+      final match = regex.firstMatch(commingSms!);
+      smsOtp = match!.group(0);
       setState(() {});
     } on PlatformException {
       commingSms = 'Failed to get Sms.';
@@ -104,6 +108,7 @@ class _LoginOtpState extends State<LoginOtp> {
         },
         builder: (context, state) {
           return Form(
+            key: _formKey,
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: SingleChildScrollView(
@@ -125,10 +130,15 @@ class _LoginOtpState extends State<LoginOtp> {
                       ),
                       child: TextFormField(
                         validator: (value) {
-                          if (value!.isEmpty || value.length != 10) {
+                          if (value!.isEmpty ||
+                              value.length != 10 ||
+                              int.tryParse(value[0])! < 6) {
                             return 'incorrect phone number';
                           }
                           return null;
+                        },
+                        onChanged: (_) {
+                          _formKey.currentState!.validate();
                         },
                         style: TextStyle(color: textColur.bodyLarge!.color),
                         controller: _controller,
@@ -169,7 +179,7 @@ class _LoginOtpState extends State<LoginOtp> {
                             child: TextButton(
                                 onPressed: () async {
                                   final value = _controller.text.trim();
-                                  if (value.isNotEmpty && value.length == 10) {
+                                  if (_formKey.currentState!.validate()) {
                                     requestedOtp = !requestedOtp;
                                     editable = true;
                                     context

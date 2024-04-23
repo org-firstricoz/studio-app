@@ -7,11 +7,15 @@ import 'package:flutter_riverpod_base/src/core/models/location_model.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_view_bloc.dart'
+    as hm;
 import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/views/complete_profile_info.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
 import 'package:flutter_riverpod_base/src/utils/form_text_field.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart'
+    as st;
 
 showLoactionAccessingBottomModelSheet(BuildContext context) {
   final color = Theme.of(context).colorScheme;
@@ -102,15 +106,21 @@ class _LoactionSearchingWidgetState extends State<LoactionSearchingWidget> {
                       title: GestureDetector(
                           onTap: () {
                             print('object');
-                            newUser
-                                ? userDetails.addAll(
-                                    {'location': filteredLocations[index].name})
-                                : user = user.copyWith(
-                                    location: filteredLocations[index].name);
-                            newUser
-                                ? context
-                                    .go(CompleteYourProfileInfoView.routePath)
-                                : context.go(HomeView.routePath);
+                            if (newUser) {
+                              userDetails.addAll(
+                                  {'location': filteredLocations[index].name});
+                              context.go(CompleteYourProfileInfoView.routePath);
+                            } else {
+                              user = user.copyWith(
+                                  location: filteredLocations[index].name);
+                              context.read<st.SettingsBloc>().add(
+                                  st.UpdateEvent(
+                                      updateParams: UpdateParams(
+                                          location:
+                                              filteredLocations[index].name)));
+                              c = 1;
+                              context.push(HomeView.routePath);
+                            }
                           },
                           child: Text(filteredLocations[index].name)),
                     ),

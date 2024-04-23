@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_lifecycle_detector/flutter_lifecycle_detector.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
+import 'package:flutter_riverpod_base/src/commons/views/location_access/location_access_page.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,6 +18,8 @@ import 'package:flutter_riverpod_base/src/feature/home/presentation/tabs/profile
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+
+int c = 0;
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -37,8 +42,13 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     //       .read<HomeViewBloc>()
     //       .add(SavingFavouritesEvent(params: AppData.favouriteModel));
     // });
-    context.read<HomeViewBloc>().add(
-        FetchingStudioDataEvent(params: AllParams(location: user.location)));
+
+    if (c <= 1) {
+      c += 1;
+      counter = 0;
+      context.read<HomeViewBloc>().add(
+          FetchingStudioDataEvent(params: AllParams(location: user.location)));
+    }
     super.initState();
   }
 
@@ -60,15 +70,9 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
       case AppLifecycleState.resumed:
         break;
       case AppLifecycleState.inactive:
-        context
-            .read<HomeViewBloc>()
-            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
         break;
 
       case AppLifecycleState.hidden:
-        context
-            .read<HomeViewBloc>()
-            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
         break;
 
       case AppLifecycleState.paused:

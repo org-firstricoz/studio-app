@@ -27,3 +27,14 @@ class PaymentEvent extends BookingEvent {
   PaymentEvent({required this.data});
 }
 
+class DeleteReviewEvent extends BookingEvent {
+  final String reviewId;
+
+  DeleteReviewEvent({required this.reviewId});
+}
+
+class EditReviewEvent extends BookingEvent {
+  final ReviewParams reviewParams;
+
+  EditReviewEvent({required this.reviewParams});
+}

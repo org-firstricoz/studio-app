@@ -60,6 +60,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 // Fetching User Location Automatically
     on<FetchUserLocation>(
       (event, emit) async {
+      
         final res = await _getLocation.call(event.params);
 
         res.fold((l) => emit(LocationFailure(message: l.message)),

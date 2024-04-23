@@ -43,14 +43,14 @@ class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
           headers: {'content-type': 'application/json'});
       print(response.statusCode);
       if (response.statusCode == 200) {
-        final orderId = jsonDecode(response.body);
-        print(orderId);
+        final data = jsonDecode(response.body);
+        print(data);
         var options = {
-          'key': AppSecrets.keyId,
+          'key': data['keyId'],
           'amount': params.amount * 100,
           'name': params.name,
           'time_out': 240,
-          "id": orderId['id'],
+          "id": data['id'],
           'prefill': {'contact': user.phoneNumber, 'email': user.email}
         };
 

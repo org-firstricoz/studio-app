@@ -33,7 +33,7 @@ class _SearchResultsViewState extends State<SearchResultsView> {
       ),
       body: BlocConsumer<SearchBloc, SearchState>(
         listener: (context, state) {
-          // TODO: implement listener
+         
           if (state is SearchFailureState) {
             ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
@@ -52,7 +52,12 @@ class _SearchResultsViewState extends State<SearchResultsView> {
             );
           }
           if (state is SearchSuccessState) {
-            return ListView.builder(
+             if (state.models.isEmpty) {
+              return const Center(
+                child: Text("No Studio Found"),
+              );
+            }else {
+               return ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 shrinkWrap: true,
                 itemCount: AppData.searchResult.length,
@@ -72,8 +77,14 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                     );
                   }
                 });
+             }
           } else if (state is FilterSuccessState) {
-            return ListView.builder(
+            if (state.models.isEmpty) {
+              return const Center(
+                child: Text("No Studio Found"),
+              );
+            }else {
+              return ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 shrinkWrap: true,
                 itemCount: state.models.length,
@@ -92,11 +103,12 @@ class _SearchResultsViewState extends State<SearchResultsView> {
                       ),
                     );
                   } else {
-                    return Center(
+                    return const Center(
                       child: Text('No Studio Available'),
                     );
                   }
                 });
+            }
           } else {
             return const SizedBox.shrink();
           }

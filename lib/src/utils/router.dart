@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod_base/main.dart';
 import 'package:flutter_riverpod_base/src/commons/views/filters/filter_view.dart';
-import 'package:flutter_riverpod_base/src/commons/views/help-center/help_center_view.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/presentation/pages/help_center_view.dart';
 import 'package:flutter_riverpod_base/src/commons/views/location_access/location_access_page.dart';
 import 'package:flutter_riverpod_base/src/commons/views/notification/notification_view.dart';
 import 'package:flutter_riverpod_base/src/commons/views/onboarding/on_boarding_page.dart';

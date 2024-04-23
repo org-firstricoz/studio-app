@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -96,24 +97,30 @@ class ChatParams {
 }
 
 class UpdateParams {
+  final String? gender;
   final String? password;
   final String? name;
   final String? phoneNumber;
   final String? email;
+  final String? location;
   UpdateParams({
+    this.gender,
     this.password,
     this.name,
     this.phoneNumber,
     this.email,
+    this.location,
   });
 
   UpdateParams copyWith({
+    String? gender,
     String? password,
     String? name,
     String? phoneNumber,
     String? email,
   }) {
     return UpdateParams(
+      gender: gender ?? this.gender,
       password: password ?? this.password,
       name: name ?? this.name,
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -123,18 +130,22 @@ class UpdateParams {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'gender': gender,
       'password': password,
       'name': name,
       'phoneNumber': phoneNumber,
       'email': email,
+      'location': location,
     };
   }
 
   factory UpdateParams.fromMap(Map<String, dynamic> map) {
     return UpdateParams(
+      gender: map['gender'] != null ? map['gender'] as String : null,
       password: map['password'] != null ? map['password'] as String : null,
       name: map['name'] != null ? map['name'] as String : null,
-      phoneNumber: map['phoneNumber'] as String,
+      phoneNumber:
+          map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
     );
   }
@@ -146,14 +157,15 @@ class UpdateParams {
 
   @override
   String toString() {
-    return 'UpdateParams(password: $password, name: $name, phoneNumber: $phoneNumber, email: $email)';
+    return 'UpdateParams(gender: $gender, password: $password, name: $name, phoneNumber: $phoneNumber, email: $email)';
   }
 
   @override
   bool operator ==(covariant UpdateParams other) {
     if (identical(this, other)) return true;
 
-    return other.password == password &&
+    return other.gender == gender &&
+        other.password == password &&
         other.name == name &&
         other.phoneNumber == phoneNumber &&
         other.email == email;
@@ -161,7 +173,8 @@ class UpdateParams {
 
   @override
   int get hashCode {
-    return password.hashCode ^
+    return gender.hashCode ^
+        password.hashCode ^
         name.hashCode ^
         phoneNumber.hashCode ^
         email.hashCode;
@@ -460,12 +473,14 @@ class ReviewParams {
   final double rating;
   final String uuid;
   final String studioId;
+  final String? reviewId;
 
   ReviewParams({
     required this.review,
     required this.rating,
     required this.uuid,
     required this.studioId,
+    this.reviewId,
   });
 
   ReviewParams copyWith({
@@ -473,21 +488,25 @@ class ReviewParams {
     double? rating,
     String? uuid,
     String? studioId,
+    String? reviewId,
   }) {
     return ReviewParams(
       review: review ?? this.review,
       rating: rating ?? this.rating,
       uuid: uuid ?? this.uuid,
       studioId: studioId ?? this.studioId,
+      reviewId: reviewId ?? this.reviewId,
     );
   }
 
   Map<String, dynamic> toMap() {
+    
     return <String, dynamic>{
       'review': review,
       'rating': rating,
       'uuid': uuid,
       'studioId': studioId,
+      'reviewId': reviewId,
     };
   }
 
@@ -497,6 +516,7 @@ class ReviewParams {
       rating: map['rating'] as double,
       uuid: map['uuid'] as String,
       studioId: map['studioId'] as String,
+      reviewId: null,
     );
   }
 
@@ -507,7 +527,7 @@ class ReviewParams {
 
   @override
   String toString() {
-    return 'ReviewParams(review: $review, rating: $rating, uuid: $uuid, studioId: $studioId)';
+    return 'ReviewParams(review: $review, rating: $rating, uuid: $uuid, studioId: $studioId, reviewId: $reviewId)';
   }
 
   @override
@@ -517,7 +537,8 @@ class ReviewParams {
     return other.review == review &&
         other.rating == rating &&
         other.uuid == uuid &&
-        other.studioId == studioId;
+        other.studioId == studioId &&
+        other.reviewId == reviewId;
   }
 
   @override
@@ -525,6 +546,7 @@ class ReviewParams {
     return review.hashCode ^
         rating.hashCode ^
         uuid.hashCode ^
-        studioId.hashCode;
+        studioId.hashCode ^
+        reviewId.hashCode;
   }
 }

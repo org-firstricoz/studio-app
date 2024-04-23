@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/data/datasource/remote_data_source.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/data/repository/help_center_repository_impl.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/domain/usecase/help_centre.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/presentation/bloc/help_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/data/datasource/remote_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/data/repository/auth_repository_impl.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
@@ -84,6 +88,14 @@ class App extends ConsumerWidget {
                 )),
         BlocProvider(
             create: (context) => BookingBloc(
+                deleteReviewSction: DeleteReviewSction(
+                    bookingRepository: BookingRepositoryImpl(
+                        remoteDataSource:
+                            RemoteDataSourceImpl(client: http.Client()))),
+                editReviewSction: EditReviewSction(
+                    bookingRepository: BookingRepositoryImpl(
+                        remoteDataSource:
+                            RemoteDataSourceImpl(client: http.Client()))),
                 sendingData: SendingData(
                     scheduleRepository: ScheduleRepositoryImpl(
                         scheduleRemoteDataSource: ScheduleRemoteDataSourceImpl(
@@ -134,6 +146,14 @@ class App extends ConsumerWidget {
                     settingsRepository: SettingsRepositoryImpl(
                         dataSource:
                             SettingsDataSourceImpl(client: http.Client()))))),
+        BlocProvider(
+            create: (context) => HelpBloc(
+                  helpCentre: HelpCentre(
+                      helpCentreRepository: HelpCentreRepositoryImpl(
+                          helpCenterRemoteDataSource:
+                              HelpCenterRemoteDataSourceImpl(
+                                  client: http.Client()))),
+                ))
       ],
       child: PopScope(
         onPopInvoked: (didPop) {

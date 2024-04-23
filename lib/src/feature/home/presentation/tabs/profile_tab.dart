@@ -5,7 +5,7 @@ import 'package:flutter_riverpod_base/src/commons/views/onboarding/on_boarding_p
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:flutter_riverpod_base/src/commons/views/help-center/help_center_view.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/presentation/pages/help_center_view.dart';
 import 'package:flutter_riverpod_base/src/commons/views/privacy-policy/privacy_policicy.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/custom_list_tile.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
@@ -131,18 +131,18 @@ class _ProfileTabState extends State<ProfileTab> {
               onTap: () {
                 context.push(SettingsView.routePath);
               }),
-          CustomListTile(
-              leadingIcon: SvgPicture.asset(ImageAssets.settings),
-              title: const Text(
-                "App Language",
-              ),
-              tailingIcon: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: ColorAssets.primaryBlue,
-              ),
-              onTap: () {
-                context.push(LanguageSelectionView.routePath);
-              }),
+          // CustomListTile(
+          //     leadingIcon: SvgPicture.asset(ImageAssets.settings),
+          //     title: const Text(
+          //       "App Language",
+          //     ),
+          //     tailingIcon: const Icon(
+          //       Icons.arrow_forward_ios_rounded,
+          //       color: ColorAssets.primaryBlue,
+          //     ),
+          //     onTap: () {
+          //       context.push(LanguageSelectionView.routePath);
+          //     }),
           CustomListTile(
               leadingIcon: SvgPicture.asset(ImageAssets.lock),
               title: const Text(

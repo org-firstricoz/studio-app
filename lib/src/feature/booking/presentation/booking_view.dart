@@ -23,7 +23,7 @@ import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/customElevatedContainer.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/custom_tab_builder.dart';
 
-import '../../../commons/views/help-center/help_center_view.dart';
+import '../../../commons/views/help-center/presentation/pages/help_center_view.dart';
 
 class BookingView extends StatefulWidget {
   final String id;
@@ -68,13 +68,7 @@ class _BookingViewState extends State<BookingView>
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme;
 
-    return LiquidPullToRefresh(
-      onRefresh: () async {
-        context
-            .read<BookingBloc>()
-            .add(GetBookingDataEvent(params: StudioParams(uid: widget.id)));
-      },
-      child: Scaffold(
+    return  Scaffold(
         extendBodyBehindAppBar: true,
         // backgroundColor: ColorAssets.white,
         // appBar: AppBar(
@@ -174,95 +168,101 @@ class _BookingViewState extends State<BookingView>
             }
           },
         ),
-        body: DefaultTabController(
-            length: 3,
-            child: BlocConsumer<BookingBloc, BookingState>(
-              listener: (context, state) {
-                // TODO: implement listener
-                if (state is BookingFailure) {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(state.message)));
-                }
-              },
-              builder: (context, state) {
-                if (state is LoadingState) {
-                  return const Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(),
-                        Text('Loading Data')
-                      ],
+        body: LiquidPullToRefresh(
+      onRefresh: () async {
+        context
+            .read<BookingBloc>()
+            .add(GetBookingDataEvent(params: StudioParams(uid: widget.id)));
+      },
+      child: DefaultTabController(
+              length: 3,
+              child: BlocConsumer<BookingBloc, BookingState>(
+                listener: (context, state) {
+                  // TODO: implement listener
+                  if (state is BookingFailure) {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(state.message)));
+                  }
+                },
+                builder: (context, state) {
+                  if (state is LoadingState) {
+                    return const Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(),
+                          Text('Loading Data')
+                        ],
+                      ),
+                    );
+                  }
+                  if (state is BookingSuccessState) {
+                    final StudioDetails data = AppData.studioDetails;
+                    final List<AgentModel> agentModels = AppData.agentDetails;
+                    final List<ReviewModel> reviewModel = AppData.reviewModels;
+                    AppData.reviewModels = reviewModel;
+                    rent = data.rent;
+                    return NestedScrollView(
+                        headerSliverBuilder: (context, innerBoxIsScrolled) {
+                          return [
+                            _imageCarouselBuilder(data),
+                            _descriptionBuilder(data),
+                            SliverPersistentHeader(
+                              delegate: SliverAppBarDelegate(
+                                TabBar(
+                                  controller: _tabBarController,
+                                  indicatorSize: TabBarIndicatorSize.label,
+                                  indicatorColor: color.primary,
+                                  indicator: UnderlineTabIndicator(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(
+                                          width: 6.0, color: color.primary),
+                                      insets: const EdgeInsets.symmetric(
+                                          horizontal: 60)),
+                                  // indicatorWeight: 6,
+                                  unselectedLabelColor: ColorAssets.lightGray,
+                                  labelColor: color.primary,
+                                  tabs: const [
+                                    Tab(text: " About "),
+                                    Tab(text: " Gallery"),
+                                    Tab(text: " Review "),
+                                  ],
+                                ),
+                              ),
+          
+                              pinned: true,
+                              // floating: true,
+                            ),
+                          ];
+                        },
+                        body:
+                            TabBarView(controller: _tabBarController, children: [
+                          AboutTab(
+                            agentModels: agentModels,
+                            studioDetails: data,
+                          ),
+                          GalleryTab(studioDetails: data),
+                          ReviewTab(
+                            reviewModels: AppData.reviewModels,
+                            studioDetails: data,
+                          ),
+                        ]));
+                  }
+                  return Center(  
+                    child: TextButton(
+                      child: const Text('Unable to fetch data try refreshing'),
+                      onPressed: () async {
+                        context.read<BookingBloc>().add(GetBookingDataEvent(
+                            params: StudioParams(uid: widget.id)));
+                      },
                     ),
                   );
-                }
-                if (state is BookingSuccessState) {
-                  final StudioDetails data = AppData.studioDetails;
-                  final List<AgentModel> agentModels = AppData.agentDetails;
-                  final List<ReviewModel> reviewModel = AppData.reviewModels;
-                  AppData.reviewModels = reviewModel;
-                  rent = data.rent;
-                  return NestedScrollView(
-                      headerSliverBuilder: (context, innerBoxIsScrolled) {
-                        return [
-                          _imageCarouselBuilder(data),
-                          _descriptionBuilder(data),
-                          SliverPersistentHeader(
-                            delegate: SliverAppBarDelegate(
-                              TabBar(
-                                controller: _tabBarController,
-                                indicatorSize: TabBarIndicatorSize.label,
-                                indicatorColor: color.primary,
-                                indicator: UnderlineTabIndicator(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                        width: 6.0, color: color.primary),
-                                    insets: const EdgeInsets.symmetric(
-                                        horizontal: 60)),
-                                // indicatorWeight: 6,
-                                unselectedLabelColor: ColorAssets.lightGray,
-                                labelColor: color.primary,
-                                tabs: const [
-                                  Tab(text: " About "),
-                                  Tab(text: " Gallery"),
-                                  Tab(text: " Review "),
-                                ],
-                              ),
-                            ),
-
-                            pinned: true,
-                            // floating: true,
-                          ),
-                        ];
-                      },
-                      body:
-                          TabBarView(controller: _tabBarController, children: [
-                        AboutTab(
-                          agentModels: agentModels,
-                          studioDetails: data,
-                        ),
-                        GalleryTab(studioDetails: data),
-                        ReviewTab(
-                          reviewModels: AppData.reviewModels,
-                          studioDetails: data,
-                        ),
-                      ]));
-                }
-                return Center(  
-                  child: TextButton(
-                    child: const Text('Unable to fetch data try refreshing'),
-                    onPressed: () async {
-                      context.read<BookingBloc>().add(GetBookingDataEvent(
-                          params: StudioParams(uid: widget.id)));
-                    },
-                  ),
-                );
-              },
-            )),
-      ),
-    );
+                },
+              )),
+        ),
+      );
   }
 
   SliverToBoxAdapter _descriptionBuilder(StudioDetails data) {
@@ -291,7 +291,8 @@ class _BookingViewState extends State<BookingView>
                         fontWeight: FontWeight.w600,
                         color: ColorAssets.lightGray),
                   ),
-                  const SizedBox(width: 18),
+                  const SizedBox(width: 5),
+                  
                 ],
               )
             ],

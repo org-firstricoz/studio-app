@@ -11,7 +11,8 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
       required this.controller,
       required this.title,
       this.statusbarColor,
-      this.onChange})
+      this.onChange,
+      this.onSubmit})
       : _isSliverAppBarExpanded = isSliverAppBarExpanded;
 
   final BuildContext context;
@@ -20,6 +21,7 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
   final String title;
   final TextEditingController controller;
   final Function(String text)? onChange;
+  final Function(String text)? onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     return SliverAppBar(
       forceMaterialTransparency: false,
-      backgroundColor: colorScheme.primary,
+      backgroundColor: colorScheme.onSecondary,
       snap: true,
       floating: true,
       pinned: true,
@@ -38,7 +40,7 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
               style: textTheme.titleLarge!.copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
-                  color: colorScheme.onPrimary),
+                  color: colorScheme.tertiary),
             )
           : null,
       bottom: PreferredSize(
@@ -58,8 +60,9 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
               Expanded(
                 child: TextFormField(
                   onChanged: onChange,
+                  onFieldSubmitted: onSubmit,
                   controller: controller,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Search",
                     prefixIcon: Icon(
                       Icons.search,

@@ -29,7 +29,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     );
     on<DeleteAccountEvent>(
       (event, emit) async {
-        final res = await deleteAccount.call(event.noParams);
+        final res = await _deleteAccount.call(event.noParams);
         res.fold((l) => emit(SettingsFailureState(message: l.message)),
             (r) => emit(SettingsDeleteSuccess()));
       },

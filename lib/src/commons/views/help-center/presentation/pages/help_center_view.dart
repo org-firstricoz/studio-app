@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod_base/src/commons/views/help-center/contact_us_tab.dart';
-import 'package:flutter_riverpod_base/src/commons/views/help-center/faq_tab.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/presentation/bloc/help_bloc.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/presentation/pages/contact_us_tab.dart';
+import 'package:flutter_riverpod_base/src/commons/views/help-center/presentation/pages/faq_tab.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/sliverAppbarwithSearchbar.dart';
 import 'package:go_router/go_router.dart';
@@ -55,7 +57,7 @@ class _HelpCenterViewState extends State<HelpCenterView> {
   TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-        final color = Theme.of(context).colorScheme;
+    final color = Theme.of(context).colorScheme;
 
     return Scaffold(
       // backgroundColor: ColorAssets.white,
@@ -70,19 +72,26 @@ class _HelpCenterViewState extends State<HelpCenterView> {
                 isSliverAppBarExpanded: _isSliverAppBarExpanded,
                 controller: controller,
                 title: "Help Center",
+                onSubmit: (text) {
+                  context
+                      .read<HelpBloc>()
+                      .add(GetHelpDataEvent(noParams: text));
+                },
               ),
               SliverPersistentHeader(
                 delegate: _SliverAppBarDelegate(
                   TabBar(
-                    indicatorColor:  color.primary,
+                    indicatorColor: color.primary,
                     indicator: UnderlineTabIndicator(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(
-                            width: 6.0, color:  color.primary,),
+                          width: 6.0,
+                          color: color.primary,
+                        ),
                         insets: const EdgeInsets.symmetric(horizontal: 66.0)),
                     indicatorWeight: 6,
                     unselectedLabelColor: ColorAssets.lightGray,
-                    labelColor:  color.primary,
+                    labelColor: color.primary,
                     tabs: const [
                       Tab(text: "FAQ"),
                       Tab(text: "Contact Us"),
@@ -118,10 +127,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-
     return Container(
-
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       child: _tabBar,
     );
   }

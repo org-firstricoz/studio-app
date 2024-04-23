@@ -25,7 +25,7 @@ class ProfileFormFields extends StatefulWidget {
 }
 
 class _ProfileFormFieldsState extends State<ProfileFormFields> {
-  String selectedGender = 'male';
+  String selectedGender = 'm';
   TextEditingController nameEditingController = TextEditingController();
   TextEditingController emailEditingController = TextEditingController();
   TextEditingController numberEditingController =
@@ -41,6 +41,7 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
 
   @override
   Widget build(BuildContext context) {
+    ColorScheme color = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30),
       child: Form(
@@ -83,9 +84,9 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
                       isExpanded: true,
                       items: [
                         DropdownMenuItem(
-                          value: 'female',
+                          value: 'f',
                           onTap: () => setState(() {
-                            selectedGender = 'female';
+                            selectedGender = 'f';
                           }),
                           child: const Text(
                             "Female",
@@ -97,16 +98,15 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
                           ),
                         ),
                         DropdownMenuItem(
-                          value: "male",
+                          value: "m",
                           onTap: () => setState(() {
-                            selectedGender = 'male';
+                            selectedGender = 'm';
                           }),
                           child: const Text(
                             "Male",
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: ColorAssets.blackFaded,
                             ),
                           ),
                         ),

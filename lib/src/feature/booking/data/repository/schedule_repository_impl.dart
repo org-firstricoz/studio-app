@@ -17,8 +17,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
   }
 
   @override
-  FutureEither<Map<String, dynamic>> paymentSuccess(Map<String, dynamic> params) {
-   
+  FutureEither<Map<String, dynamic>> paymentSuccess(
+      Map<String, dynamic> params) {
     return _scheduleRemoteDataSource.paymentSuccess(params);
   }
 }

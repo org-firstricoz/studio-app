@@ -44,8 +44,8 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
     final color = Theme.of(context).colorScheme;
     final studioDetails = widget.studioDetails;
     return Container(
-      decoration: const BoxDecoration(
-          color: ColorAssets.white,
+      decoration: BoxDecoration(
+          color: color.secondary,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0))),
       child: Column(
@@ -110,13 +110,13 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                     height: 1,
                   ),
                   const SizedBox(height: 30),
-                  const Align(
+                  Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Book Tour",
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: ColorAssets.lightGray,
+                          color: color.onSecondary,
                           fontSize: 14),
                     ),
                   ),

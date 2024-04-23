@@ -56,6 +56,8 @@ dependencies:
   sms_autofill: ^2.3.1
   alt_sms_autofill: ^1.0.0
   flutter_lifecycle_detector: ^0.0.6
+  flutter_super_html_viewer: ^0.1.0
+  html_viewer_elite: ^0.0.4
 
 dev_dependencies:
   flutter_test:

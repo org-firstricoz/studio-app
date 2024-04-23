@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter_riverpod_base/src/commons/views/help-center/presentation/pages/faq_tab.dart';
 import 'package:flutter_riverpod_base/src/core/models/agent_details.dart';
 import 'package:flutter_riverpod_base/src/core/models/agent_model.dart';
 import 'package:flutter_riverpod_base/src/core/models/chat.dart';
@@ -256,7 +257,7 @@ class AppData {
   ];
 
   static List<ReviewModel> reviewModels = [
-    ReviewModel(
+    ReviewModel(uuid: '1',
         reviewId: '3',
         name: "Dale Thiel",
         photoUrl: ImageAssets.profileImageJpeg,
@@ -264,7 +265,7 @@ class AppData {
             "Discover our state-of-the-art Photography Studio, a haven for photographers and creatives a like. ",
         rating: 4.0,
         time: DateTime.now()),
-    ReviewModel(
+    ReviewModel(uuid: '1',
         reviewId: '2',
         name: "John Doe",
         photoUrl: ImageAssets.profileImageJpeg,
@@ -272,7 +273,7 @@ class AppData {
             "Discover our state-of-the-art Photography Studio, a haven for photographers and creatives a like. ",
         rating: 4.0,
         time: DateTime.now()),
-    ReviewModel(
+    ReviewModel(uuid: '1',
         reviewId: '1',
         name: "John Doe",
         photoUrl: '',
@@ -298,6 +299,33 @@ class AppData {
   static List<ChatMessage> chatMessages = [];
 
   static List<StudioModel> filterResult = [];
+
+  static List<CustomExpadedTile> helpScetion = [
+    const CustomExpadedTile(
+        title: "How do i schedule a Tour?",
+        description:
+            "Welcome to the \"Studio on Rent\" app, created to help users find and book studio spaces. Your privacy is important to us, and we are committed "),
+    const CustomExpadedTile(
+        title: "How do i schedule a Tour?",
+        description:
+            "Welcome to the \"Studio on Rent\" app, created to help users find and book studio spaces. Your privacy is important to us, and we are committed "),
+    const CustomExpadedTile(
+        title: "How do i schedule a Tour?",
+        description:
+            "Welcome to the \"Studio on Rent\" app, created to help users find and book studio spaces. Your privacy is important to us, and we are committed "),
+    const CustomExpadedTile(
+        title: "How do i schedule a Tour?",
+        description:
+            "Welcome to the \"Studio on Rent\" app, created to help users find and book studio spaces. Your privacy is important to us, and we are committed "),
+    const CustomExpadedTile(
+        title: "How do i schedule a Tour?",
+        description:
+            "Welcome to the \"Studio on Rent\" app, created to help users find and book studio spaces. Your privacy is important to us, and we are committed "),
+    const CustomExpadedTile(
+        title: "How do i schedule a Tour?",
+        description:
+            "Welcome to the \"Studio on Rent\" app, created to help users find and book studio spaces. Your privacy is important to us, and we are committed ")
+  ];
 }
 
 class CategoryModel {

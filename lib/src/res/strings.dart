@@ -40,8 +40,8 @@ class LogLabel {
 }
 
 class AppRequestUrl {
-  static const baseUrl = 'https://63a9-103-24-84-27.ngrok-free.app';
-  // name@gmail.com name123
+  static const baseUrl = 'https://booking-studio-node-apis.vercel.app';
+  // name@gmail.com name123 https://booking-studio-node-apis.vercel.app/
   static const locationEndPoint = '/api/city';
   static const loginEndPoint = '/api/login';
   static const signupEndPoint = '/api/signup';
@@ -59,4 +59,5 @@ class AppRequestUrl {
   static const update = '/api/update';
   static const favourites = '/api/favourites';
   static const delete = '/api/delete';
+  static const help = '/api/help';
 }

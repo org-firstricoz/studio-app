@@ -39,7 +39,7 @@ class ChatRemoteDataSourceImpl extends ChatRemoteDataSource {
         data['chat'] != null
             ? AppData.chatData.insert(0, ChatDetails.fromMap(data['chat']))
             : null;
-        AppData.chatMessages.add(ChatMessage.fromMap(data["message"]));
+        AppData.chatMessages.add(message);
 
         return Right(AppData.chatMessages);
       } else {

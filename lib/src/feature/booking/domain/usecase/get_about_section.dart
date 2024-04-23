@@ -25,3 +25,26 @@ class AddReviewSection implements UseCase<Map<String, dynamic>, ReviewParams> {
     return _bookingRepository.addReviewSection(params);
   }
 }
+
+class DeleteReviewSction implements UseCase<Map<String, dynamic>, String> {
+  final BookingRepository _bookingRepository;
+
+  DeleteReviewSction({required BookingRepository bookingRepository})
+      : _bookingRepository = bookingRepository;
+  @override
+ FutureEither<Map<String, dynamic>>  call(String params) {
+    return _bookingRepository.delteReview(params);
+  }
+}
+
+class EditReviewSction implements UseCase<Map<String, dynamic>, ReviewParams> {
+  final BookingRepository _bookingRepository;
+
+  EditReviewSction({required BookingRepository bookingRepository})
+      : _bookingRepository = bookingRepository;
+  @override
+  FutureEither<Map<String, dynamic>> call(ReviewParams params) {
+    // TODO: implement call
+    return _bookingRepository.editReview(params);
+  }
+}

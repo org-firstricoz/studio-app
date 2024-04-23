@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:flutter/foundation.dart' as fd;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
@@ -25,7 +27,6 @@ class MessageInputBoxWidget extends StatefulWidget {
 class _MessageInputBoxWidgetState extends State<MessageInputBoxWidget> {
   @override
   void dispose() {
-    
     messageController.dispose();
     super.dispose();
   }
@@ -224,53 +225,53 @@ class _MessageInputBoxWidgetState extends State<MessageInputBoxWidget> {
         //             )
         //           : const SizedBox.shrink(),
         // ),
-        // Container(
-        //   margin:const EdgeInsets.symmetric(horizontal: 20),
-        //   constraints:
-        //       const BoxConstraints(maxHeight: 200, maxWidth: double.maxFinite),
-        //   child: Offstage(
-        //     offstage: !showEmojiPanel,
-        //     child: ClipRRect(
-        //       borderRadius: BorderRadius.circular(15),
-        //       child: EmojiPicker(
-        //         onEmojiSelected: (cat, emi) {},
-        //         onBackspacePressed: () {},
-        //         textEditingController: messageController,
-        //         config: Config(
-        //           columns: 7,
-        //           emojiSizeMax: 32 *
-        //               (foundation.defaultTargetPlatform == TargetPlatform.iOS
-        //                   ? 1.30
-        //                   : 1.0),
-        //           verticalSpacing: 0,
-        //           horizontalSpacing: 0,
-        //           gridPadding: EdgeInsets.zero,
-        //           initCategory: Category.RECENT,
-        //           bgColor:const Color(0xFFF2F2F2),
-        //           indicatorColor: Colors.blue,
-        //           iconColor: Colors.grey,
-        //           iconColorSelected: Colors.blue,
-        //           backspaceColor: Colors.blue,
-        //           skinToneDialogBgColor: Colors.white,
-        //           skinToneIndicatorColor: Colors.grey,
-        //           enableSkinTones: true,
-        //           recentTabBehavior: RecentTabBehavior.RECENT,
-        //           recentsLimit: 28,
-        //           noRecents: const Text(
-        //             'No Recents',
-        //             style: TextStyle(fontSize: 20, color: Colors.black26),
-        //             textAlign: TextAlign.center,
-        //           ), // Needs to be const Widget
-        //           loadingIndicator:
-        //               const SizedBox.shrink(), // Needs to be const Widget
-        //           tabIndicatorAnimDuration: kTabScrollDuration,
-        //           categoryIcons: const CategoryIcons(),
-        //           buttonMode: ButtonMode.MATERIAL,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          constraints:
+              const BoxConstraints(maxHeight: 200, maxWidth: double.maxFinite),
+          child: Offstage(
+            offstage: !showEmojiPanel,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: EmojiPicker(
+                onEmojiSelected: (cat, emi) {},
+                onBackspacePressed: () {},
+                textEditingController: messageController,
+                config: Config(
+                  columns: 7,
+                  emojiSizeMax: 32 *
+                      (fd.defaultTargetPlatform == TargetPlatform.iOS
+                          ? 1.30
+                          : 1.0),
+                  verticalSpacing: 0,
+                  horizontalSpacing: 0,
+                  gridPadding: EdgeInsets.zero,
+                  initCategory: Category.RECENT,
+                  bgColor: const Color(0xFFF2F2F2),
+                  indicatorColor: Colors.blue,
+                  iconColor: Colors.grey,
+                  iconColorSelected: Colors.blue,
+                  backspaceColor: Colors.blue,
+                  skinToneDialogBgColor: Colors.white,
+                  skinToneIndicatorColor: Colors.grey,
+                  enableSkinTones: true,
+                  recentTabBehavior: RecentTabBehavior.RECENT,
+                  recentsLimit: 28,
+                  noRecents: const Text(
+                    'No Recents',
+                    style: TextStyle(fontSize: 20, color: Colors.black26),
+                    textAlign: TextAlign.center,
+                  ), // Needs to be const Widget
+                  loadingIndicator:
+                      const SizedBox.shrink(), // Needs to be const Widget
+                  tabIndicatorAnimDuration: kTabScrollDuration,
+                  categoryIcons: const CategoryIcons(),
+                  buttonMode: ButtonMode.MATERIAL,
+                ),
+              ),
+            ),
+          ),
+        ),
         Card(
           margin: const EdgeInsets.only(left: 20, right: 20),
           elevation: 5,
@@ -304,6 +305,7 @@ class _MessageInputBoxWidgetState extends State<MessageInputBoxWidget> {
               GestureDetector(
                   onTap: () {
                     if (messageController.text.isNotEmpty) {
+                      print(messageController.text.toString());
                       context.read<ChatBloc>().add(SendChatEvent(
                           chatMessage: ChatMessage(
                               agentID: widget.agentModel.agentId,

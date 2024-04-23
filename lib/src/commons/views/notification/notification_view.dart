@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
 import 'package:flutter_riverpod_base/src/core/models/notification.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
+import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,6 +14,7 @@ class NotificationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final notifications = AppData.notifications.reversed.toList();
     TextTheme textTheme = Theme.of(context).textTheme;
     ColorScheme color = Theme.of(context).colorScheme;
     return Scaffold(
@@ -19,43 +23,63 @@ class NotificationView extends StatelessWidget {
         leadingCallback: () => Navigator.pop(context),
       ),
       body: ListView.builder(
-        itemCount: groupedNotifications.notificationDates.length,
+        itemCount: notifications.length,
         itemBuilder: (context, index) {
-          final notificationDate =
-              groupedNotifications.notificationDates[index];
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      notificationDate.date,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: ColorAssets.lightGray),
-                    ),
-                    Text(
-                      "Mark all as read",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: color.primary,
-                      ),
-                    ),
-                  ],
+          return Container(
+            decoration: BoxDecoration(
+                color:
+                    notifications[index].type == NotificationType.exclusiveOffer
+                        ? color.secondary
+                        : null),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: CircleAvatar(
+                    radius: 25,
+                    backgroundColor: notifications[index].type ==
+                            NotificationType.exclusiveOffer
+                        ? ColorAssets.white
+                        : color.secondary,
+                    child: SvgPicture.asset(
+                        getIconLocation(notifications[index].type)),
+                  ),
                 ),
-              ),
-              Column(
-                children: notificationDate.notifications
-                    .map((e)=>buildNotificationItem(context,e))
-                    .toList(),
-              ),
-            ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        notifications[index].title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: ColorAssets.blackFaded,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        notifications[index].message,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: ColorAssets.lightGray,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  dateFormate(notifications[index].date),
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: ColorAssets.lightGray),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -80,13 +104,14 @@ class NotificationView extends StatelessWidget {
     }
   }
 
-  Widget buildNotificationItem(BuildContext context,NotificationModel notification) {
-        final color = Theme.of(context).colorScheme;
+  Widget buildNotificationItem(
+      BuildContext context, NotificationModel notification) {
+    final color = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
           color: notification.type == NotificationType.exclusiveOffer
-              ?  color.secondary
+              ? color.secondary
               : null),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
       child: Row(
@@ -99,7 +124,7 @@ class NotificationView extends StatelessWidget {
               backgroundColor:
                   notification.type == NotificationType.exclusiveOffer
                       ? ColorAssets.white
-                      :  color.secondary,
+                      : color.secondary,
               child: SvgPicture.asset(getIconLocation(notification.type)),
             ),
           ),
@@ -141,10 +166,13 @@ class NotificationView extends StatelessWidget {
 
   String dateFormate(DateTime date) {
     final now = DateTime.now();
-    if (isSameDay(date, now)) {
-      return '${date.hour}h';
+    final duration = now.difference(date);
+    if (duration.inDays != 0) {
+      return '${duration.inDays}d';
+    } else if (duration.inHours != 0) {
+      return '${duration.inHours}h';
     } else {
-      return '${date.day}d';
+      return '${duration.inMinutes}m';
     }
   }
 }
