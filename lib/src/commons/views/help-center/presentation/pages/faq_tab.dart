@@ -38,7 +38,7 @@ class _FaqTabState extends State<FaqTab> {
                     actions: [
                       TextButton(
                           onPressed: () {
-                            context.go(HomeView.routePath);
+                            context.pushReplacement(HomeView.routePath);
                           },
                           child: const Text('ok'))
                     ],

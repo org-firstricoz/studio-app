@@ -1,8 +1,12 @@
+import 'dart:developer';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
 import 'package:flutter_riverpod_base/src/core/models/agent_model.dart';
+import 'package:flutter_riverpod_base/src/core/models/chat_model.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/presentation/pages/message_builder.dart';
@@ -11,12 +15,20 @@ import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.da
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/utils/form_text_field.dart';
 import 'package:go_router/go_router.dart';
-import '../../../res/assets.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatView extends StatefulWidget {
   static String routePath = '/chat-view';
-  final AgentModel agentModel;
-  const ChatView({super.key, required this.agentModel});
+  final String agentId;
+  final Socket socket;
+  final String name;
+  final Uint8List photoUrl;
+  const ChatView(
+      {super.key,
+      required this.agentId,
+      required this.socket,
+      required this.name,
+      required this.photoUrl});
 
   @override
   State<ChatView> createState() => _ChatViewState();
@@ -26,9 +38,17 @@ class _ChatViewState extends State<ChatView> {
   @override
   void initState() {
     super.initState();
-    context.read<ChatBloc>().add(GetChatDataEvent(
-        chatParams:
-            ChatParams(agentId: widget.agentModel.agentId, userId: user.uuid)));
+    widget.socket.emit("chat", user.uuid);
+    widget.socket.on("chat", (chats) {
+      log(chats.toString(), name: "CHATS");
+      if (mounted)
+        setState(() {
+          AppData.chatMessages =
+              chats.map<ChatMessage>((e) => ChatMessage.fromMap(e)).toList();
+        });
+    });
+    // context.read<ChatBloc>().add(GetChatDataEvent(
+    //     chatParams: ChatParams(agentId: widget.agentId, userId: user.uuid)));
   }
 
   bool showsSearchBar = false;
@@ -44,19 +64,17 @@ class _ChatViewState extends State<ChatView> {
         titleWidget: ListTile(
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
-              radius: 20,
-              backgroundImage: NetworkImage(widget.agentModel.photoUrl)),
+              radius: 20, backgroundImage: MemoryImage(widget.photoUrl)),
           title: Text(
-            widget.agentModel.name,
+            widget.name,
             style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onPrimary,
                 fontSize: 14),
           ),
           onTap: () {
-          
             context.push(UserChatProfileView.routePath,
-                extra: {'agent_model': widget.agentModel});
+                extra: {'agentId': widget.agentId});
           },
         ),
         bottom: showsSearchBar
@@ -83,65 +101,21 @@ class _ChatViewState extends State<ChatView> {
             : null,
         actions: [
           ChatPopUpMenuBuilder(
-              toggleSearchBar: toggleSearchBar, id: widget.agentModel.agentId),
+              toggleSearchBar: toggleSearchBar, id: widget.agentId),
         ],
       ),
       backgroundColor: colorScheme.primary,
-      body: BlocConsumer<ChatBloc, ChatState>(
-        listener: (context, state) {
-          if (state is ChatFailureState) {
-            ScaffoldMessenger.of(context).removeCurrentSnackBar();
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
-            context.go(HomeView.routePath);
-          } else if (state is AgentDetailsSuccessState) {
-            context.go(
-              extra: {'agent_model': widget.agentModel},
-              UserChatProfileView.routePath,
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is LoadingState) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  Text('Loading Data'),
-                ],
-              ),
-            );
-          } else if (state is ChatSuccessState) {
-            return Container(
-                decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(14))),
-                child: ChatComponent(
-                  msgdata: AppData.chatMessages,
-                  searchString: searchString,
-                  agentModel: widget.agentModel,
-                ));
-          } else if (state is SendChatSuccessState) {
-            // AppData.chatMessages.add(state.message);
-
-            return Container(
-                decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(14))),
-                child: ChatComponent(
-                  msgdata: AppData.chatMessages,
-                  searchString: searchString,
-                  agentModel: widget.agentModel,
-                ));
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
-      ),
+      body: Container(
+          decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(14))),
+          child: ChatComponent(
+            socket: widget.socket,
+            msgdata: AppData.chatMessages,
+            searchString: searchString,
+            agentId: widget.agentId,
+          )),
     );
   }
 

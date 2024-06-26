@@ -1,12 +1,16 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/widgets/profile_form_fields.dart';
+import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
+import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
+import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CompleteYourProfileInfoView extends StatefulWidget {
@@ -21,45 +25,42 @@ class CompleteYourProfileInfoView extends StatefulWidget {
 
 class _CompleteYourProfileInfoViewState
     extends State<CompleteYourProfileInfoView> {
-  File? pickedImage;
+  File pickedImage = File('');
 
-  pickedProfileimage() {
-    return photoUrl == null
-        ? const NetworkImage(
-            'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=')
-        : FileImage(pickedImage ?? File(""));
-    /*  // var imageProfile;
-    // if (pickedImage == null) {
-    //   imageProfile = const NetworkImage(
-    //       'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
-    // } else {
-    //   imageProfile = FileImage(pickedImage!);
-    //   photoUrl = pickedImage!.path;
-    //   Hive.box('USER').put('image', photoUrl);
-    // }
-    // return imageProfile;*/
+  _profileAsset() async {
+    String textasset = ImageAssets.profileImageJpeg; //path to text file asset
+    ByteData byteData = await rootBundle.load(textasset);
+
+    final tempPath = await getTemporaryDirectory();
+
+    final file = File(
+        '${tempPath.path}/${ImageAssets.profileImageJpeg.split('/').last}');
+
+    await file.writeAsBytes(byteData.buffer
+        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+    setState(() {
+      pickedImage = file;
+    });
   }
 
   void pickImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image != null) {
-      userDetails.addAll({'photoUrl': image.path});
+      userDetails.addAll({'photoUrl': File(image.path)});
       setState(() {
         pickedImage = File(image.path);
-        photoUrl = image.path;
       });
     } else {
-      pickedImage = File(
-          'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
-      userDetails.addAll({'photoUrl': pickedImage!.path});
+      userDetails.addAll({'photoUrl': pickedImage});
     }
   }
 
-  saveImage() {
-    // pickedImage = File(
-    //     'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
-    // userDetails.addAll({'photoUrl': pickedImage!.path});
-    Hive.box('USER').put('image', photoUrl);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _profileAsset();
   }
 
   @override
@@ -96,7 +97,9 @@ class _CompleteYourProfileInfoViewState
                 ),
                 _profilePickBuilder(context),
                 ProfileFormFields(
-                  saveImage: saveImage,
+                  save: () {
+                    userDetails.addAll({'photoUrl': pickedImage});
+                  },
                 ),
               ],
             ),
@@ -114,8 +117,8 @@ class _CompleteYourProfileInfoViewState
       height: 150,
       margin: const EdgeInsets.all(30),
       decoration: BoxDecoration(
-          image:
-              DecorationImage(image: pickedProfileimage(), fit: BoxFit.cover),
+          image: DecorationImage(
+              image: FileImage(pickedImage!), fit: BoxFit.cover),
           color: color.secondary,
           shape: BoxShape.circle),
       child: Stack(

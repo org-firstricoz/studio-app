@@ -7,4 +7,7 @@ abstract class HomeViewRepository {
   FutureEither<Map<String, List<StudioModel>>> getHomeViewDetails(
       AllParams params);
   FutureEitherVoid saveFavourites(List<StudioModel> params);
+
+  FutureEitherVoid saveFavouritesLocally(List<StudioModel> params);
+
 }

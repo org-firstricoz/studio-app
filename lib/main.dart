@@ -1,24 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_base/src/app.dart';
-import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:upgrader/upgrader.dart';
+// import 'package:upgrader/upgrader.dart';
 
 void main() async {
-  await Hive.initFlutter();
+  WidgetsFlutterBinding.ensureInitialized();
 
+  await Hive.initFlutter();
+  // await Upgrader.clearSavedSettings();
   await Hive.openBox('USER');
-  photoUrl = await await Hive.box('USER').get('image');
+
   runApp(
     const ProviderScope(child: MyApp()),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
-    return const ProviderScope(child: App());
+    return ProviderScope(child: App());
   }
 }
+
+Upgrader upgrader = Upgrader(
+  debugLogging: true,
+  messages: UpgraderMessages(
+    code: "en",
+  ),
+
+  minAppVersion: "2.5.0",
+  countryCode: "IN",
+  // durationUntilAlertAgain: Duration(days: 1),
+);

@@ -7,7 +7,7 @@ const lightColorScheme = ColorScheme(
   primaryContainer: Color.fromRGBO(219, 225, 255, 1),
   onPrimaryContainer: Color(0xFF00184A),
   secondary: Color.fromARGB(255, 244, 246, 249),
-  onSecondary: Color(0xFFFFFFFF),
+  onSecondary: Color.fromARGB(255, 196, 196, 196),
   secondaryContainer: Color(0xFF97F0FF),
   onSecondaryContainer: Color(0xFF001F24),
   tertiary: Color.fromARGB(255, 170, 170, 170),

@@ -20,10 +20,13 @@ int c = 0;
 class HomeViewBloc extends Bloc<HomeViewEvent, AllDataState> {
   final GetHomeViewDetails _getHomeViewDetails;
   final SaveFavourites _saveFavourites;
+
   HomeViewBloc(
       {required GetHomeViewDetails getHomeViewDetails,
-      required SaveFavourites saveFavourites})
+      required SaveFavourites saveFavourites,
+      })
       : _getHomeViewDetails = getHomeViewDetails,
+        
         _saveFavourites = saveFavourites,
         super(HomeViewInitial()) {
     on<HomeViewEvent>((event, emit) {});
@@ -50,5 +53,7 @@ class HomeViewBloc extends Bloc<HomeViewEvent, AllDataState> {
             (r) => emit(HomeViewInitial()));
       },
     );
+    
   }
 }
+

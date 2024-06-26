@@ -34,6 +34,9 @@ class _CategoriesHorizontalListViewState
                   fit: BoxFit.cover,
                   height: 60,
                   width: 60,
+                  errorBuilder: (context, error, stackTrace) {
+                    return SizedBox();
+                  },
                 ),
                 // const SizedBox(height: 10),
                 const Spacer(),

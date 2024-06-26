@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod_base/main.dart';
 import 'package:flutter_riverpod_base/src/commons/views/filters/filter_view.dart';
@@ -18,6 +20,7 @@ import 'package:flutter_riverpod_base/src/feature/booking/presentation/booking_v
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/views/payment_gateway.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/presentation/chat_view.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/presentation/pages/user_chat_profile.dart';
+
 import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/views/complete_profile_info.dart';
 import 'package:flutter_riverpod_base/src/feature/profile/views/edit_profile_info.dart';
@@ -30,7 +33,8 @@ import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/set
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 import '../feature/booking/presentation/views/book_tour_view.dart';
 import '../feature/booking/presentation/views/tour_request_view.dart';
@@ -38,9 +42,7 @@ import '../feature/home/presentation/near_by_studios_view.dart';
 import '../feature/home/presentation/recomended_studios_view.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation:
-      //  LoginOtp.routePath,
-      _cachedUser(),
+  initialLocation: SplashView.routePath,
   routes: [
     // name123
     // GoRoute(
@@ -91,7 +93,7 @@ final GoRouter router = GoRouter(
         final extra = state.extra as Map<String, dynamic>;
 
         return UserChatProfileView(
-          agentModel: extra['agent_model'],
+          agentId: extra['agentId'],
         );
       },
     ),
@@ -134,6 +136,7 @@ final GoRouter router = GoRouter(
 
         return BookingView(
           id: extras['id'],
+          socket: socket,
         );
       },
     ),
@@ -141,9 +144,15 @@ final GoRouter router = GoRouter(
       path: ChatView.routePath,
       builder: (BuildContext context, GoRouterState state) {
         final extra = state.extra as Map<String, dynamic>;
-        final AgentModel agentModel = extra['agent_model'];
+        final String agentId = extra['agentId'];
+        final Socket socket = extra['socket'];
+        final String name = extra['name'];
+        final Uint8List photoUrl = extra['photoUrl'];
         return ChatView(
-          agentModel: agentModel ?? AgentModel.empty(),
+          name: name,
+          photoUrl: photoUrl,
+          socket: socket,
+          agentId: agentId,
         );
       },
     ),
@@ -234,25 +243,3 @@ final GoRouter router = GoRouter(
     ),
   ],
 );
-
-_cachedUser() {
-  final box = Hive.box('USER');
-  if (box.isNotEmpty) {
-    final token = box.get('token');
-    if (token != null) {
-      final bool val = JwtDecoder.isExpired(token);
-
-      if (val) {
-        return SplashView.routePath;
-      } else {
-        final userDetails = JwtDecoder.decode(token);
-        user = User.fromMap(userDetails);
-        return HomeView.routePath;
-      }
-    } else {
-      return SplashView.routePath;
-    }
-  } else {
-    return SplashView.routePath;
-  }
-}

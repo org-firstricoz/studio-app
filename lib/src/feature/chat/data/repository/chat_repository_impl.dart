@@ -2,9 +2,10 @@ import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/core/core.dart';
 import 'package:flutter_riverpod_base/src/core/failure.dart';
 import 'package:flutter_riverpod_base/src/core/models/agent_details.dart';
+
+import 'package:flutter_riverpod_base/src/core/models/chat_model.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/data/datasource/chat_remote_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/domain/repository/chat_repository.dart';
-import 'package:flutter_riverpod_base/src/core/models/chat_model.dart';
 import 'package:fpdart/src/either.dart';
 
 class ChatRepositoryImpl implements ChatRepository {

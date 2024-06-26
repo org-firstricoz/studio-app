@@ -47,11 +47,9 @@ class _StudioSearchViewState extends State<StudioSearchView> {
               controller: _controller,
               onFieldSubmitted: (value) {
                 if (value.isNotEmpty) {
-                  context
-                      .read<SearchBloc>()
-                      .add(GetSearchResultsEvent(query: value.toString()));
+                 
                   context.push(SearchResultsView.routePath,
-                      extra: {'query': value});
+                      extra: {'query': _controller.text.trim()});
                 }
               },
               decoration: InputDecoration(

@@ -54,7 +54,7 @@ class LocationAccessPage extends StatelessWidget {
                       context.read<st.SettingsBloc>().add(st.UpdateEvent(
                           updateParams: UpdateParams(location: state.city)));
                     }
-                    context.push(HomeView.routePath);
+                    context.pushReplacement(HomeView.routePath);
                   }
                 }
               },

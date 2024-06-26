@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_riverpod_base/src/core/models/user_model.dart';
+import 'package:flutter_riverpod_base/src/res/strings.dart';
 
 class StudioDetails {
   final String id;
@@ -15,8 +16,8 @@ class StudioDetails {
   final String address;
   final List<String> tags;
   final String description;
-  final List<String> frontImage;
-  final List<String> gallery;
+  final List<Uint8List> frontImage;
+  final List<Uint8List> gallery;
   final num numberOfReviews;
   StudioDetails({
     required this.id,
@@ -39,8 +40,8 @@ class StudioDetails {
     String? address,
     List<String>? tags,
     String? description,
-    List<String>? frontImage,
-    List<String>? gallery,
+    List<Uint8List>? frontImage,
+    List<Uint8List>? gallery,
     int? numberOfReviews,
     num? rent,
     String? id,
@@ -70,14 +71,8 @@ class StudioDetails {
         address: 'address',
         tags: ['tags'],
         description: 'description',
-        frontImage: [
-          'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=',
-          'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs='
-        ],
-        gallery: [
-          'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=',
-          'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs='
-        ],
+        frontImage: [Uint8List.fromList([]), Uint8List.fromList([])],
+        gallery: [Uint8List.fromList([]), Uint8List.fromList([])],
         numberOfReviews: 200);
   }
 
@@ -97,20 +92,29 @@ class StudioDetails {
   }
 
   factory StudioDetails.fromMap(Map<String, dynamic> map) {
-    log('message');
-    return StudioDetails(
-      id: map['id'].toString(),
-      rent: map['rent'],
-      category: map['category'] as String,
-      name: map['name'] as String,
-      rating: (map['rating'] as num).toDouble(),
-      address: map['address'] as String,
-      tags: List<String>.from(map['tags']),
-      description: map['description'] as String,
-      frontImage: List<String>.from(map['frontImage']),
-      gallery: List<String>.from(map['gallery']),
-      numberOfReviews: map['numberOfReviews'] as num,
-    );
+    try {
+      log(map['frontImage'].toString());
+      return StudioDetails(
+        id: map['id'].toString(),
+        rent: map['rent'],
+        category: map['category'] as String,
+        name: map['name'] as String,
+        rating: (map['rating'] as num).toDouble(),
+        address: map['address'] as String,
+        tags: List<String>.from(map['tags']),
+        description: map['description'] as String,
+        frontImage: List<Uint8List>.from(map['frontImage']
+            .map((e) => Uint8List.fromList(List<int>.from(e['data'])))
+            .toList()),
+        gallery: List<Uint8List>.from(map['gallery']
+            .map((e) => Uint8List.fromList(List<int>.from(e['data'])))
+            .toList()),
+        numberOfReviews: map['numberOfReviews'] as num,
+      );
+    } catch (e) {
+      log(e.toString());
+      return StudioDetails.empty();
+    }
   }
 
   String toJson() => json.encode(toMap());
@@ -214,7 +218,6 @@ class ReviewModel {
   }
 
   factory ReviewModel.fromMap(Map<String, dynamic> map) {
-    log(' fdds');
     return ReviewModel(
       name: map['name'].toString(),
       reviewId: map['reviewId'].toString(),

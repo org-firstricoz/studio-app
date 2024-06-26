@@ -119,7 +119,7 @@ class _LoactionSearchingWidgetState extends State<LoactionSearchingWidget> {
                                           location:
                                               filteredLocations[index].name)));
                               c = 1;
-                              context.push(HomeView.routePath);
+                              context.pushReplacement(HomeView.routePath);
                             }
                           },
                           child: Text(filteredLocations[index].name)),

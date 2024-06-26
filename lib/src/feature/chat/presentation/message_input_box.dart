@@ -1,25 +1,31 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/foundation.dart' as fd;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
+import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:flutter_riverpod_base/src/core/models/agent_model.dart';
 import 'package:flutter_riverpod_base/src/core/models/chat_model.dart';
-import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+import 'package:uuid/uuid.dart';
 
 class MessageInputBoxWidget extends StatefulWidget {
   const MessageInputBoxWidget({
     Key? key,
-    required this.agentModel,
+    required this.agentId,
+    required this.socket,
+    required this.scrollController,
   }) : super(key: key);
-  final AgentModel agentModel;
-
+  final ScrollController scrollController;
+  final String agentId;
+  final Socket socket;
   @override
   _MessageInputBoxWidgetState createState() => _MessageInputBoxWidgetState();
 }
@@ -306,13 +312,24 @@ class _MessageInputBoxWidgetState extends State<MessageInputBoxWidget> {
                   onTap: () {
                     if (messageController.text.isNotEmpty) {
                       print(messageController.text.toString());
-                      context.read<ChatBloc>().add(SendChatEvent(
-                          chatMessage: ChatMessage(
-                              agentID: widget.agentModel.agentId,
-                              uuid: user.uuid,
-                              message: messageController.text.trim(),
-                              timestamp: DateTime.now())));
+                      final ChatMessage message = ChatMessage(
+                          id: const Uuid().v6(),
+                          agentID: widget.agentId,
+                          uuid: user.uuid,
+                          message: messageController.text.trim(),
+                          timestamp: DateTime.now());
+                    
+                      context
+                          .read<ChatBloc>()
+                          .add(SendChatEvent(chatMessage: message));
+
                       messageController.clear();
+                      widget.socket
+                          .emit('messageU', jsonEncode(message.toMap()));
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        widget.scrollController.jumpTo(
+                            widget.scrollController.position.maxScrollExtent);
+                      });
                     }
                   },
                   child: const Icon(Icons.send)),

@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_model.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_view_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class ItemCardView extends StatefulWidget {
   final StudioModel studioModel;
@@ -27,9 +30,22 @@ class _ItemCardViewState extends State<ItemCardView> {
     setState(() {
       isLiked = !isLiked;
       if (AppData.favouriteModel.contains(widget.studioModel)) {
+        log('removed');
         AppData.favouriteModel.remove(widget.studioModel);
+        Hive.box('USER').put(
+            'favorites', AppData.favouriteModel.map((e) => e.toMap()).toList());
+        context
+            .read<HomeViewBloc>()
+            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
       } else {
+        log('added');
+
         AppData.favouriteModel.add(widget.studioModel);
+        Hive.box('USER').put(
+            'favorites', AppData.favouriteModel.map((e) => e.toMap()).toList());
+        context
+            .read<HomeViewBloc>()
+            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
       }
     });
   }
@@ -60,9 +76,12 @@ class _ItemCardViewState extends State<ItemCardView> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: Image.network(
+                    child: Image.memory(
                       widget.studioModel.image,
                       fit: BoxFit.fitWidth,
+                      errorBuilder: (context, error, stackTrace) {
+                        return SizedBox.expand();
+                      },
                     ),
                   ),
                   Positioned(

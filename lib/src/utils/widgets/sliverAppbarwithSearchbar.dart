@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod_base/src/res/colors.dart';
-import 'package:go_router/go_router.dart';
 
 class SliverAppbarwithSearchBar extends StatelessWidget {
   const SliverAppbarwithSearchBar(
@@ -10,6 +8,7 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
       required bool isSliverAppBarExpanded,
       required this.controller,
       required this.title,
+      this.bgColor,
       this.statusbarColor,
       this.onChange,
       this.onSubmit})
@@ -17,6 +16,7 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
 
   final BuildContext context;
   final Color? statusbarColor;
+  final Color? bgColor;
   final bool _isSliverAppBarExpanded;
   final String title;
   final TextEditingController controller;
@@ -29,7 +29,7 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     return SliverAppBar(
       forceMaterialTransparency: false,
-      backgroundColor: colorScheme.onSecondary,
+      backgroundColor: bgColor ?? colorScheme.secondary,
       snap: true,
       floating: true,
       pinned: true,
@@ -38,9 +38,9 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
           ? Text(
               title,
               style: textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                  color: colorScheme.tertiary),
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+              ),
             )
           : null,
       bottom: PreferredSize(
@@ -52,7 +52,7 @@ class SliverAppbarwithSearchBar extends StatelessWidget {
           width: double.maxFinite,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: colorScheme.secondary,
+            color: statusbarColor,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

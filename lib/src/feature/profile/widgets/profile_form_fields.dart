@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
@@ -17,8 +18,8 @@ import 'package:flutter_riverpod_base/src/utils/form_text_field.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfileFormFields extends StatefulWidget {
-  final VoidCallback saveImage;
-  const ProfileFormFields({super.key, required this.saveImage});
+  final VoidCallback save;
+  const ProfileFormFields({super.key, required this.save});
 
   @override
   State<ProfileFormFields> createState() => _ProfileFormFieldsState();
@@ -55,7 +56,7 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
             if (state is AuthSuccess) {
               user = state.user;
               print(user);
-              context.go(HomeView.routePath);
+              context.pushReplacement(HomeView.routePath);
             }
           },
           builder: (context, state) {
@@ -69,6 +70,17 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FormTextField(
+                    onChanged: (val) {
+                      _formKey.currentState!.validate();
+                    },
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return 'Email cannot be null';
+                      } else if (!(EmailValidator.validate(val))) {
+                        return 'Invalid Email';
+                      }
+                      return null;
+                    },
                     controller: emailEditingController,
                     labelText: "email",
                   ),
@@ -158,13 +170,12 @@ class _ProfileFormFieldsState extends State<ProfileFormFields> {
                       bgColor: ColorAssets.primaryBlue,
                       text: "Complete Profile",
                       ontap: () {
-                        widget.saveImage();
-
                         if (_formKey.currentState!.validate()) {
                           if (numberEditingController.text.length != 10) {
                             numberEditingController.text = 'invalid number';
                             return;
                           }
+                          widget.save();
                           userDetails.addAll({
                             'createdAt': DateTime.now(),
                             'gender': selectedGender,

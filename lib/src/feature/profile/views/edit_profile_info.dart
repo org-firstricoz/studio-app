@@ -1,4 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.da
 import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
+import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_text_button.dart';
 import 'package:flutter_riverpod_base/src/utils/form_text_field.dart';
@@ -33,13 +36,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
       TextEditingController(text: user.phoneNumber);
   final TextEditingController emailController =
       TextEditingController(text: user.email);
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    _image();
-    super.initState();
-  }
+  Uint8List pickedImage = user.photoUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +44,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
       listener: (context, state) {
         if (state is UpdateSuccessState) {
           user = state.user;
-          context.go(HomeView.routePath);
+          context.pushReplacement(HomeView.routePath);
         } else if (state is SettingsFailureState) {
           ScaffoldMessenger.of(context).clearMaterialBanners();
           ScaffoldMessenger.of(context).showMaterialBanner(
@@ -90,6 +87,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
                       text: "Update Profile",
                       ontap: () {
                         final updateParams = UpdateParams(
+                          photoUrl: pickedImage,
                             gender: user.gender,
                             name: nameController.text.trim(),
                             email: emailController.text.trim(),
@@ -178,17 +176,13 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
     );
   }
 
-  var pickedImage;
-
   _pickImage() async {
     XFile? img = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (img != null) {
-      final _pickedImage = File(img.path);
+      final _pickedImage = await File(img.path).readAsBytes();
 
-      Hive.box('USER').put('image', img.path);
-      return setState(() {
-        photoUrl = img.path;
-        pickedImage = FileImage(_pickedImage);
+      setState(() {
+        pickedImage = _pickedImage;
       });
     }
   }
@@ -209,7 +203,7 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: pickedImage,
+                backgroundImage: MemoryImage(pickedImage),
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -231,13 +225,5 @@ class _EditProfileInfoViewState extends State<EditProfileInfoView> {
             ],
           ),
         ));
-  }
-
-  _image() {
-    pickedImage = photoUrl == null
-        ? NetworkImage(
-            'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=')
-        : FileImage(File(photoUrl!));
-    return pickedImage;
   }
 }

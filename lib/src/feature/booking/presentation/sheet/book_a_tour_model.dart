@@ -1,15 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_details.dart';
+import 'package:flutter_riverpod_base/src/core/user.dart';
+import 'package:flutter_riverpod_base/src/feature/chat/presentation/chat_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import 'package:flutter_riverpod_base/src/core/models/agent_model.dart';
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/views/book_tour_view.dart';
-import 'package:flutter_riverpod_base/src/feature/chat/presentation/chat_view.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/customElevatedContainer.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/custom_tab_builder.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 GlobalKey scaffold = GlobalKey<ScaffoldState>();
 
@@ -194,8 +196,12 @@ class _TourBookingModelSheetState extends State<TourBookingModelSheet> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            context.push(ChatView.routePath,
-                                extra: {'agent_model': widget.agentModel});
+                            context.push(ChatView.routePath, extra: {
+                              'name':widget.agentModel.name,
+                              'photoUrl':widget.agentModel.photoUrl,
+                              'agentId': widget.agentModel.agentId,
+                              'socket': socket
+                            });
                           },
                           child: Text(
                             "Request Schedule",

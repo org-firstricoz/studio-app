@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
+import 'package:flutter_riverpod_base/src/commons/widgets/shimmer_widget.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_model.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
@@ -11,8 +12,10 @@ import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
 import 'package:flutter_riverpod_base/src/utils/form_text_field.dart';
 
 import 'package:flutter_riverpod_base/src/res/data.dart';
+import 'package:flutter_riverpod_base/src/utils/widgets/item_card_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:shimmer_effect/shimmer_effect.dart';
 
 import '../../../../res/colors.dart';
 import '../../../../utils/widgets/item_list_tile_view.dart';
@@ -25,7 +28,6 @@ class FavoritesTab extends StatefulWidget {
 }
 
 class _FavoritesTabState extends State<FavoritesTab> {
-  List<StudioModel> allModels = AppData.favouriteModel;
   String searchTerm = "";
 
   TextEditingController searchEditingController =
@@ -62,7 +64,7 @@ class _FavoritesTabState extends State<FavoritesTab> {
           IconButton(onPressed: toggleSearchBar, icon: const Icon(Icons.search))
         ],
       ),
-      body: LiquidPullToRefresh(
+      body: RefreshIndicator(
         onRefresh: () async {
           context.read<HomeViewBloc>().add(FetchingStudioDataEvent(
                   params: AllParams(
@@ -78,12 +80,76 @@ class _FavoritesTabState extends State<FavoritesTab> {
           },
           builder: (context, state) {
             if (state is LoadingState) {
-              return const Center(
-                child: Column(
-                  children: [
-                    CircularProgressIndicator(),
-                    Text('Loading Data'),
-                  ],
+              return ShimmerEffect(
+                baseColor: const Color.fromARGB(255, 215, 215, 215),
+                highlightColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: 
+                    ListView(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: categories.length,
+                              itemBuilder: (context, index) => Container(
+                                    height: 29,
+                                    margin: EdgeInsets.only(
+                                        left: index == 0 ? 20 : 15),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 17, vertical: 6),
+                                    decoration: BoxDecoration(
+                                        color: sealectedCategoryIndex == index
+                                            ? colorScheme.primary
+                                            : ColorAssets.lightBlueGray,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Center(
+                                      child: Text(
+                                        categories[index].title,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            color:
+                                                sealectedCategoryIndex == index
+                                                    ? ColorAssets.white
+                                                    : ColorAssets.lightGray),
+                                      ),
+                                    ),
+                                  ).onTap(() {
+                                    setState(() {
+                                      sealectedCategoryIndex = index;
+                                    });
+                                  })),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        ItemListTileView(
+                          studioModel: StudioModel.empty(),
+                          onTap: () {},
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ItemListTileView(
+                          studioModel: StudioModel.empty(),
+                          onTap: () {},
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ItemListTileView(
+                          studioModel: StudioModel.empty(),
+                          onTap: () {},
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    
+                  ),
                 ),
               );
             }
@@ -152,9 +218,9 @@ class _FavoritesTabState extends State<FavoritesTab> {
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: allModels.length,
+                    itemCount: AppData.favouriteModel.length,
                     itemBuilder: (context, index) {
-                      final data = allModels[index];
+                      final data = AppData.favouriteModel[index];
                       final isTagMatch = data.category.toLowerCase() ==
                           categories[sealectedCategoryIndex]
                               .title
@@ -166,9 +232,7 @@ class _FavoritesTabState extends State<FavoritesTab> {
                           .toLowerCase()
                           .contains(searchTerm.toLowerCase());
 
-                      
                       if (isTagMatch || sealectedCategoryIndex == 0) {
-                        
                         if (searchTerm.isEmpty ||
                             isTitleMatch ||
                             isLocationMatch) {
@@ -178,14 +242,14 @@ class _FavoritesTabState extends State<FavoritesTab> {
                             child: ItemListTileView(
                               studioModel: data,
                               onTap: () {
-                                 context.push(BookingView.routePath,extra: {'id':data.id});
+                                context.push(BookingView.routePath,
+                                    extra: {'id': data.id});
                               },
                             ),
                           );
                         }
                       }
                       return Container();
-                      
                     },
                   ),
                 ),

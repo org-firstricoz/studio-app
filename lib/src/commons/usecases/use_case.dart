@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -103,6 +104,7 @@ class UpdateParams {
   final String? phoneNumber;
   final String? email;
   final String? location;
+  final Uint8List? photoUrl;
   UpdateParams({
     this.gender,
     this.password,
@@ -110,6 +112,7 @@ class UpdateParams {
     this.phoneNumber,
     this.email,
     this.location,
+    this.photoUrl,
   });
 
   UpdateParams copyWith({
@@ -136,18 +139,20 @@ class UpdateParams {
       'phoneNumber': phoneNumber,
       'email': email,
       'location': location,
+      'photoUrl': photoUrl!.buffer
     };
   }
 
   factory UpdateParams.fromMap(Map<String, dynamic> map) {
     return UpdateParams(
-      gender: map['gender'] != null ? map['gender'] as String : null,
-      password: map['password'] != null ? map['password'] as String : null,
-      name: map['name'] != null ? map['name'] as String : null,
-      phoneNumber:
-          map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
-      email: map['email'] != null ? map['email'] as String : null,
-    );
+        gender: map['gender'] != null ? map['gender'] as String : null,
+        password: map['password'] != null ? map['password'] as String : null,
+        name: map['name'] != null ? map['name'] as String : null,
+        phoneNumber:
+            map['phoneNumber'] != null ? map['phoneNumber'] as String : null,
+        email: map['email'] != null ? map['email'] as String : null,
+        photoUrl:
+            map['photoUrl'] != null ? map['photoUrl'] as Uint8List : null);
   }
 
   String toJson() => json.encode(toMap());
@@ -344,7 +349,7 @@ class SignUpParams {
   final String email;
   final DateTime createdAt;
   final String name;
-  final String photoUrl;
+  final File photoUrl;
   final String gender;
   final String phoneNumber;
   final String location;
@@ -363,7 +368,7 @@ class SignUpParams {
     String? email,
     DateTime? createdAt,
     String? name,
-    String? photoUrl,
+    File? photoUrl,
     String? gender,
     String? phoneNumber,
     String? location,
@@ -396,7 +401,7 @@ class SignUpParams {
       email: map['email'] as String,
       createdAt: map['createdAt'],
       name: map['name'] as String,
-      photoUrl: map['photoUrl'].toString(),
+      photoUrl: map['photoUrl'],
       gender: map['gender'] as String,
       phoneNumber: map['phoneNumber'] as String,
       location: map['location'] as String,
@@ -500,7 +505,6 @@ class ReviewParams {
   }
 
   Map<String, dynamic> toMap() {
-    
     return <String, dynamic>{
       'review': review,
       'rating': rating,

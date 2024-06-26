@@ -1,8 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:shimmer/shimmer.dart';
 
 import 'package:flutter_riverpod_base/src/core/models/studio_details.dart';
 
@@ -93,15 +94,12 @@ class _GalleryTabState extends State<GalleryTab> {
           onTap: () => _showImagePopup(studioImageLinks[index]),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
-            child: CachedNetworkImage(
-              imageUrl: studioImageLinks[index],
+            child: Image.memory(
+              studioImageLinks[index],
               fit: BoxFit.cover,
-              placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Text(""),
-              ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+              errorBuilder: (context, error, stackTrace) {
+                return SizedBox.expand();
+              },
             ),
           ),
         ),
@@ -109,7 +107,7 @@ class _GalleryTabState extends State<GalleryTab> {
     );
   }
 
-  void _showImagePopup(String imageUrl) {
+  void _showImagePopup(Uint8List imageUrl) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -117,15 +115,11 @@ class _GalleryTabState extends State<GalleryTab> {
           aspectRatio: 16 / 9, // Adjust the aspect ratio as needed
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Text(""),
-              ),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+            child: Image.memory(
+              imageUrl,
+              errorBuilder: (context, error, stackTrace) {
+                return SizedBox.expand();
+              },
             ),
           ),
         ),

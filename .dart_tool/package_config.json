@@ -2,12 +2,6 @@
   "configVersion": 2,
   "packages": [
     {
-      "name": "alt_sms_autofill",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/alt_sms_autofill-1.0.0",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "app_settings",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/app_settings-5.1.1",
       "packageUri": "lib/",
@@ -44,6 +38,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "buffer_image",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/buffer_image-0.3.12",
+      "packageUri": "lib/",
+      "languageVersion": "2.14"
+    },
+    {
       "name": "cached_network_image",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image-3.3.0",
       "packageUri": "lib/",
@@ -60,6 +60,12 @@
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/cached_network_image_web-1.1.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "change_app_package_name",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/change_app_package_name-1.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "characters",
@@ -140,6 +146,24 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "device_info_plus",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/device_info_plus-10.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "device_info_plus_platform_interface",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/device_info_plus_platform_interface-7.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "email_validator",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/email_validator-2.1.17",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "emoji_picker_flutter",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/emoji_picker_flutter-1.6.3",
       "packageUri": "lib/",
@@ -202,6 +226,12 @@
     {
       "name": "file_selector_windows",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/file_selector_windows-0.9.3+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "fixnum",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/fixnum-1.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
@@ -393,7 +423,7 @@
     },
     {
       "name": "geolocator_android",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_android-4.5.4",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/geolocator_android-4.6.0",
       "packageUri": "lib/",
       "languageVersion": "2.15"
     },
@@ -548,8 +578,8 @@
       "languageVersion": "3.0"
     },
     {
-      "name": "jwt_decoder",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/jwt_decoder-2.0.1",
+      "name": "jwt_decode",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/jwt_decode-0.3.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -561,13 +591,13 @@
     },
     {
       "name": "leak_tracker",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker-10.0.4",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker-10.0.5",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "leak_tracker_flutter_testing",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_flutter_testing-3.0.3",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/leak_tracker_flutter_testing-3.0.5",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -615,13 +645,13 @@
     },
     {
       "name": "material_color_utilities",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.8.0",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/material_color_utilities-0.11.1",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "meta",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.12.0",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/meta-1.15.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -652,6 +682,12 @@
     {
       "name": "octo_image",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/octo_image-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "os_detect",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/os_detect-2.0.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -740,12 +776,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "pin_input_text_field",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/pin_input_text_field-4.5.1",
-      "packageUri": "lib/",
-      "languageVersion": "2.13"
-    },
-    {
       "name": "platform",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/platform-3.1.3",
       "packageUri": "lib/",
@@ -806,6 +836,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "rename",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/rename-3.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "rive",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/rive-0.12.3",
       "packageUri": "lib/",
@@ -843,9 +879,9 @@
     },
     {
       "name": "shared_preferences",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.2.2",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences-2.2.3",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.1"
     },
     {
       "name": "shared_preferences_android",
@@ -855,9 +891,9 @@
     },
     {
       "name": "shared_preferences_foundation",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_foundation-2.3.4",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/shared_preferences_foundation-2.3.5",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.0"
     },
     {
       "name": "shared_preferences_linux",
@@ -884,10 +920,10 @@
       "languageVersion": "2.19"
     },
     {
-      "name": "shimmer",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/shimmer-3.0.0",
+      "name": "shimmer_effect",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/shimmer_effect-1.0.4",
       "packageUri": "lib/",
-      "languageVersion": "2.17"
+      "languageVersion": "2.19"
     },
     {
       "name": "sky_engine",
@@ -902,8 +938,14 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "sms_autofill",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/sms_autofill-2.3.1",
+      "name": "socket_io_client",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/socket_io_client-2.0.3+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "socket_io_common",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/socket_io_common-2.0.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -969,7 +1011,7 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.0",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -1002,6 +1044,12 @@
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/universal_io-2.2.2",
       "packageUri": "lib/",
       "languageVersion": "2.17"
+    },
+    {
+      "name": "upgrader",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/upgrader-10.3.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
     },
     {
       "name": "url_launcher",
@@ -1053,9 +1101,9 @@
     },
     {
       "name": "uuid",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/uuid-4.2.1",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/uuid-4.4.0",
       "packageUri": "lib/",
-      "languageVersion": "2.14"
+      "languageVersion": "3.0"
     },
     {
       "name": "vector_graphics",
@@ -1080,6 +1128,12 @@
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/vector_math-2.1.4",
       "packageUri": "lib/",
       "languageVersion": "2.14"
+    },
+    {
+      "name": "version",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/version-3.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "video_player",
@@ -1113,7 +1167,7 @@
     },
     {
       "name": "vm_service",
-      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-14.2.0",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/vm_service-14.2.3",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -1166,6 +1220,12 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "win32_registry",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/win32_registry-1.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
       "name": "wkt_parser",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/wkt_parser-2.0.0",
       "packageUri": "lib/",
@@ -1196,10 +1256,10 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2024-04-26T15:50:32.852898Z",
+  "generated": "2024-06-25T09:10:02.503987Z",
   "generator": "pub",
-  "generatorVersion": "3.4.0-261.0.dev",
+  "generatorVersion": "3.5.0-214.0.dev",
   "flutterRoot": "file:///C:/Users/Achiket/Documents/Flutter/flutter",
-  "flutterVersion": "3.21.0-13.0.pre.14",
+  "flutterVersion": "3.23.0-13.0.pre.69",
   "pubCache": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache"
 }

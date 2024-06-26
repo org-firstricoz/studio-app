@@ -38,7 +38,7 @@ class _TourRequestViewState extends State<TourRequestView> {
           onTap: () {
             context.read<HomeViewBloc>().add(FetchingStudioDataEvent(
                 params: AllParams(location: user.location)));
-            context.go(HomeView.routePath);
+            context.pushReplacement(HomeView.routePath);
           },
         ),
       ),
@@ -117,7 +117,7 @@ class _TourRequestViewState extends State<TourRequestView> {
                   ontap: () {
                     context.read<HomeViewBloc>().add(FetchingStudioDataEvent(
                         params: AllParams(location: user.location)));
-                    context.go(HomeView.routePath);
+                    context.pushReplacement(HomeView.routePath);
                   }),
             ),
           ),
@@ -150,7 +150,7 @@ class _TourRequestViewState extends State<TourRequestView> {
           leading: CircleAvatar(
             backgroundColor: color.secondary,
             radius: 20,
-            backgroundImage: NetworkImage(AppData.agentDetails.first.photoUrl),
+            backgroundImage: MemoryImage(AppData.agentDetails.first.photoUrl),
           ),
           title: Text(
             AppData.agentDetails.first.name,

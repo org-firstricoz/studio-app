@@ -28,25 +28,25 @@ class ChatRemoteDataSourceImpl extends ChatRemoteDataSource {
   @override
   FutureEither<List<ChatMessage>> sendMessage(ChatMessage message) async {
     try {
-      final response = await _client.post(
-          Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.chat}'),
-          headers: {'content-type': 'application/json'},
-          body: jsonEncode(message.toMap()));
+      // final response = await _client.post(
+      //     Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.chat}'),
+      //     headers: {'content-type': 'application/json'},
+      //     body: jsonEncode(message.toMap()));
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+      // if (response.statusCode == 200) {
+      //   final data = jsonDecode(response.body);
 
-        data['chat'] != null
-            ? AppData.chatData.insert(0, ChatDetails.fromMap(data['chat']))
-            : null;
-        AppData.chatMessages.add(message);
+      // data['chat'] != null
+      //     ? AppData.chatData.insert(0, ChatDetails.fromMap(data['chat']))
+      //     : null;
+      AppData.chatMessages.add(message);
 
-        return Right(AppData.chatMessages);
-      } else {
-        throw ApiException(
-            message:
-                'Unable to Send message, May be there\'s an error I don\'t know!!');
-      }
+      return Right(AppData.chatMessages);
+      // } else {
+      //   throw ApiException(
+      //       message:
+      //           'Unable to Send message, May be there\'s an error I don\'t know!!');
+      // }
     } on ApiException catch (e) {
       print(e);
       return Left(ApiFailure(message: e.message));
@@ -87,8 +87,8 @@ class ChatRemoteDataSourceImpl extends ChatRemoteDataSource {
           '${AppRequestUrl.baseUrl}${AppRequestUrl.agent}?agentID=$agentId'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print(data.runtimeType);
         final agentDetails = AgentDetails.fromMap(data);
-        print(agentDetails);
         AppData.allAgentDetails = agentDetails;
 
         return Right(agentDetails);
@@ -99,6 +99,7 @@ class ChatRemoteDataSourceImpl extends ChatRemoteDataSource {
       print(e);
       return Left(ApiFailure(message: e.message));
     } catch (e) {
+      print(e);
       return Left(ApiFailure(message: e.toString()));
     }
   }

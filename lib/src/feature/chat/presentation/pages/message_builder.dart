@@ -1,27 +1,34 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:math';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod_base/src/core/user.dart';
+import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/chat/presentation/message_input_box.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:flutter_riverpod_base/src/core/models/agent_model.dart';
 import 'package:flutter_riverpod_base/src/core/models/chat_model.dart';
-import 'package:flutter_riverpod_base/src/feature/chat/presentation/message_input_box.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatComponent extends StatefulWidget {
   const ChatComponent({
     Key? key,
     required this.msgdata,
-    required this.agentModel,
+    required this.agentId,
     required this.searchString,
+    required this.socket,
   }) : super(key: key);
   final List<ChatMessage> msgdata;
-  final AgentModel agentModel;
+  final String agentId;
   final String searchString;
+  final Socket socket;
   @override
   State<ChatComponent> createState() => _ChatComponentState();
 }
@@ -33,33 +40,50 @@ class _ChatComponentState extends State<ChatComponent> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
     });
+
+    widget.socket.on('message', (data) {
+      log(data.toString());
+      final msgData = jsonDecode(jsonEncode(data));
+
+      setState(() {
+        widget.msgdata.add(ChatMessage.fromMap(msgData));
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
+    });
   }
 
   ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        ListView.builder(
-          controller: scrollController,
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          itemBuilder: (context, index) => MessageBubble(
-            searchString: widget.searchString,
-            message: widget.msgdata[index].message,
-            isMe: widget.msgdata[index].isMe,
-          ),
-          itemCount: widget.msgdata.length,
-        ),
-        Positioned(
-            bottom: 10,
-            left: 0,
-            right: 0,
-            child: MessageInputBoxWidget(
-              agentModel: widget.agentModel,
-            ))
-      ],
+    return BlocBuilder<ChatBloc, ChatState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                itemBuilder: (context, index) => MessageBubble(
+                  searchString: widget.searchString,
+                  message: widget.msgdata[index].message,
+                  isMe: widget.msgdata[index].isMe,
+                ),
+                itemCount: widget.msgdata.length,
+              ),
+            ),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: MessageInputBoxWidget(
+                  scrollController: scrollController,
+                  socket: widget.socket,
+                  agentId: widget.agentId,
+                ))
+          ],
+        );
+      },
     );
   }
 
@@ -111,7 +135,7 @@ class MessageBubble extends StatelessWidget {
           ),
           child: RichText(
             text: TextSpan(
-                text: message, style: TextStyle(color: color.onPrimary)),
+                text: message, style: TextStyle(color: ColorAssets.black)),
           ),
         )
       ],

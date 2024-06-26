@@ -8,6 +8,7 @@ import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/bloc/booking_bloc.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_details.dart';
+import 'package:flutter_riverpod_base/src/feature/booking/presentation/bloc/review_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_text_button.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/custom_tab_builder.dart';
@@ -193,7 +194,7 @@ class _AddReviewModelState extends State<AddReviewModel> {
                     //ontaps
                     if (reviewEditingController.text.trim().isNotEmpty &&
                         rating != 0) {
-                      context.read<BookingBloc>().add(AddReviewEvent(
+                      context.read<ReviewBloc>().add(AddReviewEvent(
                           params: ReviewParams(
                               studioId: widget.studioDetails.id,
                               rating: rating,

@@ -2,14 +2,15 @@
 import 'dart:convert';
 
 class ChatMessage {
+  final String id;
   final bool isMe;
   final String agentID;
   final String uuid;
   final String message;
   final DateTime timestamp;
 
-  ChatMessage({
-    this.isMe=true,
+  ChatMessage( {required this.id,
+    this.isMe = true,
     required this.agentID,
     required this.uuid,
     required this.message,
@@ -18,6 +19,7 @@ class ChatMessage {
 
   static ChatMessage empty() {
     return ChatMessage(
+      id:'id',
         uuid: 'sender',
         message: 'message',
         timestamp: DateTime.now(),
@@ -29,8 +31,10 @@ class ChatMessage {
     String? uuid,
     String? message,
     DateTime? timestamp,
+    String? id
   }) {
     return ChatMessage(
+      id: id??this.id,
       agentID: agentID ?? this.agentID,
       uuid: uuid ?? this.uuid,
       message: message ?? this.message,
@@ -40,21 +44,23 @@ class ChatMessage {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'isMe':isMe,
+      'isMe': isMe,
       'agentID': agentID,
       'uuid': uuid,
       'message': message,
       'timestamp': timestamp.toIso8601String(),
+      'id':id,
     };
   }
 
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
+      id:map['id'] as String,
       isMe: map['isMe'] as bool,
       agentID: map['agentID'].toString(),
       uuid: map['uuid'].toString(),
       message: map['message'].toString(),
-      timestamp: DateTime.tryParse(map['timestamp'])?? DateTime.now(),
+      timestamp: DateTime.tryParse(map['timestamp']) ?? DateTime.now(),
     );
   }
 

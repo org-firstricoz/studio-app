@@ -5,8 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_lifecycle_detector/flutter_lifecycle_detector.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/commons/views/location_access/location_access_page.dart';
+import 'package:flutter_riverpod_base/src/commons/widgets/shimmer_widget.dart';
+import 'package:flutter_riverpod_base/src/core/models/studio_model.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
+import 'package:flutter_riverpod_base/src/feature/home/domain/usecase/get_home_view_details.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/save_local_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/widgets/categories_horizontal_list_view.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
+import 'package:flutter_riverpod_base/src/res/strings.dart';
+import 'package:flutter_riverpod_base/src/utils/widgets/item_card_view.dart';
+import 'package:flutter_riverpod_base/src/utils/widgets/item_list_tile_view.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_view_bloc.dart';
@@ -17,7 +25,11 @@ import 'package:flutter_riverpod_base/src/feature/home/presentation/tabs/home_ta
 import 'package:flutter_riverpod_base/src/feature/home/presentation/tabs/profile_tab.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:shimmer_effect/shimmer_effect.dart';
+
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 int c = 0;
 
@@ -50,6 +62,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
           FetchingStudioDataEvent(params: AllParams(location: user.location)));
     }
     super.initState();
+    socket = connect();
   }
 
   @override
@@ -59,28 +72,37 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(state) {
-    switch (state) {
-      case AppLifecycleState.detached:
-        context
-            .read<HomeViewBloc>()
-            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
-        break;
+  void didChangeAppLifecycleState(state) async {
+    if (state == AppLifecycleState.detached) {
+      print('detaachedddd');
 
-      case AppLifecycleState.resumed:
-        break;
-      case AppLifecycleState.inactive:
-        break;
-
-      case AppLifecycleState.hidden:
-        break;
-
-      case AppLifecycleState.paused:
-        context
-            .read<HomeViewBloc>()
-            .add(SavingFavouritesEvent(params: AppData.favouriteModel));
-        break;
+      log(AppData.favouriteModel.toString());
     }
+  }
+
+  IO.Socket connect() {
+    final socket = IO.io("${AppRequestUrl.baseUrl}/", {
+      'transports': ['websocket'],
+      'autoConnect': false,
+    });
+
+    if (!socket.connected) {
+      socket.connect();
+      socket.onConnect((data) {
+        socket.emit('user', user.uuid);
+        log('connected', name: "SOCKET");
+      });
+      socket.onConnectError((_) {
+        showDialog(
+            context: context,
+            builder: (context) => Dialog(
+                  child: Text(_.toString()),
+                ));
+      });
+    }
+    // log(socket.connected.toString(),name: );
+
+    return socket;
   }
 
   int _currentIndex = 0;
@@ -88,93 +110,77 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                  blurRadius: 4, spreadRadius: 0, color: colorScheme.surface)
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+                blurRadius: 4, spreadRadius: 0, color: colorScheme.surface)
+          ],
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        height: 82,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              buildNavItem(0, "Home", ImageAssets.home),
+              buildNavItem(1, "Explore", ImageAssets.explore),
+              buildNavItem(2, "Favorite", ImageAssets.favorite),
+              buildNavItem(3, "Chat", ImageAssets.chat),
+              buildNavItem(4, "Profile", ImageAssets.profile),
             ],
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          height: 82,
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildNavItem(0, "Home", ImageAssets.home),
-                buildNavItem(1, "Explore", ImageAssets.explore),
-                buildNavItem(2, "Favorite", ImageAssets.favorite),
-                buildNavItem(3, "Chat", ImageAssets.chat),
-                buildNavItem(4, "Profile", ImageAssets.profile),
-              ],
-            ),
           ),
         ),
-        body: LiquidPullToRefresh(
-          onRefresh: () async {
-            context.read<HomeViewBloc>().add(FetchingStudioDataEvent(
-                params: AllParams(location: user.location)));
-          },
-          child: BlocConsumer<HomeViewBloc, AllDataState>(
-            builder: (context, state) {
-              if (state is HomeViewFailure) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(state.message,
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 174, 174, 174))),
-                      TextButton(
-                          onPressed: () {
-                            print(user.location);
-                            context.read<HomeViewBloc>().add(
-                                FetchingStudioDataEvent(
-                                    params:
-                                        AllParams(location: user.location)));
-                          },
-                          child: const Text('Retry',
-                              style: TextStyle(color: Colors.black))),
-                    ],
-                  ),
-                );
-              } else if (state is LoadingState) {
-                return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(),
-                      Text('Loading Data'),
-                    ],
-                  ),
-                );
-              } else if (state is HomeViewSuccess) {
-                AppData.recomendedStudios =
-                    state.modelDatas['recomendedStudioModels']!;
-                AppData.nearByStudios = state.modelDatas['nearbyStudios']!;
-                return [
-                  const HomeTab(),
-                  const ExploreTab(),
-                  const FavoritesTab(),
-                  const ChatTab(),
-                  const ProfileTab(),
-                ][_currentIndex];
-              }
-              return const SizedBox();
-            },
-            listener: (BuildContext context, AllDataState<dynamic> state) {
-              if (state is HomeViewFailure) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(state.message)));
-              }
-            },
-          ),
-        ));
+      ),
+      body: BlocConsumer<HomeViewBloc, AllDataState>(
+        builder: (context, state) {
+          if (state is HomeViewFailure) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(state.message,
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 174, 174, 174))),
+                  TextButton(
+                      onPressed: () {
+                        print(user.location);
+                        context.read<HomeViewBloc>().add(
+                            FetchingStudioDataEvent(
+                                params: AllParams(location: user.location)));
+                      },
+                      child: const Text('Retry',
+                          style: TextStyle(color: Colors.black))),
+                ],
+              ),
+            );
+          }
+          return [
+            const HomeTab(),
+            const ExploreTab(),
+            const FavoritesTab(),
+            ChatTab(
+              socket: socket,
+            ),
+            const ProfileTab(),
+          ][_currentIndex];
+        },
+        listener: (BuildContext context, AllDataState<dynamic> state) {
+          if (state is HomeViewFailure) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          } else if (state is HomeViewSuccess) {
+            AppData.recomendedStudios =
+                state.modelDatas['recomendedStudioModels']!;
+            AppData.nearByStudios = state.modelDatas['nearbyStudios']!;
+          }
+        },
+      ),
+    );
   }
 
   changeTab(index) {

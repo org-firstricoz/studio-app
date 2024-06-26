@@ -1,14 +1,17 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/core/core.dart';
 import 'package:flutter_riverpod_base/src/core/exceptions.dart';
 import 'package:flutter_riverpod_base/src/core/models/agent_model.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_details.dart';
+import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 
 abstract class RemoteDataSource {
@@ -65,10 +68,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           });
         }
       } else {
-        throw ApiException(message: 'unable to get data');
+        throw ApiException(message: response.body.toString());
       }
     } on ApiException catch (e) {
-      print(e);
+      print(e.message);
       return Left(ApiFailure(message: e.message));
     } catch (e) {
       print(e);
@@ -84,14 +87,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.reviewEndPoint}'),
           headers: {'content-type': 'application/json'},
           body: jsonEncode(params.toMap()));
-
+      log('reviewModel.toString');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
         final ReviewModel reviewModel = ReviewModel.fromMap(data);
         AppData.reviewModels.insert(0, reviewModel);
 
-        return Right({'review_model': reviewModel});
+        return Right({'review_models': AppData.reviewModels});
       } else {
         throw ApiException(message: 'Unable to add review');
       }
@@ -141,9 +144,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         final data = jsonDecode(response.body);
 
         final ReviewModel reviewModel = ReviewModel.fromMap(data);
-        AppData.reviewModels.insert(0, reviewModel);
 
-        return Right({'review_model': reviewModel});
+        return Right({'review_model': reviewModel, 'edit': true});
       } else {
         throw ApiException(message: 'Unable to Edit review');
       }

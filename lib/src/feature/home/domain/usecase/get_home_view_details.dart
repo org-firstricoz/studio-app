@@ -26,3 +26,14 @@ class SaveFavourites implements UseCase<void, List<StudioModel>> {
     return _homeViewRepository.saveFavourites(params);
   }
 }
+
+class SaveFavouritesLocally implements UseCase<void, List<StudioModel>> {
+  final HomeViewRepository _homeViewRepository;
+
+  SaveFavouritesLocally({required HomeViewRepository homeViewRepository})
+      : _homeViewRepository = homeViewRepository;
+  @override
+  FutureEither<void> call(List<StudioModel> params) {
+    return _homeViewRepository.saveFavouritesLocally(params);
+  }
+}

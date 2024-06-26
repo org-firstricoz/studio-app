@@ -1,11 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:typed_data';
 
 class AgentModel {
   final String agentId;
   final String number;
   final String name;
-  final String photoUrl;
+  final Uint8List photoUrl;
   final String status;
   AgentModel({
     required this.agentId,
@@ -21,14 +22,14 @@ class AgentModel {
         agentId: 'agentId',
         number: 'number',
         name: 'name',
-        photoUrl: 'photoUrl');
+        photoUrl: Uint8List.fromList([]));
   }
 
   AgentModel copyWith({
     String? agentId,
     String? number,
     String? name,
-    String? photoUrl,
+    Uint8List? photoUrl,
     String? status,
   }) {
     return AgentModel(
@@ -55,7 +56,7 @@ class AgentModel {
       agentId: map['agentId'].toString(),
       number: map['number'].toString(),
       name: map['name'].toString(),
-      photoUrl: map['photoUrl'].toString(),
+      photoUrl: Uint8List.fromList(List<int>.from(map['photoUrl']['data'])),
       status: map['status'].toString(),
     );
   }

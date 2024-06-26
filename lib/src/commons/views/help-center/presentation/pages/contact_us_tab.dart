@@ -124,7 +124,9 @@ class _ContactUsTabState extends State<ContactUsTab> {
           Image.network(
             imageUrl,
             width: 50,
-            height: 50,
+            height: 50,errorBuilder: (context, error, stackTrace) {
+                        return SizedBox.expand();
+                      },
           ),
           Text(title)
         ],

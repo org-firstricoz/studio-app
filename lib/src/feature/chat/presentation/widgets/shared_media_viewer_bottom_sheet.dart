@@ -2,7 +2,7 @@ part of '../pages/user_chat_profile.dart';
 
 class SharedChatMediaBottomSheet extends StatefulWidget {
   const SharedChatMediaBottomSheet({super.key, required this.media});
-  final List<String> media;
+  final List<Uint8List> media;
 
   @override
   State<SharedChatMediaBottomSheet> createState() =>
@@ -13,7 +13,7 @@ class _SharedChatMediaBottomSheetState
     extends State<SharedChatMediaBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    List<String> studioImageLinks = widget.media;
+    List<Uint8List> studioImageLinks = widget.media;
     // [
     //   'https://picsum.photos/800/800?image=1032',
     //   'https://picsum.photos/800/800?image=1033',
@@ -60,15 +60,9 @@ class _SharedChatMediaBottomSheetState
             itemBuilder: (BuildContext context, int index) {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: CachedNetworkImage(
-                  imageUrl: studioImageLinks[index],
+                child: Image.memory(
+                  studioImageLinks[index],
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Text(""),
-                  ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               );
             },
@@ -107,15 +101,10 @@ class _SharedChatMediaBottomSheetState
                     // onTap: () => _showImagePopup(studioImageLinks[index]),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: CachedNetworkImage(
-                        imageUrl: studioImageLinks[index],
+                      child: Image.memory(
+                        studioImageLinks[index],
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Text(""),
-                        ),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                       
                       ),
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_base/main.dart';
 import 'package:flutter_riverpod_base/src/commons/views/help-center/data/datasource/remote_data_source.dart';
 import 'package:flutter_riverpod_base/src/commons/views/help-center/data/repository/help_center_repository_impl.dart';
 import 'package:flutter_riverpod_base/src/commons/views/help-center/domain/usecase/help_centre.dart';
@@ -16,14 +17,17 @@ import 'package:flutter_riverpod_base/src/feature/booking/data/repository/schedu
 import 'package:flutter_riverpod_base/src/feature/booking/domain/usecase/get_about_section.dart';
 import 'package:flutter_riverpod_base/src/feature/booking/domain/usecase/requesting_schedule.dart';
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/bloc/booking_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/booking/presentation/bloc/review_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/data/datasource/chat_remote_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/data/repository/chat_repository_impl.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/domain/usecase/chat_service.dart';
 import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
+
 import 'package:flutter_riverpod_base/src/feature/home/data/datasource/remote_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/home/data/repository/home_view_repository_impl.dart';
 import 'package:flutter_riverpod_base/src/feature/home/domain/usecase/get_home_view_details.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_view_bloc.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/save_local_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/data/datasource/filter_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/data/datasource/remote_data_source.dart';
 import 'package:flutter_riverpod_base/src/feature/search_view/data/repository/filter_repository_impl.dart';
@@ -40,7 +44,11 @@ import 'package:flutter_riverpod_base/src/feature/settings/provider/theme_provid
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/utils/router.dart';
 import 'package:http/http.dart' as http;
+import 'package:upgrader/upgrader.dart';
 import '../color_schemes.g.dart';
+
+final GlobalKey<State<StatefulWidget>> dialogKey =
+    GlobalKey<State<StatefulWidget>>();
 
 class App extends ConsumerWidget {
   const App({Key? key}) : super(key: key);
@@ -78,6 +86,11 @@ class App extends ConsumerWidget {
                           AuthRemoteDataSourceImpl(client: http.Client())))),
         ),
         BlocProvider(
+            create: (context) => SaveLocalBloc(
+                saveFavouritesLocally: SaveFavouritesLocally(
+                    homeViewRepository: HomeViewRepositoryImpl(
+                        dataSource: HomeViewRemoteDataSourceImpl())))),
+        BlocProvider(
             create: (context) => HomeViewBloc(
                   saveFavourites: SaveFavourites(
                       homeViewRepository: HomeViewRepositoryImpl(
@@ -88,30 +101,21 @@ class App extends ConsumerWidget {
                 )),
         BlocProvider(
             create: (context) => BookingBloc(
-                deleteReviewSction: DeleteReviewSction(
-                    bookingRepository: BookingRepositoryImpl(
-                        remoteDataSource:
-                            RemoteDataSourceImpl(client: http.Client()))),
-                editReviewSction: EditReviewSction(
-                    bookingRepository: BookingRepositoryImpl(
-                        remoteDataSource:
-                            RemoteDataSourceImpl(client: http.Client()))),
-                sendingData: SendingData(
-                    scheduleRepository: ScheduleRepositoryImpl(
-                        scheduleRemoteDataSource: ScheduleRemoteDataSourceImpl(
-                            client: http.Client()))),
-                requestingSchedule: RequestingSchedule(
-                    scheduleRepository: ScheduleRepositoryImpl(
-                        scheduleRemoteDataSource: ScheduleRemoteDataSourceImpl(
-                            client: http.Client()))),
-                getAboutSection: GetAboutSection(
-                    bookingRepository: BookingRepositoryImpl(
-                        remoteDataSource:
-                            RemoteDataSourceImpl(client: http.Client()))),
-                addreviewSection: AddReviewSection(
-                    bookingRepository: BookingRepositoryImpl(
-                        remoteDataSource:
-                            RemoteDataSourceImpl(client: http.Client()))))),
+                  sendingData: SendingData(
+                      scheduleRepository: ScheduleRepositoryImpl(
+                          scheduleRemoteDataSource:
+                              ScheduleRemoteDataSourceImpl(
+                                  client: http.Client()))),
+                  requestingSchedule: RequestingSchedule(
+                      scheduleRepository: ScheduleRepositoryImpl(
+                          scheduleRemoteDataSource:
+                              ScheduleRemoteDataSourceImpl(
+                                  client: http.Client()))),
+                  getAboutSection: GetAboutSection(
+                      bookingRepository: BookingRepositoryImpl(
+                          remoteDataSource:
+                              RemoteDataSourceImpl(client: http.Client()))),
+                )),
         BlocProvider(
           create: (context) => SearchBloc(
               filterUseCase: FilterUseCase(
@@ -153,6 +157,21 @@ class App extends ConsumerWidget {
                           helpCenterRemoteDataSource:
                               HelpCenterRemoteDataSourceImpl(
                                   client: http.Client()))),
+                )),
+        BlocProvider(
+            create: (context) => ReviewBloc(
+                  deleteReviewSction: DeleteReviewSction(
+                      bookingRepository: BookingRepositoryImpl(
+                          remoteDataSource:
+                              RemoteDataSourceImpl(client: http.Client()))),
+                  addReviewSection: AddReviewSection(
+                      bookingRepository: BookingRepositoryImpl(
+                          remoteDataSource:
+                              RemoteDataSourceImpl(client: http.Client()))),
+                  editReviewSction: EditReviewSction(
+                      bookingRepository: BookingRepositoryImpl(
+                          remoteDataSource:
+                              RemoteDataSourceImpl(client: http.Client()))),
                 ))
       ],
       child: PopScope(
@@ -163,15 +182,27 @@ class App extends ConsumerWidget {
           // print(didPop);
         },
         child: MaterialApp.router(
-          // theme: Themes.lightTheme(context),
-          theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
-          darkTheme:
-              ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-          // darkTheme: Themes.darkTheme(context),
-          themeMode: themeModeState,
-          debugShowCheckedModeBanner: false,
-          routerConfig: router,
-        ),
+            // theme: Themes.lightTheme(context),
+            theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+            darkTheme:
+                ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+            // darkTheme: Themes.darkTheme(context),
+            themeMode: themeModeState,
+            debugShowCheckedModeBanner: false,
+            routerConfig: router,
+            builder: (context, child) => StreamBuilder(
+                  stream: upgrader.stateStream,
+                  builder: (context, snapshot) => UpgradeAlert(
+                    dialogKey: dialogKey,
+                    showReleaseNotes: true,
+                    upgrader: upgrader,
+                    navigatorKey: router.routerDelegate.navigatorKey,
+                    showIgnore: false,
+                    showLater: false,
+                    shouldPopScope: () => false,
+                    child: child,
+                  ),
+                )),
       ),
     );
   }

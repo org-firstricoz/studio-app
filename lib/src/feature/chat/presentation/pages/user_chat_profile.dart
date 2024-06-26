@@ -1,18 +1,18 @@
+import 'dart:developer';
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/simple_app_bar.dart';
-import 'package:flutter_riverpod_base/src/feature/chat/presentation/chat_view.dart';
+import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/view/home.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:shimmer/shimmer.dart';
-
 import 'package:flutter_riverpod_base/src/commons/animation/glass_morphic_effect.dart';
 import 'package:flutter_riverpod_base/src/commons/widgets/custom_list_tile.dart';
 import 'package:flutter_riverpod_base/src/core/models/agent_model.dart';
-import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
 import 'package:flutter_riverpod_base/src/utils/sharing_utils.dart';
 
@@ -22,8 +22,8 @@ part '../widgets/shared_media_viewer_bottom_sheet.dart';
 
 class UserChatProfileView extends StatefulWidget {
   static String routePath = '/user-chat-profile';
-  final AgentModel agentModel;
-  const UserChatProfileView({Key? key, required this.agentModel})
+  final String agentId;
+  const UserChatProfileView({Key? key, required this.agentId})
       : super(key: key);
 
   @override
@@ -36,7 +36,7 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
     super.initState();
     context
         .read<ChatBloc>()
-        .add(GetAgentDetailsEvent(agentID: widget.agentModel.agentId));
+        .add(GetAgentDetailsEvent(agentID: widget.agentId));
   }
 
   @override
@@ -47,7 +47,7 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
     return Scaffold(
         appBar: SimpleAppBar(
           leadingCallback: () {
-            context.go(HomeView.routePath);
+            context.pushReplacement(HomeView.routePath);
           },
           title: 'Profile',
           centerTitle: true,
@@ -85,6 +85,12 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
             }
           },
           builder: (context, state) {
+            if (state is LoadingState) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
             if (state is AgentDetailsSuccessState) {
               return
                   //  PreferredSize(
@@ -113,9 +119,12 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          Image.network(
+                          Image.memory(
                             state.agentDetails.photoUrl,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return SizedBox();
+                            },
                           ),
                           Align(
                             alignment: Alignment.bottomCenter,
@@ -149,7 +158,7 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'An artistic haven with vibrant hues, where creativity dances on canvases, fueled by passion, dreams, and boundless imagination',
+                          state.agentDetails.description,
                           style: textTheme.titleLarge!.copyWith(fontSize: 14),
                         ),
                       ),
@@ -195,8 +204,14 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
-                                    child: Image.network(
-                                        state.agentDetails.media[index]),
+                                    child: Image.memory(
+                                      state.agentDetails.media[index],
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        log('error');
+                                        return SizedBox();
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
@@ -255,7 +270,7 @@ class _UserChatProfileViewState extends State<UserChatProfileView> {
     );
   }
 
-  void _viewAllSharedMedia(BuildContext context, List<String> media) {
+  void _viewAllSharedMedia(BuildContext context, List<Uint8List> media) {
     showModalBottomSheet(
         context: context,
         showDragHandle: true,

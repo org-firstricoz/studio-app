@@ -173,7 +173,7 @@ class _FilterViewState extends State<FilterView> {
                         fontSize: 14,
                         color: selectedCategoryIndex == index
                             ? color.onPrimary
-                            : color.tertiary,
+                            : color.onSecondary,
                       ),
                     ),
                   ),
@@ -255,8 +255,8 @@ class _AmenitiesWrapWidgetState extends State<AmenitiesWrapWidget> {
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                       color: selectedamenitiesIndices.contains(index)
-                          ? color.surface
-                          : color.tertiary,
+                          ? color.onPrimary
+                          : color.onSecondary,
                     ),
                   ),
                 ),
@@ -335,8 +335,8 @@ class _PricesWrapWidgetState extends State<PricesWrapWidget> {
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                       color: selectedPriceIndex == index
-                          ? color.surface
-                          : color.tertiary,
+                          ? color.onPrimary
+                          : color.onSecondary,
                     ),
                   ),
                 ),

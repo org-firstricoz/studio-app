@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 
 class StudioModel {
   final String id;
-  final String image;
+  final Uint8List image;
   final String name;
   final String category;
   final String rating;
@@ -42,19 +42,37 @@ class StudioModel {
     };
   }
 
-  factory StudioModel.fromMap(Map<String, dynamic> map) {
+  static empty() {
     return StudioModel(
-      id: map['id'] as String,
-      image: map['image'] as String,
-      name: map['name'] as String,
-      category: map['category'] as String,
-      rating: map['rating'].toString(),
-      location: map['location'] as String,
-      address: map['address'] as String,
-      rent: (map['rent'] as num).toDouble(),
-      latitude: (map['latitude'] as num).toDouble(),
-      longitude: (map['longitude'] as num).toDouble(),
-    );
+        id: 'id',
+        image: Uint8List.fromList([]),
+        name: 'name',
+        category: 'category',
+        rating: 'rating',
+        location: 'location',
+        address: 'address',
+        rent: 100,
+        latitude: 0,
+        longitude: 0);
+  }
+
+  factory StudioModel.fromMap(Map<String, dynamic> map) {
+    try {
+      return StudioModel(
+        id: map['id'] as String,
+        image: Uint8List.fromList(List<int>.from(map['image']['data'])),
+        name: map['name'] as String,
+        category: map['category'] as String,
+        rating: map['rating'].toString(),
+        location: map['location'] as String,
+        address: map['address'] as String,
+        rent: (map['rent'] as num).toDouble(),
+        latitude: (map['latitude'] as num).toDouble(),
+        longitude: (map['longitude'] as num).toDouble(),
+      );
+    } catch (e) {
+      return StudioModel.empty();
+    }
   }
 
   String toJson() => json.encode(toMap());
@@ -64,7 +82,7 @@ class StudioModel {
 
   StudioModel copyWith({
     String? id,
-    String? image,
+    Uint8List? image,
     String? name,
     String? category,
     String? rating,

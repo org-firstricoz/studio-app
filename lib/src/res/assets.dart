@@ -22,6 +22,7 @@ class ImageAssets {
   static const profileImageJpeg = "$_base/profile.jpeg";
 
   // images
+  
 
   //Svg assets for  [onboarding]
   static const page1 = "$_base/undraw_house_searching_re_stk8 1.svg";

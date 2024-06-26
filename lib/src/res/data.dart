@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_riverpod_base/src/commons/views/help-center/presentation/pages/faq_tab.dart';
 import 'package:flutter_riverpod_base/src/core/models/agent_details.dart';
@@ -77,7 +78,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Harmony Studios",
-        image: ImageAssets.studio1,
+        image: Uint8List.fromList([]),
         category: "Photography",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -88,7 +89,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "The Dancextream",
-        image: ImageAssets.studio2,
+        image: Uint8List.fromList([]),
         category: "Artistic Haven",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -99,7 +100,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Art Studios",
-        image: ImageAssets.studio3,
+        image: Uint8List.fromList([]),
         category: "Music",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -110,7 +111,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Photo Studios",
-        image: ImageAssets.studio4,
+        image: Uint8List.fromList([]),
         category: "Art",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -121,7 +122,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Harmony Studios",
-        image: ImageAssets.studio5,
+        image: Uint8List.fromList([]),
         category: "Musci",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -134,7 +135,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Harmony Studios",
-        image: ImageAssets.studio1,
+        image: Uint8List.fromList([]),
         category: "Photography",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -145,7 +146,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "The Dancextream",
-        image: ImageAssets.studio2,
+        image: Uint8List.fromList([]),
         category: "Artistic Haven",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -156,7 +157,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Art Studios",
-        image: ImageAssets.studio3,
+        image: Uint8List.fromList([]),
         category: "Music",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -167,7 +168,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Photo Studios",
-        image: ImageAssets.studio4,
+        image: Uint8List.fromList([]),
         category: "Art",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -178,7 +179,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Harmony Studios",
-        image: ImageAssets.studio5,
+        image: Uint8List.fromList([]),
         category: "Musci",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -192,7 +193,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Harmony Studios",
-        image: ImageAssets.studio1,
+        image: Uint8List.fromList([]),
         category: "Photography",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -203,7 +204,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "The Dancextream",
-        image: ImageAssets.studio2,
+        image: Uint8List.fromList([]),
         category: "Artistic Haven",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -214,7 +215,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Art Studios",
-        image: ImageAssets.studio3,
+        image: Uint8List.fromList([]),
         category: "Music",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -225,7 +226,7 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Photo Studios",
-        image: ImageAssets.studio4,
+        image: Uint8List.fromList([]),
         category: "Art",
         rating: '4.8',
         location: "Pune, Maharastra",
@@ -236,28 +237,18 @@ class AppData {
         address: 'xyz street , JamNagar, Gujarat',
         id: '1',
         name: "Harmony Studios",
-        image: ImageAssets.studio5,
+        image: Uint8List.fromList([]),
         category: "Musci",
         rating: '4.8',
         location: "Pune, Maharastra",
         rent: 2000),
   ];
 
-  static List<ChatDetails> chatData = [
-    ChatDetails(
-        id: '12', agentModel: AgentModel.empty(), time: '09:34 PM', unread: 2),
-    ChatDetails(
-        id: '12', agentModel: AgentModel.empty(), time: '09:34 PM', unread: 0),
-    ChatDetails(
-        id: '12', agentModel: AgentModel.empty(), time: '09:34 PM', unread: 1),
-    ChatDetails(
-        id: '12', agentModel: AgentModel.empty(), time: '09:34 PM', unread: 0),
-    ChatDetails(
-        id: '12', agentModel: AgentModel.empty(), time: '09:34 PM', unread: 0)
-  ];
+  static List<ChatEntity> chatData = [];
 
   static List<ReviewModel> reviewModels = [
-    ReviewModel(uuid: '1',
+    ReviewModel(
+        uuid: '1',
         reviewId: '3',
         name: "Dale Thiel",
         photoUrl: ImageAssets.profileImageJpeg,
@@ -265,7 +256,8 @@ class AppData {
             "Discover our state-of-the-art Photography Studio, a haven for photographers and creatives a like. ",
         rating: 4.0,
         time: DateTime.now()),
-    ReviewModel(uuid: '1',
+    ReviewModel(
+        uuid: '1',
         reviewId: '2',
         name: "John Doe",
         photoUrl: ImageAssets.profileImageJpeg,
@@ -273,7 +265,8 @@ class AppData {
             "Discover our state-of-the-art Photography Studio, a haven for photographers and creatives a like. ",
         rating: 4.0,
         time: DateTime.now()),
-    ReviewModel(uuid: '1',
+    ReviewModel(
+        uuid: '1',
         reviewId: '1',
         name: "John Doe",
         photoUrl: '',

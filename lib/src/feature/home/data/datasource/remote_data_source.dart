@@ -13,15 +13,18 @@ import 'package:flutter_riverpod_base/src/feature/settings/data/datasource/setti
 import 'package:flutter_riverpod_base/src/res/data.dart';
 import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+
+int c = 0;
 
 abstract class HomeViewRemoteDataSource {
   FutureEither<Map<String, List<StudioModel>>> getHomeViewDetails(
       AllParams params);
   FutureEitherVoid saveFavourites(List<StudioModel> params);
-}
 
-int c = 0;
+  FutureEitherVoid saveFavouritesLocally(List<StudioModel> params);
+}
 
 class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
   @override
@@ -40,7 +43,7 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
         final recomendedStudio = data['recommended'];
         final nearbystudio = data['nearby'];
         final category = data['categories'];
-        final favorites = data['favourites'];
+        List favorites = data['favourites'];
         final chatData = data['chatDetails'];
         final recentSearch = data['recent_search'];
         final notification = data['notification'];
@@ -49,7 +52,20 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
         // print(recomendedStudio);
         // print(favorites);
         // print(recentSearch);
-        print(notification);
+        // print(notification);
+        log(favorites.toString());
+        if (favorites.isEmpty) {
+          log('hi');
+          final listOfFav = (await Hive.box("USER").get('favorites'));
+          listOfFav != null
+              ? listOfFav
+                  .map((e) =>
+                      Map<String, dynamic>.from(e as Map<dynamic, dynamic>))
+                  .toList()
+              : [];
+
+          log(favorites.toString());
+        }
 
         final List<StudioModel> recomendedStudioModels =
             (recomendedStudio as List).isNotEmpty
@@ -69,11 +85,14 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
                 .toList()
             : [];
         final List<StudioModel> favouriteStudio = (favorites as List).isNotEmpty
-            ? favorites.map<StudioModel>((e) => StudioModel.fromMap(e)).toList()
+            ? favorites
+                .map<StudioModel>(
+                    (e) => StudioModel.fromMap(e as Map<String, dynamic>))
+                .toList()
             : [];
-        final List<ChatDetails> chatDetails = (chatData as List).isNotEmpty
-            ? chatData.map<ChatDetails>((e) => ChatDetails.fromMap(e)).toList()
-            : [];
+        // final List<ChatDetails> chatDetails = (chatData as List).isNotEmpty
+        //     ? chatData.map<ChatDetails>((e) => ChatDetails.fromMap(e)).toList()
+        //     : [];
         final List<String> recentSearches = (recentSearch as List).isNotEmpty
             ? recentSearch.map<String>((e) => e.toString()).toList()
             : [];
@@ -88,7 +107,7 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
         AppData.recomendedStudios = recomendedStudioModels;
         AppData.categories = categories;
         AppData.favouriteModel = favouriteStudio;
-        AppData.chatData = chatDetails;
+        // AppData.chatData = chatDetails;
         AppData.recentSearches = recentSearches;
         AppData.notifications = notificationList;
         // print(AppData.nearByStudios);
@@ -132,6 +151,18 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
     } catch (e) {
       print(e);
       return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  FutureEitherVoid saveFavouritesLocally(List<StudioModel> params) async {
+    try {
+      final response = await Hive.box('USER')
+          .put('favorites', params.map((e) => e.toMap()).toList());
+      log('done');
+      return const Right(null);
+    } catch (e) {
+      return Left(ApiFailure(message: 'Unable to Save Favourites'));
     }
   }
 }

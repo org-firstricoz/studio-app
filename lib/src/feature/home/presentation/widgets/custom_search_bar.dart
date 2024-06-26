@@ -26,14 +26,14 @@ class CustomSearchBar extends StatelessWidget {
               child: TextFormField(
                 enabled: false,
                 decoration: InputDecoration(
-                  contentPadding:const EdgeInsets.symmetric(vertical: 2),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 2),
                   fillColor: Colors.transparent,
                   filled: true,
                   hintText: "Search",
-                  hintStyle: TextStyle(color: color.tertiary),
+                  hintStyle: TextStyle(color: color.onSecondary),
                   prefixIcon: Icon(
                     Icons.search,
-                    color: color.tertiary,
+                    color: color.onSecondary,
                   ),
                   border: InputBorder.none,
                 ),

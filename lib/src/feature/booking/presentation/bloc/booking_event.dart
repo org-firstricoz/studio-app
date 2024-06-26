@@ -9,12 +9,6 @@ class GetBookingDataEvent extends BookingEvent {
   GetBookingDataEvent({required this.params});
 }
 
-class AddReviewEvent extends BookingEvent {
-  final ReviewParams params;
-
-  AddReviewEvent({required this.params});
-}
-
 class RequestScheduleEvent extends BookingEvent {
   final RequestParams requestParams;
 
@@ -25,16 +19,4 @@ class PaymentEvent extends BookingEvent {
   final Map<String, dynamic> data;
 
   PaymentEvent({required this.data});
-}
-
-class DeleteReviewEvent extends BookingEvent {
-  final String reviewId;
-
-  DeleteReviewEvent({required this.reviewId});
-}
-
-class EditReviewEvent extends BookingEvent {
-  final ReviewParams reviewParams;
-
-  EditReviewEvent({required this.reviewParams});
 }

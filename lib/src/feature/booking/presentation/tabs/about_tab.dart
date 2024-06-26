@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_riverpod_base/src/feature/chat/presentation/bloc/chat_bloc.dart';
+import 'package:flutter_riverpod_base/src/core/user.dart';
+import 'package:flutter_riverpod_base/src/feature/chat/presentation/chat_view.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter_riverpod_base/src/core/models/agent_model.dart';
 import 'package:flutter_riverpod_base/src/core/models/studio_details.dart';
-import 'package:flutter_riverpod_base/src/feature/chat/presentation/chat_view.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
 import 'package:flutter_riverpod_base/src/utils/custom_extension_methods.dart';
@@ -61,7 +61,7 @@ class _AboutTabState extends State<AboutTab> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
@@ -107,12 +107,14 @@ class _AboutTabState extends State<AboutTab> {
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
                 backgroundColor: color.secondary,
-                backgroundImage: NetworkImage(i.photoUrl),
+                backgroundImage: MemoryImage(
+                  i.photoUrl,
+                ),
                 radius: 20,
               ),
               title: Text(
                 i.name,
-                style:const TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color: ColorAssets.blackFaded),
@@ -164,7 +166,12 @@ class _AboutTabState extends State<AboutTab> {
                       color: color.primary,
                     ),
                   ).onTap(() {
-                    context.push(ChatView.routePath, extra: {'agent_model': i});
+                    context.push(ChatView.routePath, extra: {
+                      'agentId': i.agentId,
+                      'socket': socket,
+                      'name': i.name,
+                      'photoUrl': i.photoUrl
+                    });
                   }),
                 ],
               ),

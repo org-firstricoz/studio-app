@@ -13,6 +13,7 @@ class FormTextField extends StatefulWidget {
   final Widget? prefixWidget;
   final Widget? suffixIcon;
   final Function(String val)? onChanged;
+  final String? Function(String?)? validator;
   final TextEditingController? controller;
   const FormTextField({
     Key? key,
@@ -24,6 +25,7 @@ class FormTextField extends StatefulWidget {
     this.hintTextColors,
     this.backgroundColor,
     this.prefixWidget,
+    this.validator,
     this.onChanged,
     this.controller,
     this.suffixIcon,
@@ -84,12 +86,14 @@ class _FormTextFieldState extends State<FormTextField> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return '${widget.labelText} cannot be empty';
-                    }
-                    return null;
-                  },
+                  validator: widget.validator != null
+                      ? widget.validator
+                      : (value) {
+                          if (value!.isEmpty) {
+                            return '${widget.labelText} cannot be empty';
+                          }
+                          return null;
+                        },
                   initialValue: widget.initialValue,
                   controller: widget.controller,
                   onChanged: widget.onChanged,

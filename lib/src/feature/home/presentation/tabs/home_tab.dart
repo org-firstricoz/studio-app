@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
+import 'package:flutter_riverpod_base/src/commons/widgets/shimmer_widget.dart';
+import 'package:flutter_riverpod_base/src/core/models/studio_model.dart';
 import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/auth/domain/usecase/use_cases.dart';
 import 'package:flutter_riverpod_base/src/feature/booking/presentation/booking_view.dart';
@@ -10,8 +14,11 @@ import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_vi
 import 'package:flutter_riverpod_base/src/feature/home/presentation/near_by_studios_view.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/recomended_studios_view.dart';
 import 'package:flutter_riverpod_base/src/feature/home/presentation/widgets/app_bar.dart';
+import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:go_router/go_router.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
+import 'package:shimmer_effect/shimmer_effect.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../../../res/colors.dart';
 import '../../../../res/data.dart';
@@ -33,40 +40,185 @@ class _HomeTabState extends State<HomeTab> {
     super.initState();
   }
 
+  IO.Socket connect() {
+    final socket = IO.io(AppRequestUrl.baseUrl, {
+      'transports': ['websocket'],
+      'autoConnect': true
+    });
+    socket.connect();
+    socket.onConnect((data) => log('connected'));
+    log(socket.connected.toString());
+    return socket;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: LiquidPullToRefresh(
+      child: RefreshIndicator(
         onRefresh: () async {
           context.read<HomeViewBloc>().add(FetchingStudioDataEvent(
               params: AllParams(location: user.location)));
+          connect();
         },
-        child: CustomScrollView(slivers: [
-          const SliverAppBar(
-              leading: SizedBox.shrink(),
-              expandedHeight: kToolbarHeight + 80,
-              floating: false,
-              pinned: true,
-              scrolledUnderElevation: 0,
-              collapsedHeight: kToolbarHeight + 80,
-              flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: EdgeInsets.zero,
-                  background: Column(
+        child: BlocBuilder<HomeViewBloc, AllDataState>(
+          builder: (context, state) {
+            if (state is LoadingState) {
+              return ShimmerEffect(
+                baseColor: const Color.fromARGB(255, 215, 215, 215),
+                highlightColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ListView(
                     children: [
-                      HomeViewAppBar(),
-                      CustomSearchBar(),
+                      Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleAvatar(),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          ShimmerWidget(
+                            height: 10,
+                            width: 100,
+                          )
+                        ],
+                      ),
+                      ShimmerWidget(
+                        height: 50,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ShimmerWidget(
+                              width: 40,
+                              height: 40,
+                            ),
+                            ShimmerWidget(
+                              width: 40,
+                              height: 40,
+                            ),
+                            ShimmerWidget(
+                              width: 40,
+                              height: 40,
+                            ),
+                            ShimmerWidget(
+                              width: 40,
+                              height: 40,
+                            ),
+                            ShimmerWidget(
+                              width: 40,
+                              height: 40,
+                            ),
+                            ShimmerWidget(
+                              width: 40,
+                              height: 40,
+                            ),
+                            ShimmerWidget(
+                              width: 40,
+                              height: 40,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      ShimmerWidget(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ShimmerWidget(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 300,
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          child: Row(
+                            children: [
+                              ItemCardView(
+                                  studioModel: StudioModel.empty(),
+                                  onClick: () {}),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              ItemCardView(
+                                  studioModel: StudioModel.empty(),
+                                  onClick: () {})
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      ShimmerWidget(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ShimmerWidget(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ItemListTileView(
+                        studioModel: StudioModel.empty(),
+                        onTap: () {},
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ItemListTileView(
+                        studioModel: StudioModel.empty(),
+                        onTap: () {},
+                      ),
                     ],
-                  ))),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const CategoriesHorizontalListView(),
-                _recomendationsListView(),
-                _nearbyListView(),
-              ],
-            ),
-          ),
-        ]),
+                  ),
+                ),
+              );
+            }
+
+            return CustomScrollView(slivers: [
+              const SliverAppBar(
+                  leading: SizedBox.shrink(),
+                  expandedHeight: kToolbarHeight + 80,
+                  floating: false,
+                  pinned: true,
+                  scrolledUnderElevation: 0,
+                  collapsedHeight: kToolbarHeight + 80,
+                  flexibleSpace: FlexibleSpaceBar(
+                      titlePadding: EdgeInsets.zero,
+                      background: Column(
+                        children: [
+                          HomeViewAppBar(),
+                          CustomSearchBar(),
+                        ],
+                      ))),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    const CategoriesHorizontalListView(),
+                    _recomendationsListView(),
+                    _nearbyListView(),
+                  ],
+                ),
+              ),
+            ]);
+          },
+        ),
       ),
     );
   }
@@ -78,9 +230,9 @@ class _HomeTabState extends State<HomeTab> {
         Text(
           title,
           style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: ColorAssets.black),
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         GestureDetector(
           onTap: onTap,

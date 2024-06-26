@@ -1,15 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 
 class AgentDetails {
-  final String photoUrl;
+  final Uint8List photoUrl;
   final String agentId;
   final String name;
   final String number;
   final String description;
-  final List<String> media;
+  final List<Uint8List> media;
   final String qrData;
   AgentDetails({
     required this.photoUrl,
@@ -22,22 +23,26 @@ class AgentDetails {
   });
   static AgentDetails empty() {
     return AgentDetails(
-        photoUrl: 'photoUrl',
+        photoUrl: Uint8List.fromList([]),
         agentId: 'agentId',
         name: 'name',
         number: 'number',
         description: 'description',
-        media: ['media'],
+        media: [
+          Uint8List.fromList([]),
+          Uint8List.fromList([]),
+          Uint8List.fromList([])
+        ],
         qrData: 'qrData');
   }
 
   AgentDetails copyWith({
-    String? photoUrl,
+    Uint8List? photoUrl,
     String? agentId,
     String? name,
     String? number,
     String? description,
-    List<String>? media,
+    List<Uint8List>? media,
     String? qrData,
   }) {
     return AgentDetails(
@@ -64,15 +69,26 @@ class AgentDetails {
   }
 
   factory AgentDetails.fromMap(Map<String, dynamic> map) {
-    return AgentDetails(
-      photoUrl: map['photoUrl'].toString(),
-      agentId: map['agentId'].toString(),
-      name: map['name'].toString(),
-      number: map['number'].toString(),
-      description: map['description'].toString(),
-      media: List<String>.from((map['media'].toList())),
-      qrData: map['qrData'].toString(),
-    );
+    print(map['media'].toString());
+    try {
+      return AgentDetails(
+        photoUrl: Uint8List.fromList(List<int>.from(map['photoUrl']['data'])),
+        agentId: map['agentId'].toString(),
+        name: map['name'].toString(),
+        number: map['number'].toString(),
+        description: map['description'].toString(),
+        media:
+            //  [],
+            map['media']
+                .map<Uint8List>(
+                    (e) => Uint8List.fromList(List<int>.from(e['data'])))
+                .toList(),
+        qrData: map['qrData'].toString(),
+      );
+    } catch (e) {
+      print(e);
+      return AgentDetails.empty();
+    }
   }
 
   String toJson() => json.encode(toMap());

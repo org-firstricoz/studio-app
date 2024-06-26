@@ -9,18 +9,12 @@ import 'package:flutter_riverpod_base/src/core/user.dart';
 import 'package:flutter_riverpod_base/src/feature/settings/presentation/bloc/settings_bloc.dart';
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/res/colors.dart';
+import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:go_router/go_router.dart';
 
 class HomeViewAppBar extends StatelessWidget {
   const HomeViewAppBar({super.key});
-  photoBuilder() {
-    if (photoUrl != null) {
-      return FileImage(File(photoUrl!));
-    } else {
-      return const NetworkImage(
-          'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
-    }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +23,7 @@ class HomeViewAppBar extends StatelessWidget {
       leading: CircleAvatar(
         radius: 20,
         backgroundColor: color.secondary,
-        backgroundImage: photoBuilder(),
+        backgroundImage: MemoryImage(user.photoUrl),
       ),
       title: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {

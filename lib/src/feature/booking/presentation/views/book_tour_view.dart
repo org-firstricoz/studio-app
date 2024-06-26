@@ -52,7 +52,7 @@ class _BookingTourViewState extends State<BookingTourView> {
       backgroundColor: color.surface,
       appBar: SimpleAppBar(
         title: "Book Tour",
-        leadingCallback: () => context.go(HomeView.routePath),
+        leadingCallback: () => context.pushReplacement(HomeView.routePath),
       ),
       body: BlocListener<BookingBloc, BookingState>(
         listener: (context, state) {
@@ -86,7 +86,7 @@ class _BookingTourViewState extends State<BookingTourView> {
             _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
           } else if (state is BookingFailure) {
             print(state.message);
-            context.go(HomeView.routePath);
+            context.pushReplacement(HomeView.routePath);
           } else if (state is LoadingState) {
             showDialog(
                 context: context,

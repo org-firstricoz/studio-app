@@ -20,4 +20,9 @@ class HomeViewRepositoryImpl implements HomeViewRepository {
   FutureEitherVoid saveFavourites(List<StudioModel> params) {
     return _dataSource.saveFavourites(params);
   }
+
+  @override
+  FutureEitherVoid saveFavouritesLocally(List<StudioModel> params) {
+    return _dataSource.saveFavouritesLocally(params);
+  }
 }

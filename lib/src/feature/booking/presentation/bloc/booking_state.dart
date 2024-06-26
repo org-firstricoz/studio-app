@@ -35,3 +35,4 @@ class PaymentSuccessState extends BookingState {
 
   PaymentSuccessState({required this.data});
 }
+

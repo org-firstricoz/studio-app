@@ -14,3 +14,9 @@ class SavingFavouritesEvent extends HomeViewEvent {
 
   SavingFavouritesEvent({required this.params});
 }
+
+// class SavingFavouritesLocallyEvent extends HomeViewEvent {
+//   final List<StudioModel> params;
+
+//   SavingFavouritesLocallyEvent({required this.params});
+// }

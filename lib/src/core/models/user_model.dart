@@ -1,5 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 
 class User {
   final String uuid;
@@ -7,7 +10,7 @@ class User {
   final String email;
   final String gender;
   final String phoneNumber;
-  final String photoUrl;
+  final Uint8List photoUrl;
   final DateTime createdAt;
   final String location;
   User({
@@ -27,7 +30,7 @@ class User {
     String? email,
     String? gender,
     String? phoneNumber,
-    String? photoUrl,
+    Uint8List? photoUrl,
     DateTime? createdAt,
     String? location,
   }) {
@@ -57,15 +60,18 @@ class User {
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
+    // final Uint8List byteList = base64Decode(map['photoUrl']);
+
     return User(
-      uuid: (map['uuid'] as String).toString(),
-      name: (map['name'] as String).toString(),
-      email: (map['email'] as String).toString(),
-      gender: (map['gender'] as String).toString(),
-      phoneNumber: (map['phoneNumber'] as String).toString(),
-      photoUrl: (map['photoUrl'] as String).toString(),
-      createdAt: DateTime.parse((map['createdAt'])),
-      location: (map['location'] as String).toString(),
+      uuid: map['uuid'] as String,
+      name: map['name'] as String,
+      email: map['email'] as String,
+      gender: map['gender'] as String,
+      phoneNumber: map['phoneNumber'] as String,
+      photoUrl: Uint8List.fromList(
+          map['photoUrl']['data'].map<int>((e) => e as int).toList()),
+      createdAt: DateTime.parse(map['createdAt'].toString()),
+      location: map['location'] as String,
     );
   }
 
@@ -112,8 +118,9 @@ class User {
         email: 'email',
         gender: 'gender',
         phoneNumber: '1234567890',
-        photoUrl: 'photoUrl',
+        photoUrl: Uint8List.fromList([12, 32, 43, 54, 65, 7]),
         createdAt: DateTime.now(),
         location: 'location');
   }
+
 }

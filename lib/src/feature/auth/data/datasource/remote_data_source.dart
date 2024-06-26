@@ -13,7 +13,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 abstract class AuthRemoteDataSource {
   AuthRemoteDataSource({required http.Client client});
@@ -37,23 +37,35 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   FutureEither<User> createUserWithEmailAndPassword(SignUpParams params) async {
     try {
-      final response = await _client.post(
-          Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.signupEndPoint}'),
-          headers: {
-            'content-type': 'application/json',
-          },
-          body: jsonEncode(params.toMap()));
+      final request = http.MultipartRequest('POST',
+          Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.signupEndPoint}'));
+
+      request.files.add(http.MultipartFile(
+        'photoUrl',
+        params.photoUrl.readAsBytes().asStream(),
+        params.photoUrl.lengthSync(),
+        filename: params.photoUrl.path.split('/').last,
+      ));
+      request.fields['email'] = params.email;
+      request.fields['gender'] = params.gender;
+      request.fields['name'] = params.location;
+      request.fields['name'] = params.name;
+      request.fields['phoneNumber'] = params.phoneNumber;
+      request.fields['location'] = params.location;
+
+      var response = await request.send();
+
       if (response.statusCode == 200) {
-        final token = response.body.toString();
-        print(token);
-        final decodedToken = JwtDecoder.decode(token);
+        final token = await response.stream.bytesToString();
+
+        final decodedToken = Jwt.parseJwt(token);
         print(decodedToken);
         Hive.box('USER').put('token', token);
         final user = User.fromMap(decodedToken);
 
         return Right(user);
       } else {
-        throw ApiException(message: response.body);
+        throw ApiException(message: await response.stream.bytesToString());
       }
     } on ApiException catch (e) {
       return Left(ApiFailure(message: e.message));
@@ -130,7 +142,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       final token = response.body.toString();
       print(token);
-      final decodedToken = JwtDecoder.decode(token);
+      final decodedToken = Jwt.parseJwt(token);
       print(decodedToken);
       Hive.box('USER').put('token', token);
 
@@ -176,7 +188,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (response.statusCode == 200) {
         final token = response.body.toString();
         print(token);
-        final decodedToken = JwtDecoder.decode(token);
+        final decodedToken = Jwt.parseJwt(token);
         print(decodedToken);
         Hive.box('USER').put('token', token);
 
@@ -194,7 +206,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   FutureEither<String> sendOtp(String params) async {
-    // TODO: implement sendOtp
     try {
       print(params);
       final response = await client.get(Uri.parse(

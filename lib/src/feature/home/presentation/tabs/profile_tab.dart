@@ -1,7 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod_base/src/commons/usecases/use_case.dart';
 import 'package:flutter_riverpod_base/src/commons/views/onboarding/on_boarding_page.dart';
+import 'package:flutter_riverpod_base/src/feature/home/presentation/bloc/home_view_bloc.dart';
+import 'package:flutter_riverpod_base/src/res/strings.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,6 +19,7 @@ import 'package:flutter_riverpod_base/src/feature/settings/presentation/view/set
 import 'package:flutter_riverpod_base/src/res/assets.dart';
 import 'package:flutter_riverpod_base/src/utils/widgets/basic_sliver_appbar.dart';
 import 'package:hive/hive.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 import '../../../../res/colors.dart';
 
@@ -28,175 +33,172 @@ class ProfileTab extends StatefulWidget {
 class _ProfileTabState extends State<ProfileTab> {
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        // SliverPersistentHeader(
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<HomeViewBloc>().add(FetchingStudioDataEvent(
+            params: AllParams(location: user.location)));
+      },
+      child: CustomScrollView(
+        slivers: [
+          // SliverPersistentHeader(
 
-        SliverAppBar(
-          title: Text(
-            'Settings',
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-        ),
-        SliverList(
-            delegate: SliverChildListDelegate([
-          // profile
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            height: 80,
-            width: double.maxFinite,
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    CircleAvatar(radius: 40, backgroundImage: _image()),
-                  ],
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // SizedBox(height: 10),
-                    Text(
-                      user.name,
-                      style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: ColorAssets.blackFaded),
-                    ),
-                    Text(
-                      user.email,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: ColorAssets.lightGray,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                )
-              ],
+        const  SliverAppBar(
+            title: Text(
+              'Settings',
+              style: TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
-          //   child: GestureDetector(
-          //     onTap: () {
-          //       // edit option
+          SliverList(
+              delegate: SliverChildListDelegate([
+            // profile
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              height: 80,
+              width: double.maxFinite,
+              child: Row(
+                children: [
+                  Column(
+                    children: [
+                      CircleAvatar(
+                          radius: 40,
+                          backgroundImage: MemoryImage(user.photoUrl)),
+                    ],
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // SizedBox(height: 10),
+                      Text(
+                        user.name,
+                        style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: ColorAssets.blackFaded),
+                      ),
+                      Text(
+                        user.email,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: ColorAssets.lightGray,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       // edit option
 
-          //     },
-          //     child: const Row(
-          //       mainAxisAlignment: MainAxisAlignment.start,
-          //       children: [
-          //         Icon(
-          //           Icons.edit,
-          //           size: 15,
-          //           color: ColorAssets.primaryBlue,
-          //         ),
-          //         SizedBox(width: 3.51),
-          //         Text(
-          //           "EDIT",
-          //           style: TextStyle(
-          //               fontSize: 16,
-          //               fontWeight: FontWeight.w600,
-          //               color: ColorAssets.primaryBlue),
-          //         )
-          //       ],
-          //     ),
-          //   ),
-          // ),
+            //     },
+            //     child: const Row(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       children: [
+            //         Icon(
+            //           Icons.edit,
+            //           size: 15,
+            //           color: ColorAssets.primaryBlue,
+            //         ),
+            //         SizedBox(width: 3.51),
+            //         Text(
+            //           "EDIT",
+            //           style: TextStyle(
+            //               fontSize: 16,
+            //               fontWeight: FontWeight.w600,
+            //               color: ColorAssets.primaryBlue),
+            //         )
+            //       ],
+            //     ),
+            //   ),
+            // ),
 
-          // options
-          CustomListTile(
-              leadingIcon: SvgPicture.asset(ImageAssets.user1),
-              title: const Text(
-                "Your Profile",
-              ),
-              tailingIcon: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: ColorAssets.primaryBlue,
-              ),
-              onTap: () {
-                context.push(EditProfileInfoView.routePath);
-              }),
-          CustomListTile(
-              leadingIcon: SvgPicture.asset(ImageAssets.settings),
-              title: const Text(
-                "Settings",
-              ),
-              tailingIcon: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: ColorAssets.primaryBlue,
-              ),
-              onTap: () {
-                context.push(SettingsView.routePath);
-              }),
-          // CustomListTile(
-          //     leadingIcon: SvgPicture.asset(ImageAssets.settings),
-          //     title: const Text(
-          //       "App Language",
-          //     ),
-          //     tailingIcon: const Icon(
-          //       Icons.arrow_forward_ios_rounded,
-          //       color: ColorAssets.primaryBlue,
-          //     ),
-          //     onTap: () {
-          //       context.push(LanguageSelectionView.routePath);
-          //     }),
-          CustomListTile(
-              leadingIcon: SvgPicture.asset(ImageAssets.lock),
-              title: const Text(
-                "Privacy Policy",
-              ),
-              tailingIcon: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: ColorAssets.primaryBlue,
-              ),
-              onTap: () {
-                context.push(PrivacyPolicyView.routePath);
-              }),
-          CustomListTile(
-              leadingIcon: SvgPicture.asset(ImageAssets.helpcircle),
-              title: const Text(
-                "Help Center",
-              ),
-              tailingIcon: const Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: ColorAssets.primaryBlue,
-              ),
-              onTap: () {
-                context.push(HelpCenterView.routePath);
-              }),
-          CustomListTile(
-              leadingIcon: const Icon(
-                Icons.logout,
-                color: ColorAssets.redAccent,
-              ),
-              title: const Text(
-                "Logout",
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: ColorAssets.redAccent),
-              ),
-              onTap: () async {
-                context.go(OnBoardingPage.routePath);
-                await Hive.box('USER').clear();
-                photoUrl = null;
-                print(Hive.box('USER').isEmpty);
-              },
-              enableBottom: false),
-        ]))
-      ],
+            // options
+            CustomListTile(
+                leadingIcon: SvgPicture.asset(ImageAssets.user1),
+                title: const Text(
+                  "Your Profile",
+                ),
+                tailingIcon: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: ColorAssets.primaryBlue,
+                ),
+                onTap: () {
+                  context.push(EditProfileInfoView.routePath);
+                }),
+            CustomListTile(
+                leadingIcon: SvgPicture.asset(ImageAssets.settings),
+                title: const Text(
+                  "Settings",
+                ),
+                tailingIcon: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: ColorAssets.primaryBlue,
+                ),
+                onTap: () {
+                  context.push(SettingsView.routePath);
+                }),
+            // CustomListTile(
+            //     leadingIcon: SvgPicture.asset(ImageAssets.settings),
+            //     title: const Text(
+            //       "App Language",
+            //     ),
+            //     tailingIcon: const Icon(
+            //       Icons.arrow_forward_ios_rounded,
+            //       color: ColorAssets.primaryBlue,
+            //     ),
+            //     onTap: () {
+            //       context.push(LanguageSelectionView.routePath);
+            //     }),
+            CustomListTile(
+                leadingIcon: SvgPicture.asset(ImageAssets.lock),
+                title: const Text(
+                  "Privacy Policy",
+                ),
+                tailingIcon: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: ColorAssets.primaryBlue,
+                ),
+                onTap: () {
+                  context.push(PrivacyPolicyView.routePath);
+                }),
+            CustomListTile(
+                leadingIcon: SvgPicture.asset(ImageAssets.helpcircle),
+                title: const Text(
+                  "Help Center",
+                ),
+                tailingIcon: const Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: ColorAssets.primaryBlue,
+                ),
+                onTap: () {
+                  context.push(HelpCenterView.routePath);
+                }),
+            CustomListTile(
+                leadingIcon: const Icon(
+                  Icons.logout,
+                  color: ColorAssets.redAccent,
+                ),
+                title: const Text(
+                  "Logout",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: ColorAssets.redAccent),
+                ),
+                onTap: () async {
+                  context.go(OnBoardingPage.routePath);
+                },
+                enableBottom: false),
+          ]))
+        ],
+      ),
     );
-  }
-
-  _image() {
-    print(photoUrl);
-    return photoUrl != null
-        ? FileImage(File(photoUrl!))
-        : NetworkImage(
-            'https://media.istockphoto.com/id/587805156/vector/profile-picture-vector-illustration.jpg?s=1024x1024&w=is&k=20&c=N14PaYcMX9dfjIQx-gOrJcAUGyYRZ0Ohkbj5lH-GkQs=');
   }
 }
 
