@@ -3,7 +3,7 @@ description: A Starter project for flutter with riverpod and http preconfigured 
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 2.5.5+9
+version: 2.5.6+10
 
 environment:
   sdk: '>=3.0.3 <4.0.0'
@@ -62,6 +62,7 @@ dependencies:
   rename: ^3.0.2
   upgrader: ^10.3.0
   shimmer_effect: ^1.0.4
+  get_it: ^7.7.0
 
 
 dev_dependencies:

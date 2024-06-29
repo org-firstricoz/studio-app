@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_base/services_imports.dart';
 import 'package:flutter_riverpod_base/src/app.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:upgrader/upgrader.dart';
-// import 'package:upgrader/upgrader.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  serviceInjector();
   await Hive.initFlutter();
   // await Upgrader.clearSavedSettings();
   await Hive.openBox('USER');

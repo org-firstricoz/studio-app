@@ -27,11 +27,14 @@ abstract class HomeViewRemoteDataSource {
 }
 
 class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
+  final http.Client client;
+
+  HomeViewRemoteDataSourceImpl({required this.client});
   @override
   FutureEither<Map<String, List<StudioModel>>> getHomeViewDetails(
       AllParams params) async {
     try {
-      final response = await http.get(
+      final response = await client.get(
         Uri.parse(
             '${AppRequestUrl.baseUrl}${AppRequestUrl.homeViewEndPoint}?location=${params.location}&uuid=${user.uuid}'),
       );
@@ -131,7 +134,7 @@ class HomeViewRemoteDataSourceImpl implements HomeViewRemoteDataSource {
   @override
   FutureEitherVoid saveFavourites(List<StudioModel> params) async {
     try {
-      final response = await http.put(
+      final response = await client.put(
           Uri.parse('${AppRequestUrl.baseUrl}${AppRequestUrl.favourites}'),
           headers: {'content-type': 'application/json'},
           body: jsonEncode({

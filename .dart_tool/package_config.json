@@ -452,6 +452,12 @@
       "languageVersion": "2.15"
     },
     {
+      "name": "get_it",
+      "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/get_it-7.7.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "go_router",
       "rootUri": "file:///C:/Users/Achiket/AppData/Local/Pub/Cache/hosted/pub.dev/go_router-7.1.1",
       "packageUri": "lib/",
@@ -1256,7 +1262,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2024-06-25T09:10:02.503987Z",
+  "generated": "2024-06-29T10:07:15.136314Z",
   "generator": "pub",
   "generatorVersion": "3.5.0-214.0.dev",
   "flutterRoot": "file:///C:/Users/Achiket/Documents/Flutter/flutter",
